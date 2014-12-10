@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.chinesedreamer</groupId>
+		<artifactId>ipm</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>ipm-common</artifactId>
+	<name>ipm-common</name>
+	<url>http://maven.apache.org</url>
+	
+	<profiles>
+  	<profile>
+  		<id>localhost</id>
+  		<activation>
+				<activeByDefault>true</activeByDefault>
+		</activation>
+  		<properties>
+  			<datasource.url>jdbc:mysql://localhost:3306/manong?characterEncoding=UTF-8</datasource.url>
+  			<datasource.username>root</datasource.username>
+  			<datasource.password>Password2</datasource.password>
+  			<datasource.initialSize>10</datasource.initialSize>
+  			<datasource.maxActive>60000</datasource.maxActive>
+  			<datasource.maxIdle>20</datasource.maxIdle>
+  			<datasource.minIdle>5</datasource.minIdle>
+  		</properties>
+  	</profile>
+  </profiles>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>
