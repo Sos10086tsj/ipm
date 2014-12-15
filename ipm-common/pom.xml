@@ -11,25 +11,25 @@
 	<artifactId>ipm-common</artifactId>
 	<name>ipm-common</name>
 	<url>http://maven.apache.org</url>
-	
+
 	<profiles>
-  	<profile>
-  		<id>localhost</id>
-  		<activation>
+		<profile>
+			<id>localhost</id>
+			<activation>
 				<activeByDefault>true</activeByDefault>
-		</activation>
-  		<properties>
-  			<datasource.url>jdbc:mysql://localhost:3306/manong?characterEncoding=UTF-8</datasource.url>
-  			<datasource.username>root</datasource.username>
-  			<datasource.password>Password2</datasource.password>
-  			<datasource.initialSize>10</datasource.initialSize>
-  			<datasource.maxActive>60000</datasource.maxActive>
-  			<datasource.maxIdle>20</datasource.maxIdle>
-  			<datasource.minIdle>5</datasource.minIdle>
-  		</properties>
-  	</profile>
-  </profiles>
-	
+			</activation>
+			<properties>
+				<datasource.url>jdbc:mysql://localhost:3306/manong?characterEncoding=UTF-8</datasource.url>
+				<datasource.username>root</datasource.username>
+				<datasource.password>Password2</datasource.password>
+				<datasource.initialSize>10</datasource.initialSize>
+				<datasource.maxActive>60000</datasource.maxActive>
+				<datasource.maxIdle>20</datasource.maxIdle>
+				<datasource.minIdle>5</datasource.minIdle>
+			</properties>
+		</profile>
+	</profiles>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -38,6 +38,40 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
 		</dependency>
 	</dependencies>
 </project>

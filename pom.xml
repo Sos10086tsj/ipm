@@ -19,9 +19,8 @@
 		<servlet.version>3.0.1</servlet.version>
 		<jsp.version>2.2</jsp.version>
 		<tomcat.plugin.version>2.2</tomcat.plugin.version>
-		<slf4j.version>1.5.6</slf4j.version>
+		<slf4j.version>1.7.5</slf4j.version>
 		<lombok.version>1.12.6</lombok.version>
-		<log4j.version>1.2.16</log4j.version>
 		<org.json.version>20090211</org.json.version>
 		<common.dbcp.verison>1.4</common.dbcp.verison>
 		<commmons.pool.version>1.6</commmons.pool.version>
@@ -38,6 +37,7 @@
 		<fastjson.version>1.1.37</fastjson.version>
 		<commons.fileupload.version>1.2.1</commons.fileupload.version>
 		<ommons.io.version>2.4</ommons.io.version>
+		<logback.version>1.0.13</logback.version>
 	</properties>
 
 	<dependencyManagement>
@@ -133,12 +133,6 @@
 				<artifactId>lombok</artifactId>
 				<version>${lombok.version}</version>
 				<scope>provided</scope>
-			</dependency>
-			<!-- log4j -->
-			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>${log4j.version}</version>
 			</dependency>
 
 			<!-- org json -->
@@ -272,6 +266,29 @@
 				<artifactId>commons-io</artifactId>
 				<version>${ommons.io.version}</version>
 			</dependency>
+
+			<!-- slf4j -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-core</artifactId>
+				<version>${logback.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${logback.version}</version>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
