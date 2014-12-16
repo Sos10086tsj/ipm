@@ -38,6 +38,7 @@
 		<commons.fileupload.version>1.2.1</commons.fileupload.version>
 		<ommons.io.version>2.4</ommons.io.version>
 		<logback.version>1.0.13</logback.version>
+		<aspectj.version>1.5.4</aspectj.version>
 	</properties>
 
 	<dependencyManagement>
@@ -46,7 +47,6 @@
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>${junit.version}</version>
-				<scope>test</scope>
 			</dependency>
 
 			<dependency>
@@ -288,7 +288,11 @@
 				<artifactId>logback-classic</artifactId>
 				<version>${logback.version}</version>
 			</dependency>
-
+			<dependency>
+				<groupId>org.aspectj</groupId>
+				<artifactId>aspectjweaver</artifactId>
+				<version>${aspectj.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
