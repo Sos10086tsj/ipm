@@ -12,36 +12,45 @@
 	<packaging>war</packaging>
 	<name>ipm-web Maven Webapp</name>
 	<url>http://maven.apache.org</url>
-	
+
 	<profiles>
-  	<profile>
-  		<id>localhost</id>
-  		<activation>
+		<profile>
+			<id>localhost</id>
+			<activation>
 				<activeByDefault>true</activeByDefault>
-		</activation>
-  		<properties>
-  			<datasource.url>jdbc:mysql://localhost:3306/manong?characterEncoding=UTF-8</datasource.url>
-  			<datasource.username>root</datasource.username>
-  			<datasource.password>Password2</datasource.password>
-  			<datasource.initialSize>10</datasource.initialSize>
-  			<datasource.maxActive>60000</datasource.maxActive>
-  			<datasource.maxIdle>20</datasource.maxIdle>
-  			<datasource.minIdle>5</datasource.minIdle>
-  		</properties>
-  	</profile>
-  </profiles>
-	
-	
+			</activation>
+			<properties>
+				<datasource.url>jdbc:mysql://localhost:3306/manong?characterEncoding=UTF-8</datasource.url>
+				<datasource.username>root</datasource.username>
+				<datasource.password>Password2</datasource.password>
+				<datasource.initialSize>10</datasource.initialSize>
+				<datasource.maxActive>60000</datasource.maxActive>
+				<datasource.maxIdle>20</datasource.maxIdle>
+				<datasource.minIdle>5</datasource.minIdle>
+			</properties>
+		</profile>
+	</profiles>
+
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
-		
-		
-		
+
+		<dependency>
+			<groupId>com.chinesedreamer</groupId>
+			<artifactId>ipm-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.chinesedreamer</groupId>
+			<artifactId>ipm-service</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-core</artifactId>
@@ -83,7 +92,61 @@
 			<artifactId>jsp-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+		</dependency>
+		<!-- spring webmvc相关jar包 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<finalName>ipm-web</finalName>
