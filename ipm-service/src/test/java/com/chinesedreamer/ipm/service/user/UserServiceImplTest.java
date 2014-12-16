@@ -7,7 +7,8 @@ import javax.annotation.Resource;
 import org.junit.Test;
 
 import com.chinesedreamer.ipm.common.base.SpringTest;
-import com.chinesedreamer.ipm.domain.user.entity.User;
+import com.chinesedreamer.ipm.domain.sys.user.entity.User;
+import com.chinesedreamer.ipm.service.sys.user.service.UserService;
 
 public class UserServiceImplTest extends SpringTest{
 
