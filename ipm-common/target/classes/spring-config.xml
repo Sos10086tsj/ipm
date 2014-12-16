@@ -89,3 +89,4 @@
 	</aop:config>
 
 	<import resource="shiro-config.xml" />
+</beans>

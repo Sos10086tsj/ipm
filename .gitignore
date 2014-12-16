@@ -49,18 +49,18 @@ Temporary Items
 /.gitignore
 
 #target, log
-/ipm-common/target
-/ipm-domain/target
-/ipm-message-center/target
-/ipm-service/target
-/ipm-tools/target
-/ipm-web/target
-/ipm-common/log.dir_IS_UNDEFINED
-/ipm-domain/log.dir_IS_UNDEFINED
-/ipm-message-center/log.dir_IS_UNDEFINED
-/ipm-service/log.dir_IS_UNDEFINED
-/ipm-tools/log.dir_IS_UNDEFINED
-/ipm-web/log.dir_IS_UNDEFINED
+/ipm-common/target/
+/ipm-domain/target/
+/ipm-message-center/target/
+/ipm-service/target/
+/ipm-tools/target/
+/ipm-web/target/
+/ipm-common/log.dir_IS_UNDEFINED/
+/ipm-domain/log.dir_IS_UNDEFINED/
+/ipm-message-center/log.dir_IS_UNDEFINED/
+/ipm-service/log.dir_IS_UNDEFINED/
+/ipm-tools/log.dir_IS_UNDEFINED/
+/ipm-web/log.dir_IS_UNDEFINED/
 ipm-common/target/classes/META-INF/MANIFEST.MF
 ipm-common/target/classes/META-INF/maven/com.chinesedreamer/ipm-common/pom.properties
 ipm-common/target/classes/META-INF/maven/com.chinesedreamer/ipm-common/pom.xml
