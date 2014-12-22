@@ -1,0 +1,9 @@
+<html>
+    <body>
+        <h3>Hi ${template.userName}, welcome to iPorjectManagement!</h3>
+
+        <div>
+        	Please Verify your account through <a href="${template.validationUrl}">Validation Url</a>.
+        </div>
+    </body>
+</html>

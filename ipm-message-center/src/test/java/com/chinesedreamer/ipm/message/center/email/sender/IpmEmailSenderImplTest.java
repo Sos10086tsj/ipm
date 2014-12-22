@@ -5,6 +5,7 @@ import javax.annotation.Resource;
 import org.junit.Test;
 
 import com.chinesedreamer.ipm.common.base.SpringTest;
+import com.chinesedreamer.ipm.message.center.email.entity.VelocityTemplate;
 import com.chinesedreamer.ipm.message.center.email.message.EmailRecipient;
 import com.chinesedreamer.ipm.message.center.email.service.IpmEmailSender;
 
@@ -47,5 +48,17 @@ public class IpmEmailSenderImplTest extends SpringTest{
 		String attachPath = "C:/Users/Paris/Desktop/phabricator修改默认密码.zip";
 		String content = "<html><head></head><body><h1>你好：附件中有学习资料！</h1></body></html>";
 		this.sender.sendAttachEmail("paris1989@163.com", recipient, "Test attach email", content,attachPath);
+	}
+	
+	@Test
+	public void testVelocity(){
+		EmailRecipient recipient = new EmailRecipient();
+		recipient.setTo(new String[]{"taosj@cyyun.com"});
+		recipient.setCc(new String[]{"407414976@qq.com"});
+		String templatePath = "register-email-velocity-template.vm";
+		VelocityTemplate template = new VelocityTemplate();
+		template.setUserName("Paris Tao");
+		template.setValidationUrl("www.baidu.com");
+		this.sender.sendTemplateEmail("paris1989@163.com", recipient, "Test Velocity", templatePath, template);
 	}
 }
