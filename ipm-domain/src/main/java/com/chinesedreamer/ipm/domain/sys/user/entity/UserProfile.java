@@ -11,13 +11,16 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.chinesedreamer.ipm.domain.base.IpmVersionEntity;
 
 @Entity
 @Table(name = "sys_user_profile")
-public class UserProfile extends IpmVersionEntity<Long>{
+public @Getter @Setter class UserProfile extends IpmVersionEntity<Long>{
 
 	/**
 	 * 
@@ -43,7 +46,7 @@ public class UserProfile extends IpmVersionEntity<Long>{
 	@Column(name = "create_date")
 	@Temporal(TemporalType.TIMESTAMP)
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date createDate;
+	private Date createDate = new Date();
 	
 	@Column(name = "craete_user")
 	private Long createUserId;

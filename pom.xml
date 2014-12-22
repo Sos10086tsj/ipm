@@ -39,6 +39,8 @@
 		<ommons.io.version>2.4</ommons.io.version>
 		<logback.version>1.0.13</logback.version>
 		<aspectj.version>1.5.4</aspectj.version>
+		<commons-codec.version>1.9</commons-codec.version>
+		<javax.mail.version>1.4.4</javax.mail.version>
 	</properties>
 
 	<dependencyManagement>
@@ -118,6 +120,11 @@
 				<groupId>commons-collections</groupId>
 				<artifactId>commons-collections</artifactId>
 				<version>${commmons.collections.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>${commons-codec.version}</version>
 			</dependency>
 
 			<!-- spring test -->
@@ -292,6 +299,12 @@
 				<groupId>org.aspectj</groupId>
 				<artifactId>aspectjweaver</artifactId>
 				<version>${aspectj.version}</version>
+			</dependency>
+			<!-- java mail -->
+			<dependency>
+				<groupId>javax.mail</groupId>
+				<artifactId>mail</artifactId>
+				<version>${javax.mail.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

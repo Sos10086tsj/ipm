@@ -13,6 +13,8 @@ CREATE TABLE `ipm`.`sys_user` (
   `last_update_user` BIGINT NULL,
   `version` BIGINT NULL DEFAULT 0,
   PRIMARY KEY (`id`, `username`));
+ALTER TABLE `ipm`.`sys_user` 
+ADD COLUMN `status` VARCHAR(45) NULL AFTER `password`;
 
 DROP TABLE IF EXISTS `ipm`.`sys_user_profile`;
 CREATE TABLE `ipm`.`sys_user_profile` (

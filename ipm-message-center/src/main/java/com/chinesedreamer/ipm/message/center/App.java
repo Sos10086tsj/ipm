@@ -1,4 +1,4 @@
-package org.ipm.message.center;
+package com.chinesedreamer.ipm.message.center;
 
 /**
  * Hello world!

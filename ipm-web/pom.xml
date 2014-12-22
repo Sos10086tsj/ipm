@@ -49,7 +49,11 @@
 			<artifactId>ipm-service</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
+<dependency>
+			<groupId>com.chinesedreamer</groupId>
+			<artifactId>ipm-message-center</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.apache.shiro</groupId>

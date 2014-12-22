@@ -19,6 +19,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.chinesedreamer.ipm.domain.base.IpmVersionEntity;
 import com.chinesedreamer.ipm.domain.sys.customer.entity.Customer;
 import com.chinesedreamer.ipm.domain.sys.user.constant.UserStatus;
+import com.chinesedreamer.ipm.domain.sys.user.util.UserUtil;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -46,7 +47,7 @@ public @Getter @Setter class User extends IpmVersionEntity<Long>{
 	 * 随机盐
 	 */
 	@Column
-	private String salt;
+	private String salt = UserUtil.generateSalt();
 	public void setSalt(String salt){
 		//can not update salt
 		return;
@@ -60,7 +61,7 @@ public @Getter @Setter class User extends IpmVersionEntity<Long>{
 	
 	@Column(name = "status")
 	@Enumerated(EnumType.STRING)
-	private UserStatus status;
+	private UserStatus status = UserStatus.ACTIVE;
 	
 	/**
 	 * 客户code
@@ -74,7 +75,7 @@ public @Getter @Setter class User extends IpmVersionEntity<Long>{
 	@Column(name = "create_date")
 	@Temporal(TemporalType.TIMESTAMP)
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date createDate;
+	private Date createDate = new Date();
 	
 	@Column(name = "create_user")
 	private Long createUserId;
