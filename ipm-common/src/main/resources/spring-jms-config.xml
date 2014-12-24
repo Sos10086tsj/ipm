@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xsi:schemaLocation="
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+	<!-- connection factory -->
+	<bean id = "connectionFactory" class = "org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL" value="tcp://localhost:61616" />
+	</bean>
+	<!-- 发送消息的目的地（队列） -->
+	<bean id = "queueDest" class = "org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0" value="ipmQueue" />  
+	</bean>
+	<!-- 配置Jms模板  --> 
+	<bean id="jmsQueueTemplate"  
+        class="org.springframework.jms.core.JmsTemplate">  
+        <property name="connectionFactory" ref="connectionFactory" />  
+        <property name="defaultDestination" ref="queueDest" />  
+        <!--<property name="receiveTimeout" value="10000" />  -->  
+    </bean>
+    <!-- 发送消息的目的地（主题） -->  
+    <bean id="topicDest"  
+        class="org.apache.activemq.command.ActiveMQTopic">  
+        <!-- 设置消息队列的名字 -->  
+        <constructor-arg index="0" value="ipmTopic" />  
+    </bean>  
+     <!-- 配置TopicJms模板  -->  
+    <bean id="jmsTopicTemplate"  
+        class="org.springframework.jms.core.JmsTemplate">  
+        <property name="connectionFactory" ref="connectionFactory" />  
+        <property name="defaultDestination" ref="topicDest" />  
+        <!-- 配置是否为发布订阅者模式，默认为false -->  
+        <property name="pubSubDomain" value="true"/>  
+    <!--<property name="receiveTimeout" value="10000" />  -->  
+    </bean>  
+</beans>          
