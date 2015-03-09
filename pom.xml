@@ -345,10 +345,10 @@
 					<artifactId>tomcat7-maven-plugin</artifactId>
 					<version>${tomcat.plugin.version}</version>
 					<configuration>
-						<port>8082</port>
+						<port>8080</port>
 						<path>/</path>
 						<uriEncoding>UTF-8</uriEncoding>
-						<url>http://localhost:8082/manager/html</url>
+						<url>http://localhost:8080/manager/html</url>
 						<server>tomcat7</server>
 					</configuration>
 				</plugin>

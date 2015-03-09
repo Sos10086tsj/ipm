@@ -11,7 +11,7 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 	<!-- 自定义shiro UserRealm -->
 	<bean id="ipmRealm" class="com.chinesedreamer.ipm.filter.IpmUserRealm"></bean>
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
-		<property name="realm" ref="manongRealm" />
+		<property name="realm" ref="ipmRealm" />
 	</bean>
 	<bean
 		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
