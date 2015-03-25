@@ -21,7 +21,6 @@ import com.chinesedreamer.ipm.web.index.helper.IndexHelper;
  * @version 1.0
  */
 @Controller
-@RequestMapping(value = "index")
 public class IndexController {
 	@Resource
 	private UserService userService;
@@ -51,5 +50,10 @@ public class IndexController {
 			this.userSecurityMessage.sendRetrivePasswordMessage(user.getUsername(), email);
 		}
 		return "index/retrievePasswordWarning";
+	}
+	
+	@RequestMapping(value = "login")
+	public String getLoginForm(Model model){
+		return "login";
 	}
 }

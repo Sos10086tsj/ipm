@@ -26,7 +26,7 @@
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>jsp</servlet-name>
-    <url-pattern>*.html</url-pattern>
+    <url-pattern>*.jsp</url-pattern>
   </servlet-mapping> 
   
   <filter>
@@ -48,7 +48,7 @@
   </filter-mapping>
   <filter-mapping>
     <filter-name>encodingFilter</filter-name>
-    <url-pattern>*.html</url-pattern>
+    <url-pattern>*.jsp</url-pattern>
   </filter-mapping>
   <filter>
     <filter-name>shiroFilter</filter-name>

@@ -19,15 +19,6 @@
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
-			<properties>
-				<datasource.url>jdbc:mysql://localhost:3306/manong?characterEncoding=UTF-8</datasource.url>
-				<datasource.username>root</datasource.username>
-				<datasource.password>Password2</datasource.password>
-				<datasource.initialSize>10</datasource.initialSize>
-				<datasource.maxActive>60000</datasource.maxActive>
-				<datasource.maxIdle>20</datasource.maxIdle>
-				<datasource.minIdle>5</datasource.minIdle>
-			</properties>
 		</profile>
 	</profiles>
 
