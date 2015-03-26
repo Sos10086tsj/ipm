@@ -1,4 +1,4 @@
-package com.chinesedreamer.ipm.domain.base;
+package com.chinesedreamer.ipm.domain.base.model;
 
 import java.io.Serializable;
 
@@ -7,14 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
-import lombok.Getter;
-import lombok.Setter;
-
-import org.springframework.data.domain.Persistable;
-
-
 @MappedSuperclass
-public abstract @Getter @Setter class IpmEntity<ID extends Serializable> implements Persistable<ID>{
+public abstract  class IpmEntity<ID extends Serializable> extends AbstractEntity<ID>{
 	/**
 	 * 
 	 */
@@ -23,7 +17,14 @@ public abstract @Getter @Setter class IpmEntity<ID extends Serializable> impleme
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private ID id;
 	
-	public boolean isNew(){
-		return null == getId();
+	@Override
+	public ID getId() {
+		return id;
 	}
+	@Override
+	public void setId(ID id) {
+		this.id = id;
+	}
+
+	
 }
