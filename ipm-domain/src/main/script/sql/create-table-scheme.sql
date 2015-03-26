@@ -40,3 +40,16 @@ ADD CONSTRAINT `IPM_SYS_COMP_INFO_FK`
   ON UPDATE NO ACTION;
   
 ALTER TABLE ipm_sys_company_info ADD INDEX ipm_sys_company_info_company_code_index (company_code)  ;
+
+
+--晚上
+CREATE TABLE `ipm`.`ipm_sys_supp_dictionary` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `type` INT NULL,
+  `code` VARCHAR(45) NULL,
+  `name` VARCHAR(45) CHARACTER SET 'utf8' NULL,
+  `status` INT NULL,
+  `version` BIGINT NULL DEFAULT 0,
+  PRIMARY KEY (`id`));
+
+  ALTER TABLE ipm_sys_supp_dictionary ADD INDEX ipm_sys_supp_dictionary_code_index (code)  ;

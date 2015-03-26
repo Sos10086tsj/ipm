@@ -51,7 +51,7 @@ public @Getter @Setter class Company extends IpmVersionEntity<Long> {
 	 */
 	@Column(name = "status")
 	@Enumerated(EnumType.ORDINAL)
-	private CompanyStatus status;
+	private CompanyStatus status = CompanyStatus.ACTIVE;
 
 	/**
 	 * vip等级
@@ -64,7 +64,7 @@ public @Getter @Setter class Company extends IpmVersionEntity<Long> {
 	 */
 	@Column(name = "register_date")
 	@DateTimeFormat(pattern = "yyyy-MM-HH hh:mm:ss")
-	private Date registerDate;
+	private Date registerDate = new Date();
 	
 	/** 外键 **/
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "company")

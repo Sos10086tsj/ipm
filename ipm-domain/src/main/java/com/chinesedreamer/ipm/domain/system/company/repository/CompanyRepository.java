@@ -10,5 +10,5 @@ import com.chinesedreamer.ipm.domain.system.company.model.Company;
  * @version beta
  */
 public interface CompanyRepository extends IpmRepository<Company, Long>{
-
+	public Company findByCode(String code);
 }

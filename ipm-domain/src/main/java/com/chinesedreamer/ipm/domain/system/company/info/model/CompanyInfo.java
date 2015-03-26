@@ -2,8 +2,6 @@ package com.chinesedreamer.ipm.domain.system.company.info.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -13,7 +11,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import com.chinesedreamer.ipm.domain.base.model.IpmVersionEntity;
-import com.chinesedreamer.ipm.domain.supp.dictionary.model.DictionaryType;
 import com.chinesedreamer.ipm.domain.system.company.model.Company;
 
 /**
@@ -34,22 +31,20 @@ public @Getter @Setter class CompanyInfo extends IpmVersionEntity<Long>{
 	/**
 	 * 客户外键
 	 */
-	@Column(name = "company_code")
-	private String companyCode;
+	@Column(name = "company_id")
+	private Long companyId;
 	
 	/**
 	 * 规模
 	 */
-	@Column(name = "scale")
-	@Enumerated(EnumType.ORDINAL)
-	private DictionaryType scale;
+	@Column
+	private Long scale;
 	
 	/**
 	 * 行业
 	 */
-	@Column(name = "industry")
-	@Enumerated(EnumType.ORDINAL)
-	private DictionaryType industry;
+	@Column
+	private Long industry;
 	
 	/**
 	 * 联系人邮箱
