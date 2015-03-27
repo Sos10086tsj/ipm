@@ -41,5 +41,5 @@ public @Getter @Setter class Dictionary extends IpmVersionEntity<Long>{
 	
 	@Column(name = "status")
 	@Enumerated(EnumType.ORDINAL)
-	private DictionaryStatus status;
+	private DictionaryStatus status = DictionaryStatus.ACTIVE;
 }

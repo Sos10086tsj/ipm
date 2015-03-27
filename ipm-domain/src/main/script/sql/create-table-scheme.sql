@@ -53,3 +53,42 @@ CREATE TABLE `ipm`.`ipm_sys_supp_dictionary` (
   PRIMARY KEY (`id`));
 
   ALTER TABLE ipm_sys_supp_dictionary ADD INDEX ipm_sys_supp_dictionary_code_index (code)  ;
+  
+--20150327
+  ALTER TABLE `ipm`.`ipm_sys_company_info` 
+DROP INDEX `ipm_sys_company_info_company_code_index` ;
+ALTER TABLE `ipm`.`ipm_sys_company_info` 
+DROP FOREIGN KEY `IPM_SYS_COMP_INFO_FK`;
+ALTER TABLE `ipm`.`ipm_sys_company_info` 
+DROP INDEX `company_code_UNIQUE` ;
+ALTER TABLE `ipm`.`ipm_sys_company_info` 
+CHANGE COLUMN `company_code` `company_id` BIGINT NULL DEFAULT NULL ;
+
+ALTER TABLE `ipm`.`ipm_sys_company_info` 
+ADD INDEX `ipm_sys_company_info_comp_id_index` (`company_id` ASC);
+ALTER TABLE `ipm`.`ipm_sys_company_info` 
+ADD CONSTRAINT `ipm_sys_company_info_comp_fk`
+  FOREIGN KEY (`company_id`)
+  REFERENCES `ipm`.`ipm_sys_company` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+  CREATE TABLE `ipm`.`ipm_sys_user` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(45) NULL,
+  `salt` VARCHAR(45) NULL,
+  `password` VARCHAR(100) NULL,
+  `name` VARCHAR(45) CHARACTER SET 'utf8' NULL,
+  `status` INT NULL,
+  `register_date` TIMESTAMP NULL,
+  `version` BIGINT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC));
+ALTER TABLE `ipm`.`ipm_sys_user` 
+ADD INDEX `ipm_sys_user_username_index` (`username` ASC);
+
+ALTER TABLE `ipm`.`ipm_sys_user` 
+ADD COLUMN `pinyin` VARCHAR(45) NULL AFTER `register_date`,
+ADD COLUMN `pinyin_first_letter` VARCHAR(45) NULL AFTER `pinyin`;
+ALTER TABLE `ipm`.`ipm_sys_user` 
+ADD COLUMN `company_id` BIGINT NULL AFTER `name`;

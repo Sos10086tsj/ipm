@@ -37,7 +37,7 @@ public @Getter @Setter class CompanyInfo extends IpmVersionEntity<Long>{
 	/**
 	 * 规模
 	 */
-	@Column
+	@Column(name = "scale")
 	private Long scale;
 	
 	/**

@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.chinesedreamer.ipm.domain.base.logic.IpmLogic;
 import com.chinesedreamer.ipm.domain.base.model.AbstractEntity;
-import com.chinesedreamer.ipm.domain.base.repository.IpmRepository;
 import com.chinesedreamer.ipm.domain.base.service.IpmService;
 
 
@@ -16,45 +16,45 @@ import com.chinesedreamer.ipm.domain.base.service.IpmService;
  * @version beta
  */
 public abstract class IpmServiceImpl<M extends AbstractEntity<?>, ID extends Serializable> implements IpmService<M, ID>{
-	protected IpmRepository<M, ID> repository;
+	protected IpmLogic<M, ID> ipmLogic;
 
 	@Autowired
-	public void setBaseLogic(IpmRepository<M, ID> repository) {
-		this.repository = repository;
+	public void setBaseLogic(IpmLogic<M, ID> ipmLogic) {
+		this.ipmLogic = ipmLogic;
 	}
 
 	@Override
 	public M save(M m) {
-		return repository.save(m);
+		return ipmLogic.save(m);
 	}
 
 	@Override
 	public M update(M m) {
-		return repository.save(m);
+		return ipmLogic.save(m);
 	}
 
 	@Override
 	public void delete(ID id) {
-		repository.delete(id);
+		ipmLogic.delete(id);
 	}
 
 	@Override
 	public void delete(M m) {
-		repository.delete(m);
+		ipmLogic.delete(m);
 	}
 
 	@Override
 	public M findOne(ID id) {
-		return repository.findOne(id);
+		return ipmLogic.findOne(id);
 	}
 
 	@Override
 	public boolean exists(ID id) {
-		return repository.exists(id);
+		return ipmLogic.exists(id);
 	}
 
 	@Override
 	public long count() {
-		return repository.count();
+		return ipmLogic.count();
 	}
 }
