@@ -53,3 +53,22 @@ CREATE TABLE `ipm`.`ipm_sys_supp_dictionary` (
   PRIMARY KEY (`id`));
 
   ALTER TABLE ipm_sys_supp_dictionary ADD INDEX ipm_sys_supp_dictionary_code_index (code)  ;
+  
+--20150327
+  ALTER TABLE `ipm`.`ipm_sys_company_info` 
+DROP INDEX `ipm_sys_company_info_company_code_index` ;
+ALTER TABLE `ipm`.`ipm_sys_company_info` 
+DROP FOREIGN KEY `IPM_SYS_COMP_INFO_FK`;
+ALTER TABLE `ipm`.`ipm_sys_company_info` 
+DROP INDEX `company_code_UNIQUE` ;
+ALTER TABLE `ipm`.`ipm_sys_company_info` 
+CHANGE COLUMN `company_code` `company_id` BIGINT NULL DEFAULT NULL ;
+
+ALTER TABLE `ipm`.`ipm_sys_company_info` 
+ADD INDEX `ipm_sys_company_info_comp_id_index` (`company_id` ASC);
+ALTER TABLE `ipm`.`ipm_sys_company_info` 
+ADD CONSTRAINT `ipm_sys_company_info_comp_fk`
+  FOREIGN KEY (`company_id`)
+  REFERENCES `ipm`.`ipm_sys_company` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
