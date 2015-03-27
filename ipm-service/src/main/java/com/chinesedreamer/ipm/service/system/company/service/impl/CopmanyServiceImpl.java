@@ -28,10 +28,9 @@ public class CopmanyServiceImpl extends IpmServiceImpl<Company, Long> implements
 	private CompanyInfoLogic infoLogic;
 	
 	@Override
-	public Company createCompany(CompanyVo vo) {
+	public void register(CompanyVo vo) {
 		Company comp = this.logic.save(this.generateFromVo(vo));
 		this.infoLogic.save(this.generateFromVo(vo.getInfoVo(), comp.getId()));
-		return this.findOne(comp.getId());
 	}
 
 	/**
@@ -60,5 +59,43 @@ public class CopmanyServiceImpl extends IpmServiceImpl<Company, Long> implements
 		info.setContactEmail(vo.getEmail());
 		info.setContactPhone(vo.getPhone());
 		return info;
+	}
+
+	@Override
+	public void updateCompany(CompanyVo vo) {
+		Company company = this.logic.findOne(vo.getId());
+		CompanyInfo info = this.infoLogic.findOne(vo.getInfoVo().getId());
+		this.updateFromVo(vo, company, info);
+		this.logic.save(company);
+		this.infoLogic.save(info);
+	}
+	
+	/**
+	 * vo更新信息到客户、客户信息
+	 * @param vo
+	 * @param company
+	 * @param info
+	 */
+	private void updateFromVo(CompanyVo vo, Company company,CompanyInfo info){
+		company.setName(vo.getName());
+		info.setScale(vo.getInfoVo().getScale());
+		info.setIndustry(vo.getInfoVo().getIndustry());
+		info.setContactEmail(vo.getInfoVo().getEmail());
+		info.setContactPhone(vo.getInfoVo().getPhone());
+	}
+
+	@Override
+	public void changeStatus(Long companyId, String status) {
+		Company company = this.logic.findOne(companyId);
+		company.setStatus(CompanyStatus.valueOf(status));
+		this.logic.save(company);
+	}
+
+	@Override
+	public void rankVipLevel(Long companyId, Integer vip) {
+		Company company = this.logic.findOne(companyId);
+		company.setVip(vip);
+		this.logic.save(company);
+		//TODO 实际业务
 	}
 }

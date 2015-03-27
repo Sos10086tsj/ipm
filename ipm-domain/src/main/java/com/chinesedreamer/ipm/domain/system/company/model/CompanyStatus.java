@@ -9,7 +9,7 @@ import lombok.Getter;
  * @version beta
  */
 public enum CompanyStatus {
-	DEFAULT("无效客户"),ACTIVE("服务中"),INACTIVE("停用"),FROZEEN("禁用");
+	DEFAULT("无效客户"),ACTIVE("服务中"),INACTIVE("停用"),FROZEEN("禁用"),DELETED("删除的");
 	
 	private final @Getter String info;
 	

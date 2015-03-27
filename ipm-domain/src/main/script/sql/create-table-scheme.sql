@@ -72,3 +72,17 @@ ADD CONSTRAINT `ipm_sys_company_info_comp_fk`
   REFERENCES `ipm`.`ipm_sys_company` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
+
+  CREATE TABLE `ipm`.`ipm_sys_user` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(45) NULL,
+  `salt` VARCHAR(45) NULL,
+  `password` VARCHAR(100) NULL,
+  `name` VARCHAR(45) CHARACTER SET 'utf8' NULL,
+  `status` INT NULL,
+  `register_date` TIMESTAMP NULL,
+  `version` BIGINT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC));
+ALTER TABLE `ipm`.`ipm_sys_user` 
+ADD INDEX `ipm_sys_user_username_index` (`username` ASC);
