@@ -86,3 +86,9 @@ ADD CONSTRAINT `ipm_sys_company_info_comp_fk`
   UNIQUE INDEX `username_UNIQUE` (`username` ASC));
 ALTER TABLE `ipm`.`ipm_sys_user` 
 ADD INDEX `ipm_sys_user_username_index` (`username` ASC);
+
+ALTER TABLE `ipm`.`ipm_sys_user` 
+ADD COLUMN `pinyin` VARCHAR(45) NULL AFTER `register_date`,
+ADD COLUMN `pinyin_first_letter` VARCHAR(45) NULL AFTER `pinyin`;
+ALTER TABLE `ipm`.`ipm_sys_user` 
+ADD COLUMN `company_id` BIGINT NULL AFTER `name`;
