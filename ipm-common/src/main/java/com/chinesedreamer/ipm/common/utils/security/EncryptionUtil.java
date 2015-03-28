@@ -1,6 +1,7 @@
 package com.chinesedreamer.ipm.common.utils.security;
 
 import java.security.MessageDigest;
+import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,5 +35,27 @@ public class EncryptionUtil {
 			LOGGER.error(e.getMessage());
 		}
 		return ciphertext;
+	}
+	
+	/**
+	 * 加盐算法
+	 * @return
+	 */
+	private final static String[] hexDigits = { "a", "b", "c", "d", "e", "f", "g", "h",  
+        "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u",  
+        "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H",  
+        "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",  
+        "V", "W", "X", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8",  
+        "9", "0", ".", "-", "*", "/", "'", ":", ";", ">", "<", "~", "!",  
+        "@", "#", "$", "%", "^", "&", "(", ")", "{", "}", "[", "]", "|" };
+	public static String generateSalt(int size){
+		StringBuffer buffer = new StringBuffer();
+		Random random = new Random();
+		int temp = 0;
+		for (int i = 0; i < size; i++) {
+			temp = random.nextInt(hexDigits.length);
+			buffer.append(hexDigits[temp]);
+		}
+		return buffer.toString();
 	}
 }

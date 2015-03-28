@@ -10,5 +10,5 @@ import com.chinesedreamer.ipm.domain.system.user.model.User;
  * @version beta
  */
 public interface UserLogic extends IpmLogic<User, Long>{
-
+	public User getUser(String username);
 }

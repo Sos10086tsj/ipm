@@ -10,5 +10,5 @@ import com.chinesedreamer.ipm.domain.system.user.model.User;
  * @version beta
  */
 public interface UserRepository extends IpmRepository<User, Long>{
-
+	public User findByUsername(String username);
 }

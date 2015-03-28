@@ -44,6 +44,7 @@
 		<apache.velocity.version>1.7</apache.velocity.version>
 		<apache.velocity.tools.version>2.0</apache.velocity.tools.version>
 		<org.apache.activemq.version>5.7.0</org.apache.activemq.version>
+		<com.belerweb.pinyin4j.version>2.5.0</com.belerweb.pinyin4j.version>
 	</properties>
 
 	<dependencyManagement>
@@ -332,6 +333,14 @@
 				<artifactId>velocity-tools</artifactId>
 				<version>${apache.velocity.tools.version}</version>
 			</dependency>
+			
+			<!-- pinyin4j -->
+			<dependency>
+				<groupId>com.belerweb</groupId>
+				<artifactId>pinyin4j</artifactId>
+				<version>${com.belerweb.pinyin4j.version}</version>
+			</dependency>
+			
 
 		</dependencies>
 	</dependencyManagement>

@@ -54,11 +54,11 @@ public @Getter @Setter class User extends IpmVersionEntity<Long>{
 	
 	@Column(name = "status")
 	@Enumerated(EnumType.ORDINAL)
-	private UserStatus status;
+	private UserStatus status = UserStatus.ACTIVE;
 	
 	@Column(name = "register_date")
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date registerDate;
+	private Date registerDate = new Date();
 	
 	@Column(name = "company_id")
 	private Long companyId;
