@@ -46,7 +46,7 @@
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="jpaVendorAdapter" ref="hibernateJpaVendorAdapter" />
-		<property name="packagesToScan" value="com.chinesedreamer.ipm.**.entity" /><!--待扫描的实体类包，不再需要persistence.xml了 -->
+		<property name="packagesToScan" value="com.chinesedreamer.ipm.**.model" /><!--待扫描的实体类包，不再需要persistence.xml了 -->
 		<property name="jpaProperties">
 			<props>
 				<prop key="hibernate.connection.useUnicode">true</prop>
