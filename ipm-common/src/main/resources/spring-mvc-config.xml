@@ -9,8 +9,4 @@
 
     <aop:config proxy-target-class="true"/>
 
-    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
-        <property name="securityManager" ref="securityManager"/>
-    </bean>
-
 </beans>

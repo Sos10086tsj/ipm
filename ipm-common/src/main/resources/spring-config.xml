@@ -112,6 +112,5 @@
 	
 	<!-- jms -->
 	<import resource = "spring-jms-config.xml"/>
-	<!-- shiro -->
-	<import resource="shiro-config.xml" />
+
 </beans>

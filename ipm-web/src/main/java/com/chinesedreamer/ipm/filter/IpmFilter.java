@@ -9,11 +9,16 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import org.apache.shiro.SecurityUtils;
+/**
+ * Description: 
+ * @author Paris
+ * @date May 12, 20153:13:27 PM
+ * @version beta
+ */
+public class IpmFilter implements Filter{
 
-public class AjaxTimeoutFilter implements Filter{
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		// TODO Auto-generated method stub
@@ -23,17 +28,13 @@ public class AjaxTimeoutFilter implements Filter{
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-		if (!SecurityUtils.getSubject().isAuthenticated()) {
-			if (httpServletRequest.getHeader("x-requested-with") != null
-					&& httpServletRequest.getHeader("x-requested-with")
-							.equalsIgnoreCase("XMLHttpRequest")) {
-				httpServletResponse.setHeader("sessionstatus", "timeout");// 在响应头设置session状态
-				return;
-			}
+		//增加ctx路径
+		HttpServletRequest req = (HttpServletRequest)request;
+		HttpSession session = req.getSession();
+		if(session != null){
+			String ctx = req.getContextPath();
+    		session.setAttribute("ctx", (null == ctx  ? "" : ctx) );
 		}
-		chain.doFilter(request, response);
 	}
 
 	@Override
@@ -41,4 +42,5 @@ public class AjaxTimeoutFilter implements Filter{
 		// TODO Auto-generated method stub
 		
 	}
+
 }

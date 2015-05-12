@@ -7,14 +7,7 @@
 <title>IPM - Efficient System</title>
 </head>
 <body>
-	<!-- 登录框 -->
-	<div>
-		<form action="${ctx }/login" method="post">
-			<input name="username" placeholder="请输入用户名"/>
-			<input name="passowrd" placeholder="请输入密码"/>
-			<button>登录</button>
-		</form>
-	</div>
+	${errorMessage }
 	
 </body>
 </html>

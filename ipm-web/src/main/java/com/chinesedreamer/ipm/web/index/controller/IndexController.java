@@ -47,8 +47,13 @@ public class IndexController {
 //		return "index/retrievePasswordWarning";
 //	}
 	
-	@RequestMapping(value = "login")
-	public String getLoginForm(Model model){
+	/**
+	 * 首页
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping
+	public String index(Model model){
 		return "login";
 	}
 }
