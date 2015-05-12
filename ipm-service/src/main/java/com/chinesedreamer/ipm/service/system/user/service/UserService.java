@@ -31,4 +31,13 @@ public interface UserService{
 	 * @param username
 	 */
 	public UserVo getUser(String username);
+	
+	/**
+	 * 创建用户
+	 * @param username
+	 * @param password
+	 * @param name
+	 * @param companyCode
+	 */
+	public void createUser(String username, String password, String name, Long companyId);
 }

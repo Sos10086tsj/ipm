@@ -6,11 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.chinesedreamer.ipm.common.utils.format.PinyinUtil;
 import com.chinesedreamer.ipm.common.utils.security.EncryptionUtil;
-import com.chinesedreamer.ipm.domain.base.service.impl.IpmServiceImpl;
 import com.chinesedreamer.ipm.domain.system.user.logic.UserLogic;
 import com.chinesedreamer.ipm.domain.system.user.model.User;
 import com.chinesedreamer.ipm.domain.system.user.model.UserStatus;
+import com.chinesedreamer.ipm.service.system.user.exception.DuplicateUserException;
 import com.chinesedreamer.ipm.service.system.user.exception.UserFrozenException;
 import com.chinesedreamer.ipm.service.system.user.exception.UserNotExistException;
 import com.chinesedreamer.ipm.service.system.user.exception.UsernameOrPasswordNotMatchException;
@@ -60,6 +61,24 @@ public class UserServiceImpl implements UserService{
 			vo.setCompanyName(user.getCompany().getName());
 		}
 		return vo;
+	}
+
+	@Override
+	public void createUser(String username, String password, String name, Long companyId) {
+		User user = this.logic.getUser(username);
+		if (null != user) {
+			throw new DuplicateUserException("user " + username + " already exist.");
+		}
+		user = new User();
+		user.setUsername(username);
+		user.setName(name);
+		String salt = EncryptionUtil.generateSalt(8);
+		user.setSalt(salt);
+		user.setCompanyId(companyId);
+		user.setPassword(EncryptionUtil.md5L32(username + password + salt));
+		user.setPinYin(PinyinUtil.getChinesePinyin(name));
+		user.setPinYinFirstLetter(PinyinUtil.getChineseFirstLetter(name));
+		this.logic.save(user);
 	}
 
 //	@Override

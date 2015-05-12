@@ -65,7 +65,8 @@
   	<filter-class>com.chinesedreamer.ipm.filter.IpmFilter</filter-class>
   </filter>
   
+  <!-- 
   <welcome-file-list>
 		<welcome-file>login</welcome-file>
-  </welcome-file-list>
+  </welcome-file-list> -->
 </web-app>

@@ -9,9 +9,10 @@
 <body>
 	<!-- 登录框 -->
 	<div>
-		<form action="${ctx }/login" method="post">
+		<form action="${ctx }/compnaymanage/createuser" method="post">
 			<input name="username" placeholder="请输入用户名"/>
 			<input name="passowrd" placeholder="请输入密码"/>
+			<input name="company" type="hidden" value="${companyId }"/>
 			<button>登录</button>
 		</form>
 	</div>
