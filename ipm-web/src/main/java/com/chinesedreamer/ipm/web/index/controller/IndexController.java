@@ -1,12 +1,9 @@
 package com.chinesedreamer.ipm.web.index.controller;
 
-import javax.annotation.Resource;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import com.chinesedreamer.ipm.message.center.security.user.UserSecurityMessage;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * Description: login交由shiro控制
@@ -20,8 +17,8 @@ public class IndexController {
 //	@Resource
 //	private UserService userService;
 	
-	@Resource
-	private UserSecurityMessage userSecurityMessage;
+//	@Resource
+//	private UserSecurityMessage userSecurityMessage;
 	
 	/**
 	 * 用户注册
@@ -52,7 +49,7 @@ public class IndexController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping
+	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String index(Model model){
 		return "login";
 	}

@@ -97,6 +97,16 @@
 		<dependency>
 			<groupId>org.apache.velocity</groupId>
 			<artifactId>velocity-tools</artifactId>
+			<exclusions>
+				<exclusion>  
+                    <groupId>org.hibernate</groupId>  
+                    <artifactId>antlr</artifactId>  
+                </exclusion> 
+			</exclusions>
+		</dependency>
+		<dependency>
+				<groupId>antlr</groupId>
+				<artifactId>antlr</artifactId>
 		</dependency>
 		
 		<!-- pinyin4j -->

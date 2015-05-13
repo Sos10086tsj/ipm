@@ -48,6 +48,7 @@ public class CompanyController {
 			logger.error("could not create user without companyId.");
 			throw new ParameterException("could not create user without companyId.");
 		}
+		model.addAttribute("companyId", companyId);
 		return "/company/createUser";
 	}
 	

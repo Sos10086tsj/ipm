@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +20,7 @@ import com.chinesedreamer.ipm.web.exception.ParameterException;
  * @date May 12, 20153:00:52 PM
  * @version beta
  */
+@Controller
 @RequestMapping(value = "login")
 public class LoginController {
 	
@@ -45,7 +47,7 @@ public class LoginController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping( method = RequestMethod.POST)
 	public String submitLogin(Model model, HttpServletRequest request){
 		String username = request.getParameter(this.usernameParam);
 		String password = request.getParameter(this.passwordParam);

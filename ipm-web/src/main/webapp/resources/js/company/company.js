@@ -1,22 +1,23 @@
 company = {
 	//提交创建用户
 	submitCreateUser : function(){
-		var username = $("#js_username_id");
-		var passowrd = $("#js_passowrd_id");
-		var name = $("#js_name_id");
-		var companyId = $("#js_company_id");
-		if(company.submitCreateUserMandatoryCheck(username,passowrd,name,companyId)){
+		var username = $("#js_username_id").val();
+		var password = $("#js_password_id").val();
+		var name = $("#js_name_id").val();
+		var companyId = $("#js_company_id").val();
+		if(company.submitCreateUserMandatoryCheck(username,password,name,companyId)){
 			$.ajax({
-				url : ctx + '/compnaymanag/createusere',
+				url : ctx + '/compnaymanage/createuser',
 				type : 'post',
 				data : {
 					username : username,
-					passowrd : passowrd,
+					password : password,
 					name : name,
 					companyId : companyId
 				},
 				success : function(response){
 					console.log(response.data);
+					alert('User ' + response.data + ' created.');
 				},
 				failure : function(error){
 					alert('Save failed, please retry or contact support team for help.');
@@ -26,13 +27,13 @@ company = {
 			alert("Mandatory field can not be empty!");
 		}
 	},
-	submitCreateUserMandatoryCheck : function(username,passowrd,name,companyId){
+	submitCreateUserMandatoryCheck : function(username,password,name,companyId){
 		var pass = true;
 		if(!username || username.length <= 0){
 			pass = false;
 			return pass;
 		}
-		if(!passowrd || passowrd.length <= 0){
+		if(!password || password.length <= 0){
 			pass = false;
 			return pass;
 		}

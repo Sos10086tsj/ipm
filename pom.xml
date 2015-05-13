@@ -44,6 +44,7 @@
 		<apache.velocity.tools.version>2.0</apache.velocity.tools.version>
 		<org.apache.activemq.version>5.7.0</org.apache.activemq.version>
 		<com.belerweb.pinyin4j.version>2.5.0</com.belerweb.pinyin4j.version>
+		<org.antlr.version>2.7.6</org.antlr.version>
 	</properties>
 
 	<dependencyManagement>
@@ -304,6 +305,17 @@
 				<groupId>org.apache.velocity</groupId>
 				<artifactId>velocity-tools</artifactId>
 				<version>${apache.velocity.tools.version}</version>
+				<exclusions>
+					<exclusion>  
+                    	<groupId>org.hibernate</groupId>  
+                    	<artifactId>antlr</artifactId>  
+                	</exclusion> 
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>antlr</groupId>
+				<artifactId>antlr</artifactId>
+				<version>${org.antlr.version}</version>
 			</dependency>
 			
 			<!-- pinyin4j -->
