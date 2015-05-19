@@ -45,6 +45,7 @@
 		<org.apache.activemq.version>5.7.0</org.apache.activemq.version>
 		<com.belerweb.pinyin4j.version>2.5.0</com.belerweb.pinyin4j.version>
 		<org.antlr.version>2.7.6</org.antlr.version>
+		<org.apache.pdfbox.version>1.8.8</org.apache.pdfbox.version>
 	</properties>
 
 	<dependencyManagement>
@@ -325,6 +326,12 @@
 				<version>${com.belerweb.pinyin4j.version}</version>
 			</dependency>
 			
+			<!-- pdfbox -->
+			<dependency>
+				<groupId>org.apache.pdfbox</groupId>
+				<artifactId>pdfbox</artifactId>
+				<version>${org.apache.pdfbox.version}</version>
+			</dependency>
 
 		</dependencies>
 	</dependencyManagement>
