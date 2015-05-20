@@ -38,3 +38,21 @@ CREATE TABLE `ipm`.`ipm_biz_cpq_print_order_item` (
   ALTER TABLE `ipm`.`ipm_biz_cpq_print_order_item` 
 DROP COLUMN `style_no`,
 CHANGE COLUMN `order_no` `order_id` BIGINT NULL DEFAULT NULL ;
+
+CREATE TABLE `ipm`.`ipm_biz_cpq_data_dictionary` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `type` INT NULL,
+  `key` VARCHAR(45) NULL,
+  `value` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`));
+
+  ALTER TABLE `ipm`.`ipm_biz_cpq_print_order_item` 
+ADD COLUMN `color` VARCHAR(45) NULL AFTER `order_id`;
+
+ALTER TABLE `ipm`.`ipm_biz_cpq_print_order_item` 
+CHANGE COLUMN `size_s` `size_s` INT NULL DEFAULT NULL ,
+CHANGE COLUMN `size_m` `size_m` INT NULL DEFAULT NULL ,
+CHANGE COLUMN `size_l` `size_l` INT NULL DEFAULT NULL ,
+CHANGE COLUMN `size_xl` `size_xl` INT NULL DEFAULT NULL ,
+CHANGE COLUMN `size_xxl` `size_xxl` INT NULL DEFAULT NULL ,
+CHANGE COLUMN `version` `version` BIGINT NULL DEFAULT '0' ;

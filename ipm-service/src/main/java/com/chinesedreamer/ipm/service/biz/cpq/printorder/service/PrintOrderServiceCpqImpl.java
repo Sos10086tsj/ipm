@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.chinesedreamer.ipm.common.utils.format.StringUtil;
+import com.chinesedreamer.ipm.domain.biz.cpq.printorder.item.logic.CpqOrderItemLogic;
+import com.chinesedreamer.ipm.domain.biz.cpq.printorder.item.model.CpqOrderItem;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.logic.CpqOrderLogic;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.model.CpqOrder;
 import com.chinesedreamer.ipm.tools.pdf.reader.constant.PdfReaderType;
@@ -37,6 +39,8 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	private PdfFactory pdfFactory;
 	@Resource
 	private CpqOrderLogic cpqOrderLogic;
+	@Resource
+	private CpqOrderItemLogic cpqOrderItemLogic;
 
 	@Override
 	public void readPdf(String filePath) {
@@ -170,6 +174,30 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		order.setPrice(datasource.get("price"));
 		order = this.cpqOrderLogic.save(order);
 		
+		for (Map<String, String> item : items) {
+			String color = item.get("color");
+			CpqOrderItem orderItem = this.cpqOrderItemLogic.findByOrderIdAndColor(order.getId(), color);
+			if (null == orderItem) {
+				orderItem = new CpqOrderItem();
+			}
+			orderItem.setColor(color);
+			if (StringUtils.isNotEmpty(item.get("sizeS"))) {
+				orderItem.setSizeS(Integer.parseInt(item.get("sizeS")));
+			}
+			if (StringUtils.isNotEmpty(item.get("sizeM"))) {
+				orderItem.setSizeM(Integer.parseInt(item.get("sizeM")));
+			}
+			if (StringUtils.isNotEmpty(item.get("sizeL"))) {
+				orderItem.setSizeL(Integer.parseInt(item.get("sizeL")));
+			}
+			if (StringUtils.isNotEmpty(item.get("sizeXL"))) {
+				orderItem.setSizeXl(Integer.parseInt(item.get("sizeXL")));
+			}
+			if (StringUtils.isNotEmpty(item.get("sizeXXL"))) {
+				orderItem.setSizeXxl(Integer.parseInt(item.get("sizeXXL")));
+			}
+			this.cpqOrderItemLogic.save(orderItem);
+		}
 	}
 
 	@Override

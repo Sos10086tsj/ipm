@@ -25,6 +25,9 @@ public @Getter @Setter class CpqOrderItem extends IpmVersionEntity<Long>{
 	@Column(name = "order_id")
 	private Long orderId;
 	
+	@Column
+	private String color;
+	
 	@Column(name = "size_s")
 	private Integer sizeS;
 	
