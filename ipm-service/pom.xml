@@ -30,6 +30,11 @@
 			<artifactId>ipm-domain</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.chinesedreamer</groupId>
+			<artifactId>ipm-tools</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>

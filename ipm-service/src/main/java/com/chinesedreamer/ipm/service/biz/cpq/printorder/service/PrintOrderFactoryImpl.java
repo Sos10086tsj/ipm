@@ -1,10 +1,10 @@
-package com.chinesedreamer.ipm.service.biz.printorder.service;
+package com.chinesedreamer.ipm.service.biz.cpq.printorder.service;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.chinesedreamer.ipm.service.biz.printorder.constant.PrintOrderType;
+import com.chinesedreamer.ipm.service.biz.cpq.printorder.constant.PrintOrderType;
 
 @Service
 public class PrintOrderFactoryImpl implements PrintOrderFacotry{

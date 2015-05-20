@@ -1,4 +1,4 @@
-package com.chinesedreamer.ipm.service.biz.printorder.service;
+package com.chinesedreamer.ipm.service.biz.cpq.printorder.service;
 
 import java.util.List;
 
