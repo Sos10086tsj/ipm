@@ -16,6 +16,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.chinesedreamer.ipm.common.utils.format.StringUtil;
+import com.chinesedreamer.ipm.domain.biz.cpq.printorder.datadictionary.constant.CpqDictionaryType;
+import com.chinesedreamer.ipm.domain.biz.cpq.printorder.datadictionary.logic.CpqDictionaryLogic;
+import com.chinesedreamer.ipm.domain.biz.cpq.printorder.datadictionary.model.CpqDictionary;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.item.logic.CpqOrderItemLogic;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.item.model.CpqOrderItem;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.logic.CpqOrderLogic;
@@ -41,9 +44,14 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	private CpqOrderLogic cpqOrderLogic;
 	@Resource
 	private CpqOrderItemLogic cpqOrderItemLogic;
+	@Resource
+	private CpqDictionaryLogic cpqDictionaryLogic;
+	
+	private Map<String, String> errorMap = new HashMap<String, String>();
 
 	@Override
 	public void readPdf(String filePath) {
+		this.logger.info("********** readPdf starting ********");
 		PdfReader pdfReader = this.pdfFactory.getPdfReader(PdfReaderType.BOXPDF);
 		IpmPdf pdf = pdfReader.read(filePath);
 		String content = pdf.getContent();
@@ -156,6 +164,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 				this.logger.error("pdf parse exception.", e);
 			}
 		}
+		this.logger.info("********** readPdf end ********");
 	}
 	
 	/**
@@ -171,7 +180,8 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		order.setStyleNo(datasource.get("styleNo"));
 		order.setMaker(datasource.get("maker"));
 		order.setCustomer(datasource.get("customer"));
-		order.setPrice(datasource.get("price"));
+		order.setPrice(datasource.get("price").replace(",", ""));
+		this.logger.debug("********* order:", order.toString());
 		order = this.cpqOrderLogic.save(order);
 		
 		for (Map<String, String> item : items) {
@@ -180,7 +190,12 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			if (null == orderItem) {
 				orderItem = new CpqOrderItem();
 			}
-			orderItem.setColor(color);
+			CpqDictionary colorDict = this.cpqDictionaryLogic.findByTypeAndValue(CpqDictionaryType.COLOR, color);
+			if (null == colorDict) {
+				errorMap.put("Missing configuration of color.", "color:" + color + "缺少配置");
+				return ;
+			}
+			orderItem.setColor(colorDict.getKey());
 			if (StringUtils.isNotEmpty(item.get("sizeS"))) {
 				orderItem.setSizeS(Integer.parseInt(item.get("sizeS")));
 			}
@@ -196,6 +211,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			if (StringUtils.isNotEmpty(item.get("sizeXXL"))) {
 				orderItem.setSizeXxl(Integer.parseInt(item.get("sizeXXL")));
 			}
+			this.logger.debug("********* orderItem:", orderItem.toString());
 			this.cpqOrderItemLogic.save(orderItem);
 		}
 	}

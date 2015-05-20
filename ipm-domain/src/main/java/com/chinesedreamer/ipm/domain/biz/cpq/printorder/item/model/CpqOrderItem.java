@@ -46,4 +46,13 @@ public @Getter @Setter class CpqOrderItem extends IpmVersionEntity<Long>{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private CpqOrder cpqOrder;
+
+	@Override
+	public String toString() {
+		return "CpqOrderItem [orderId=" + orderId + ", color=" + color
+				+ ", sizeS=" + sizeS + ", sizeM=" + sizeM + ", sizeL=" + sizeL
+				+ ", sizeXl=" + sizeXl + ", sizeXxl=" + sizeXxl + "]";
+	}
+	
+	
 }

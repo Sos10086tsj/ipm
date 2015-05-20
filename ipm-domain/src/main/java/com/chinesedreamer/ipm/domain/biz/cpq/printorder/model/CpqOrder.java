@@ -85,4 +85,13 @@ public @Getter @Setter class CpqOrder extends IpmVersionEntity<Long>{
 	
 	@OneToMany(fetch = FetchType.LAZY,mappedBy = "cpqOrder")
 	private List<CpqOrderItem> cpqOrderItems;
+
+	@Override
+	public String toString() {
+		return "CpqOrder [orderNo=" + orderNo + ", styleNo=" + styleNo
+				+ ", maker=" + maker + ", customer=" + customer
+				+ ", price=" + price ;
+	}
+	
+	
 }
