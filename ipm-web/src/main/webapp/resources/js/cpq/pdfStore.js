@@ -1,11 +1,11 @@
 ipm.cpq.pdf.store = {
 	init : function(){
-		var pdfModel = Ext.define('Employee', {
+		var pdfModel = Ext.define('pdfModel', {
 	        extend: 'Ext.data.Model',
 	        fields: [
-	            'Order#',
-	            'Style#',
-	            'colour',
+	            'Order',
+	            'Style',
+	            'Colour',
 	            'Size S',
 	            'Size M',
 	            'Size L',
@@ -27,9 +27,22 @@ ipm.cpq.pdf.store = {
 		             root : ''
 		         }
 			},
-			autoLoad : true
+			autoLoad : true,
+			sorters: [
+				{
+					property: 'Order#',
+					direction: 'ASC'
+				},
+				{
+					property: 'Style#',
+					direction: 'ASC'
+				},
+				{
+					property: 'colour',
+					direction: 'ASC'
+				}
+				]
 		});
-		provinceStore.sort('name','ASC');
-		return provinceStore;
+		return pdfStore;
 	}
 };
