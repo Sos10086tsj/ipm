@@ -13,4 +13,5 @@
 </body>
 <%@include file="/WEB-INF/view/base/baselib.jspf" %>
 <script type="text/javascript" src="${ctx}/resources/js/cpq/pdf.js"></script>
+<script type="text/javascript" src="${ctx}/resources/js/cpq/pdfStore.js"></script>
 </html>

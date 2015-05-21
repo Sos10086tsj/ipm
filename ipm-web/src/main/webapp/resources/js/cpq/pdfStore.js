@@ -3,16 +3,16 @@ ipm.cpq.pdf.store = {
 		var pdfModel = Ext.define('pdfModel', {
 	        extend: 'Ext.data.Model',
 	        fields: [
-	            'Order',
-	            'Style',
-	            'Colour',
-	            'Size S',
-	            'Size M',
-	            'Size L',
-	            'Size XL',
-	            'Size XXL',
-	            'TTL',
-	            'Total Amount'
+	            'order',
+	            'style',
+	            'colour',
+	            'sizeS',
+	            'sizeM',
+	            'sizeL',
+	            'sizeXL',
+	            'sizeXXL',
+	            'tTL',
+	            'totalAmount'
 	        ]
 		});
 		
@@ -30,11 +30,11 @@ ipm.cpq.pdf.store = {
 			autoLoad : true,
 			sorters: [
 				{
-					property: 'Order#',
+					property: 'order',
 					direction: 'ASC'
 				},
 				{
-					property: 'Style#',
+					property: 'style',
 					direction: 'ASC'
 				},
 				{

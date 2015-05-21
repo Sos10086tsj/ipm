@@ -1,7 +1,7 @@
 ipm.cpq = {
 	pdf : {
 		init : function(){
-			
+			console.log("begin init");
 		    var rowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
 		        clicksToMoveEditor: 1,
 		        autoCancel: false
@@ -10,31 +10,31 @@ ipm.cpq = {
 		    var grid = Ext.create('Ext.grid.Panel', {
 		        store: ipm.cpq.pdf.store.init(),
 		        columns: [{
-		            header: 'Order',
-		            dataIndex: 'Order',
+		            header: 'order',
+		            dataIndex: 'order',
 		            flex: 1,
 		            editor: {
 		                // defaults to textfield if no xtype is supplied
 		                allowBlank: false
 		            }
 		        }, {
-		            header: 'Style',
-		            dataIndex: 'Style',
+		            header: 'style',
+		            dataIndex: 'style',
 		            width: 160,
 		            editor: {
 		                allowBlank: false,
 		            }
 		        },  {
-		            header: 'Colour',
-		            dataIndex: 'Colour',
+		            header: 'colour',
+		            dataIndex: 'colour',
 		            width: 160,
 		            editor: {
 		                allowBlank: false,
 		            }
 		        },{
 		            xtype: 'numbercolumn',
-		            header: 'Size S',
-		            dataIndex: 'Size S',
+		            header: 'sizeS',
+		            dataIndex: 'sizeS',
 		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
@@ -44,8 +44,8 @@ ipm.cpq = {
 		            }
 		        }, {
 		            xtype: 'numbercolumn',
-		            header: 'Size M',
-		            dataIndex: 'Size M',
+		            header: 'sizeM',
+		            dataIndex: 'sizeM',
 		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
@@ -55,8 +55,8 @@ ipm.cpq = {
 		            }
 		        },{
 		            xtype: 'numbercolumn',
-		            header: 'Size L',
-		            dataIndex: 'Size L',
+		            header: 'sizeL',
+		            dataIndex: 'sizeL',
 		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
@@ -66,8 +66,8 @@ ipm.cpq = {
 		            }
 		        },{
 		            xtype: 'numbercolumn',
-		            header: 'Size XL',
-		            dataIndex: 'Size XL',
+		            header: 'sizeXL',
+		            dataIndex: 'sizeXL',
 		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
@@ -77,8 +77,8 @@ ipm.cpq = {
 		            }
 		        },{
 		            xtype: 'numbercolumn',
-		            header: 'Size XXL',
-		            dataIndex: 'Size XXL',
+		            header: 'sizeXXL',
+		            dataIndex: 'sizeXXL',
 		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
@@ -89,8 +89,8 @@ ipm.cpq = {
 		        },
 		        {
 		            xtype: 'numbercolumn',
-		            header: 'TTL',
-		            dataIndex: 'TTL',
+		            header: 'tTL',
+		            dataIndex: 'tTL',
 		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
@@ -101,8 +101,8 @@ ipm.cpq = {
 		        },
 		        {
 		            xtype: 'numbercolumn',
-		            header: 'Total Amount',
-		            dataIndex: 'Total Amount',
+		            header: 'totalAmount',
+		            dataIndex: 'totalAmount',
 		            format: '$0,0',
 		            width: 90,
 		            editor: {
@@ -125,16 +125,16 @@ ipm.cpq = {
 
 		                // Create a model instance
 		                var r = Ext.create('pdfModel', {
-		                	'Order': '',
-		                	'Style':'',
-		                	'Colour':'',
-		                	'Size S':'',
-		                	'Size M':'',
-		                	'Size L':'',
-		                	'Size XL':'',
-		                	'Size XXL':'',
-		                	'TTL':'',
-		                	'Total Amount':'0'
+		                	'order': '',
+		                	'style':'',
+		                	'colour':'',
+		                	'sizeS':'',
+		                	'sizeM':'',
+		                	'sizeL':'',
+		                	'sizeXL':'',
+		                	'sizeXXL':'',
+		                	'tTL':'',
+		                	'totalAmount':'0'
 		                });
 
 		                store.insert(0, r);
