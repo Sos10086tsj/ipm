@@ -1,7 +1,6 @@
 ipm.cpq = {
 	pdf : {
 		init : function(){
-			console.log("begin init");
 		    var rowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
 		        clicksToMoveEditor: 1,
 		        autoCancel: false
@@ -157,6 +156,7 @@ ipm.cpq = {
 		        plugins: [rowEditing],
 		        listeners: {
 		            'selectionchange': function(view, records) {
+		            	console.log('updated');
 		                grid.down('#removePdfOrder').setDisabled(!records.length);
 		            }
 		        }

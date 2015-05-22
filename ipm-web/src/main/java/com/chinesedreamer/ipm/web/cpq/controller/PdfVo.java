@@ -29,7 +29,7 @@ public @Getter @Setter class PdfVo {
 	public static List<PdfVo> localInstance() {
 		List<PdfVo> vos = new ArrayList<PdfVo>();
 		Random random = new Random();
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 50; i++) {
 			PdfVo vo = new PdfVo();
 			vo.setOrder("1504-07.4001" + i);
 			vo.setStyle("127154/1504-07.4001" + i);
