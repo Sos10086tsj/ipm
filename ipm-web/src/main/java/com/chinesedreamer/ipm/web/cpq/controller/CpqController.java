@@ -2,11 +2,15 @@ package com.chinesedreamer.ipm.web.cpq.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.chinesedreamer.ipm.web.vo.ResponseVo;
 
 /**
  * Description: 
@@ -36,5 +40,18 @@ public class CpqController {
 	@RequestMapping(value = "getPdfStore", method = RequestMethod.GET)
 	public List<PdfVo> getPdfStore(Model model){
 		return PdfVo.localInstance();
+	}
+	
+	/**
+	 * 逐行更改pdf数据
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "updatePdfRow", method = RequestMethod.POST)
+	public ResponseVo updatePdfRow(HttpServletRequest request){
+		System.out.println("updatePdfRow");
+		ResponseVo vo = new ResponseVo();
+		return vo;
 	}
 }

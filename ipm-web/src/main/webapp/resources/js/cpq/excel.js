@@ -1,46 +1,13 @@
 ipm.cpq = {
-	pdf : {
+	excel : {
 		init : function(){
 		    var rowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
-		        saveBtnText: '保存', 
-            	cancelBtnText: "取消", 
-           	 	autoCancel: false, 
-            	clicksToEdit:2 ,
-		        listeners : {
-		        	edit : function( editor, context, eOpts){
-		        		var progress = ipm.extjs.progressBar('正在修改，请稍后...');
-		        		progress.show();
-		        		
-		        		var record = context.record;
-		        		Ext.Ajax.request({
-		        			url : '/cpq/updatePdfRow',
-		        			method : 'post', 
-		        			parsms : {
-		        				order : record.get('order'),
-	            				style:record.get('style'),
-	            				colour:record.get('colour'),
-	            				sizeS:record.get('sizeS'),
-	            				sizeM:record.get('sizeM'),
-	            				sizeL:record.get('sizeL'),
-	            				sizeXL:record.get('sizeXL'),
-	            				sizeXXL:record.get('sizeXXL'),
-	            				tTL:record.get('tTL'),
-	            				totalAmount:record.get('totalAmount')
-		        			},
-		        			success : function(response){
-		        				var result = Ext.decode(response.responseText);
-		        				
-		        			},
-		        			failure : function(response, opts){
-		        				
-		        			}
-		        		});
-		        	}
-		        }
+		        clicksToMoveEditor: 1,
+		        autoCancel: false
 		    });
-			var store = ipm.cpq.pdf.store.init();
+
 		    var grid = Ext.create('Ext.grid.Panel', {
-		        store: store,
+		        store: ipm.cpq.excel.store.init(),
 		        columns: [{
 		            header: 'order',
 		            dataIndex: 'order',
@@ -52,6 +19,20 @@ ipm.cpq = {
 		        }, {
 		            header: 'style',
 		            dataIndex: 'style',
+		            width: 160,
+		            editor: {
+		                allowBlank: false
+		            }
+		        }, {
+		            header: 'from',
+		            dataIndex: 'from',
+		            width: 160,
+		            editor: {
+		                allowBlank: false
+		            }
+		        }, {
+		            header: 'to',
+		            dataIndex: 'to',
 		            width: 160,
 		            editor: {
 		                allowBlank: false
@@ -118,24 +99,10 @@ ipm.cpq = {
 		                minValue: 1,
 		                maxValue: 150000
 		            }
-		        },
-		        {
+		        },{
 		            xtype: 'numbercolumn',
-		            header: 'tTL',
-		            dataIndex: 'tTL',
-		            width: 90,
-		            editor: {
-		                xtype: 'numberfield',
-		                allowBlank: false,
-		                minValue: 1,
-		                maxValue: 990000
-		            }
-		        },
-		        {
-		            xtype: 'numbercolumn',
-		            header: 'totalAmount',
-		            dataIndex: 'totalAmount',
-		            format: '$0,0',
+		            header: 'box',
+		            dataIndex: 'box',
 		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
@@ -143,11 +110,45 @@ ipm.cpq = {
 		                minValue: 1,
 		                maxValue: 150000
 		            }
-		        }],
-		        renderTo: 'pdf_grid',
-		        width: 1000,
-		        height: 600,
-		        title: 'Customer Orders',
+		        },{
+		            xtype: 'numbercolumn',
+		            header: 'qty',
+		            dataIndex: 'qty',
+		            width: 90,
+		            editor: {
+		                xtype: 'numberfield',
+		                allowBlank: false,
+		                minValue: 1,
+		                maxValue: 150000
+		            }
+		        },{
+		            xtype: 'numbercolumn',
+		            header: 'grossWeight',
+		            dataIndex: 'grossWeight',
+		            width: 90,
+		            editor: {
+		                xtype: 'numberfield',
+		                allowBlank: false,
+		                minValue: 1,
+		                maxValue: 150000
+		            }
+		        },{
+		            xtype: 'numbercolumn',
+		            header: 'netWeight',
+		            dataIndex: 'netWeight',
+		            width: 90,
+		            editor: {
+		                xtype: 'numberfield',
+		                allowBlank: false,
+		                minValue: 1,
+		                maxValue: 150000
+		            }
+		        }
+		        ],
+		        renderTo: 'excel_grid',
+		        width: 600,
+		        height: 400,
+		        title: 'Company Orders',
 		        frame: true,
 		        tbar: [{
 		            text: 'Add Order',
@@ -158,22 +159,26 @@ ipm.cpq = {
 		                // Create a model instance
 		                var r = Ext.create('pdfModel', {
 		                	'order': '',
-		                	'style':'',
-		                	'colour':'',
-		                	'sizeS':'',
-		                	'sizeM':'',
-		                	'sizeL':'',
-		                	'sizeXL':'',
-		                	'sizeXXL':'',
-		                	'tTL':'',
-		                	'totalAmount':'0'
+	            			'style': '',
+	            			'from': '',
+	            			'to': '',
+	            			'colour': '',
+	            			'sizeS': '',
+	            			'sizeM': '',
+	            			'sizeL': '',
+	            			'sizeXL': '',
+	            			'sizeXXL': '',
+	            			'box': '',
+	            			'qty': '',
+	            			'grossWeight': '',
+	            			'netWeight': ''
 		                });
 
 		                store.insert(0, r);
 		                rowEditing.startEdit(0, 0);
 		            }
 		        }, {
-		            itemId: 'removePdfOrder',
+		            itemId: 'removeExcelOrder',
 		            text: 'Remove Order',
 		            iconCls: 'employee-remove',
 		            handler: function() {
@@ -189,7 +194,8 @@ ipm.cpq = {
 		        plugins: [rowEditing],
 		        listeners: {
 		            'selectionchange': function(view, records) {
-		                grid.down('#removePdfOrder').setDisabled(!records.length);
+		            	console.log('updated');
+		                grid.down('#removeExcelOrder').setDisabled(!records.length);
 		            }
 		        }
 		    });
@@ -207,6 +213,6 @@ $(function(){
 	         ]);
 	Ext.onReady(function () {
 		Ext.QuickTips.init();
-		ipm.cpq.pdf.init();
+		ipm.cpq.excel.init();
 	});
 });
