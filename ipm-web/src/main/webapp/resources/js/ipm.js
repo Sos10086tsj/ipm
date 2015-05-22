@@ -6,6 +6,15 @@ var ipm = {
 				removeMask : true
 			});
 			return progress;
+		},
+		
+		warningResult : function(title,msg){
+			Ext.Msg.show({
+				title : title,
+				msg : msg,
+				buttons : Ext.Msg.YES,
+				icon : Ext.Msg.WARNING
+			});
 		}
 	},
 	

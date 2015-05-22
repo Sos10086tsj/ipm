@@ -15,7 +15,7 @@ ipm.cpq = {
 		        		Ext.Ajax.request({
 		        			url : '/cpq/updatePdfRow',
 		        			method : 'post', 
-		        			parsms : {
+		        			params : {
 		        				order : record.get('order'),
 	            				style:record.get('style'),
 	            				colour:record.get('colour'),
@@ -29,10 +29,16 @@ ipm.cpq = {
 		        			},
 		        			success : function(response){
 		        				var result = Ext.decode(response.responseText);
-		        				
+		        				progress.hide();
+		        				if(result.success){
+		        					ipm.extjs.warningResult('操作提示','保存成功！');
+		        				}else{
+		        					ipm.extjs.warningResult('操作提示',result.errorMessage);
+		        				}
 		        			},
 		        			failure : function(response, opts){
-		        				
+		        				progress.hide();
+		        				ipm.extjs.warningResult('操作提示','网络异常，保存失败！');
 		        			}
 		        		});
 		        	}
@@ -123,26 +129,14 @@ ipm.cpq = {
 		            xtype: 'numbercolumn',
 		            header: 'tTL',
 		            dataIndex: 'tTL',
-		            width: 90,
-		            editor: {
-		                xtype: 'numberfield',
-		                allowBlank: false,
-		                minValue: 1,
-		                maxValue: 990000
-		            }
+		            width: 90
 		        },
 		        {
 		            xtype: 'numbercolumn',
 		            header: 'totalAmount',
 		            dataIndex: 'totalAmount',
 		            format: '$0,0',
-		            width: 90,
-		            editor: {
-		                xtype: 'numberfield',
-		                allowBlank: false,
-		                minValue: 1,
-		                maxValue: 150000
-		            }
+		            width: 90
 		        }],
 		        renderTo: 'pdf_grid',
 		        width: 1000,

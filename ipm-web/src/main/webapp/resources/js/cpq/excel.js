@@ -2,12 +2,55 @@ ipm.cpq = {
 	excel : {
 		init : function(){
 		    var rowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
-		        clicksToMoveEditor: 1,
-		        autoCancel: false
+		        saveBtnText: '保存', 
+            	cancelBtnText: "取消", 
+           	 	autoCancel: false, 
+            	clicksToEdit:2 ,
+		        listeners : {
+		        	edit : function( editor, context, eOpts){
+		        		var progress = ipm.extjs.progressBar('正在修改，请稍后...');
+		        		progress.show();
+		        		
+		        		var record = context.record;
+		        		Ext.Ajax.request({
+		        			url : '/cpq/updatePdfRow',
+		        			method : 'post', 
+		        			params : {
+		        				order: record.get('order'),
+	            				style: record.get('style'),
+	            				from: record.get('from'),
+	            				to: record.get('to'),
+	            				colour:record.get('colour'),
+	            				sizeS: record.get('sizeS'),
+	            				sizeM: record.get('sizeM'),
+	            				sizeL: record.get('sizeL'),
+	            				sizeXL: record.get('sizeXL'),
+	            				sizeXXL: record.get('sizeXXL'),
+	            				box: record.get('box'),
+	            				qty: record.get('qty'),
+	            				grossWeight: record.get('grossWeight'),
+	            				netWeight: record.get('netWeight')
+		        			},
+		        			success : function(response){
+		        				var result = Ext.decode(response.responseText);
+		        				progress.hide();
+		        				if(result.success){
+		        					ipm.extjs.warningResult('操作提示','保存成功！');
+		        				}else{
+		        					ipm.extjs.warningResult('操作提示',result.errorMessage);
+		        				}
+		        			},
+		        			failure : function(response, opts){
+		        				progress.hide();
+		        				ipm.extjs.warningResult('操作提示','网络异常，保存失败！');
+		        			}
+		        		});
+		        	}
+		        }
 		    });
-
+			var store = ipm.cpq.excel.store.init();
 		    var grid = Ext.create('Ext.grid.Panel', {
-		        store: ipm.cpq.excel.store.init(),
+		        store: store,
 		        columns: [{
 		            header: 'order',
 		            dataIndex: 'order',
