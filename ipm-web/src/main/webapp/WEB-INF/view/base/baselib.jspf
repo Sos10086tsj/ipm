@@ -3,5 +3,8 @@
 
 <!-- Extjs4.2 -->
 <link rel="stylesheet" type="text/css" href="${ctx}/resources/components/extjs4.2/resources/css/ext-all-neptune.css" />
-<script type="text/javascript" src="${ctx}/resources/components/extjs4.2/bootstrap.js"></script>
+<script type="text/javascript" src="${ctx}/resources/components/extjs4.2/ext-all.js"></script>
 <script type="text/javascript" src="${ctx}/resources/components/extjs4.2/local/ext-lang-zh_CN.js"></script>
+
+<!-- ipm -->
+<script type="text/javascript" src="${ctx}/resources/js/ipm.js"></script>
