@@ -26,7 +26,7 @@ public @Getter @Setter class CpqDictionary extends IpmEntity<Long>{
 	private CpqDictionaryType type;
 	
 	@Column
-	private String key;
+	private String property;
 	
 	@Column
 	private String value;

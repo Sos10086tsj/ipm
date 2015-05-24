@@ -1,5 +1,7 @@
 package com.chinesedreamer.ipm.domain.biz.cpq.printorder.datadictionary.logic;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -15,13 +17,18 @@ public class CpqDictionaryLogicImpl extends IpmLogicImpl<CpqDictionary, Long> im
 	private CpqDictionaryRepository repository;
 	
 	@Override
-	public CpqDictionary findByTypeAndKey(CpqDictionaryType type, String key) {
-		return this.repository.findByTypeAndKey(type, key);
+	public CpqDictionary findByTypeAndProperty(CpqDictionaryType type, String property) {
+		return this.repository.findByTypeAndProperty(type, property);
 	}
 
 	@Override
 	public CpqDictionary findByTypeAndValue(CpqDictionaryType type, String value) {
 		return this.repository.findByTypeAndValue(type, value);
+	}
+
+	@Override
+	public List<CpqDictionary> findByType(CpqDictionaryType type) {
+		return this.repository.findByType(type);
 	}
 
 }

@@ -38,7 +38,7 @@ public @Getter @Setter class CpqOrder extends IpmVersionEntity<Long>{
 	/**
 	 * 款号
 	 */
-	@Column(name = "sytle_no")
+	@Column(name = "style_no")
 	private String styleNo;
 	
 	@Column

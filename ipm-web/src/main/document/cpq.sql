@@ -56,3 +56,7 @@ CHANGE COLUMN `size_l` `size_l` INT NULL DEFAULT NULL ,
 CHANGE COLUMN `size_xl` `size_xl` INT NULL DEFAULT NULL ,
 CHANGE COLUMN `size_xxl` `size_xxl` INT NULL DEFAULT NULL ,
 CHANGE COLUMN `version` `version` BIGINT NULL DEFAULT '0' ;
+
+
+ALTER TABLE `ipm`.`ipm_biz_cpq_data_dictionary` 
+CHANGE COLUMN `key` `property` VARCHAR(45) NULL DEFAULT NULL ;

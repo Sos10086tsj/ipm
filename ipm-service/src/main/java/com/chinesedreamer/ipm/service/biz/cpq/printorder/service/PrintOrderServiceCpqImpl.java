@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -48,6 +50,8 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	private CpqDictionaryLogic cpqDictionaryLogic;
 	
 	private Map<String, String> errorMap = new HashMap<String, String>();
+	
+	private Set<String> existsColours;
 
 	@Override
 	public void readPdf(String filePath) {
@@ -56,6 +60,8 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		IpmPdf pdf = pdfReader.read(filePath);
 		String content = pdf.getContent();
 		if (StringUtils.isNotEmpty(content)) {
+			//初始化已经存在的colour列表
+			this.initSuppportedColurs();
 			
 			boolean continueRead = false;//连读模式，多行
 			boolean itemBegin = false;//开始读item信息
@@ -75,8 +81,6 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 						datasource.put("styleNo", StringUtil.subString(str, "STYLENR", true));
 					}else if (str.startsWith("MAKER")) {
 						continueRead = true;
-						buffer.append(str)
-						.append(" ");
 					}else if (str.startsWith("CUSTOMER")) {
 						datasource.put("maker", buffer.toString());
 						buffer.setLength(0);
@@ -104,17 +108,18 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 						if(str.endsWith("TOTAL PIECES")){
 							String[] colors = str.split(" ");
 							for (String color : colors) {
-								if (!color.equals("TOTAL")
-										&& !color.equals("PIECES")
-										&& StringUtils.isNotEmpty(color)) {
-									Map<String, String> item = new HashMap<String, String>();
-									item.put("color", color.trim().toLowerCase());
-									items.add(item);
+								if (StringUtils.isNotEmpty(color)) {
+									int index = color.indexOf("-");
+									if (index != -1) {
+										Map<String, String> item = new HashMap<String, String>();
+										item.put("color", color.trim().toLowerCase().substring(0, index));
+										items.add(item);
+									}
 								}
 							}
 						}else if (str.startsWith("Size S")) {
 							String[] sizeS = StringUtil.subString(str, "Size S", true).split(" ");
-							for (int i = 0; i < sizeS.length; i++) {
+							for (int i = 0; i < this.getMinSize(items, sizeS); i++) {
 								String size = sizeS[i];
 								if (StringUtils.isNotEmpty(size)) {
 									Map<String, String> item = items.get(i);
@@ -123,7 +128,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 							}
 						}else if (str.startsWith("Size M")) {
 							String[] sizeS = StringUtil.subString(str, "Size M", true).split(" ");
-							for (int i = 0; i < sizeS.length; i++) {
+							for (int i = 0; i < this.getMinSize(items, sizeS); i++) {
 								String size = sizeS[i];
 								if (StringUtils.isNotEmpty(size)) {
 									Map<String, String> item = items.get(i);
@@ -132,7 +137,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 							}
 						}else if (str.startsWith("Size L")) {
 							String[] sizeS = StringUtil.subString(str, "Size L", true).split(" ");
-							for (int i = 0; i < sizeS.length; i++) {
+							for (int i = 0; i < this.getMinSize(items, sizeS); i++) {
 								String size = sizeS[i];
 								if (StringUtils.isNotEmpty(size)) {
 									Map<String, String> item = items.get(i);
@@ -141,7 +146,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 							}
 						}else if (str.startsWith("Size XL")) {
 							String[] sizeS = StringUtil.subString(str, "Size XL", true).split(" ");
-							for (int i = 0; i < sizeS.length; i++) {
+							for (int i = 0; i < this.getMinSize(items, sizeS); i++) {
 								String size = sizeS[i];
 								if (StringUtils.isNotEmpty(size)) {
 									Map<String, String> item = items.get(i);
@@ -150,7 +155,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 							}
 						}else if (str.startsWith("Size XXL")) {
 							String[] sizeS = StringUtil.subString(str, "Size XXL", true).split(" ");
-							for (int i = 0; i < sizeS.length; i++) {
+							for (int i = 0; i < this.getMinSize(items, sizeS); i++) {
 								String size = sizeS[i];
 								if (StringUtils.isNotEmpty(size)) {
 									Map<String, String> item = items.get(i);
@@ -190,12 +195,11 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			if (null == orderItem) {
 				orderItem = new CpqOrderItem();
 			}
-			CpqDictionary colorDict = this.cpqDictionaryLogic.findByTypeAndValue(CpqDictionaryType.COLOR, color);
-			if (null == colorDict) {
+			if (!this.existsColours.contains(color)) {
 				errorMap.put("Missing configuration of color.", "color:" + color + "缺少配置");
 				return ;
 			}
-			orderItem.setColor(colorDict.getKey());
+			orderItem.setColor(color);
 			if (StringUtils.isNotEmpty(item.get("sizeS"))) {
 				orderItem.setSizeS(Integer.parseInt(item.get("sizeS")));
 			}
@@ -212,7 +216,31 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 				orderItem.setSizeXxl(Integer.parseInt(item.get("sizeXXL")));
 			}
 			this.logger.debug("********* orderItem:", orderItem.toString());
+			orderItem.setOrderId(order.getId());
 			this.cpqOrderItemLogic.save(orderItem);
+		}
+	}
+	
+	/**
+	 * 计算size数组与color数组最小值，处理空size
+	 * @param items
+	 * @param size
+	 * @return
+	 */
+	private int getMinSize(List<Map<String, String>> items, String[] size) {
+		if (null == items || null == size) {
+			return 0;
+		}
+		return (items.size() > size.length ? size.length : items.size()) ;
+	}
+	
+	private void initSuppportedColurs(){
+		if (null == this.existsColours) {
+			existsColours = new HashSet<String>();
+		}
+		List<CpqDictionary> exsits = this.cpqDictionaryLogic.findByType(CpqDictionaryType.COLOR);
+		for (CpqDictionary exsit : exsits) {
+			existsColours.add(exsit.getProperty());
 		}
 	}
 
