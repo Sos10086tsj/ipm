@@ -51,7 +51,7 @@ public class AttachmentServiceImpl implements AttachmentService{
 		attachment.setBizType(bizType);
 		attachment.setBizReference(bizReference);
 		attachment.setFileName(file.getOriginalFilename());
-		attachment.setFilePath(bizType.toString() + "/" + );
+		attachment.setFilePath(bizType.toString() + "/" + file.getName());
 		return null;
 	}
 
