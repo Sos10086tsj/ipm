@@ -7,9 +7,16 @@
 <title>订单PDF order 解析结果</title>
 </head>
 <body>
-	<h1>PDF Order 解析结果</h1>
-	<p>请仔细审核解析的结果，如果有问题，请即时修改</p>
-	<div id="pdf_grid"></div>
+	<div>
+		<h1>File Upload</h1>
+		<div id="btn_pdf_upload"></div>
+    	<div id="msg_pdf_upload" style="display:none;"></div>
+	</div>
+	<div>
+		<h1>PDF Order 解析结果</h1>
+		<p>请仔细审核解析的结果，如果有问题，请即时修改</p>
+		<div id="pdf_grid"></div>
+	</div>
 </body>
 <%@include file="/WEB-INF/view/base/baselib.jspf" %>
 <script type="text/javascript" src="${ctx}/resources/js/cpq/pdf.js"></script>

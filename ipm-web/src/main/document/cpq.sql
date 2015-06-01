@@ -60,3 +60,18 @@ CHANGE COLUMN `version` `version` BIGINT NULL DEFAULT '0' ;
 
 ALTER TABLE `ipm`.`ipm_biz_cpq_data_dictionary` 
 CHANGE COLUMN `key` `property` VARCHAR(45) NULL DEFAULT NULL ;
+
+
+CREATE TABLE `ipm`.`ipm_common_attachment` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `biz_type` INT NULL,
+  `biz_reference` VARCHAR(45) NULL,
+  `file_name` VARCHAR(200) NULL,
+  `file_path` VARCHAR(200) NULL,
+  `file_size` BIGINT NULL,
+  `upload_date` TIMESTAMP NULL,
+  `upload_user` BIGINT NULL,
+  PRIMARY KEY (`id`));
+
+ALTER TABLE `ipm`.`ipm_common_attachment` 
+RENAME TO  `ipm`.`ipm_sys_supp_attachment` ;
