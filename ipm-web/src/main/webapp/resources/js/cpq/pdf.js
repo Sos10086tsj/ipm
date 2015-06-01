@@ -1,40 +1,44 @@
 ipm.cpq = {
 	pdf : {
 		init : function(){
-			//upload
-			var pdfUpload = Ext.create('Ext.form.Panel', {
-				title: 'Upload a PDF',
-				width: 400,
+			//文件上传
+			var fileUpload = Ext.create('Ext.form.Panel',{
+				renderTo: 'btn_pdf_upload',
+				title: 'Upload a pdf',
+    			width: 400,
     			bodyPadding: 10,
     			frame: true,
-    			renderTo: 'pdf_upload',
-    			items: [{
+        		items : [
+        		{
         			xtype: 'filefield',
         			name: 'pdf',
-        			fieldLabel: 'PDF',
+        			fieldLabel: 'Photo',
         			labelWidth: 50,
         			msgTarget: 'side',
         			allowBlank: false,
         			anchor: '100%',
-        			buttonText: 'Select Pdf...'
-    			}],
-    			buttons: [{
+        			buttonText: 'Select Photo...'
+        		}
+        		],
+        		buttons : [
+        		{
         			text: 'Upload',
         			handler: function() {
             			var form = this.up('form').getForm();
             			if(form.isValid()){
                 			form.submit({
                     			url: '/cpq/uploadPdf',
-                    			waitMsg: 'Uploading your pdf...',
+                    			waitMsg: 'Uploading your photo...',
                     			success: function(fp, o) {
-                        			Ext.Msg.alert('Success');
+                        			Ext.Msg.alert('Success', 'Your photo "' + o.result.file + '" has been uploaded.');
                     			}
                 			});
             			}
         			}
-    			}]
+        		}
+        		]
 			});
-			//grid
+			//结果展示grid
 		    var rowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
 		        saveBtnText: '保存', 
             	cancelBtnText: "取消", 
@@ -65,7 +69,7 @@ ipm.cpq = {
 		        				var result = Ext.decode(response.responseText);
 		        				progress.hide();
 		        				if(result.success){
-		        					ipm.extjs.warningResult('操作提示','保存成功！');
+		        					ipm.extjs.warningResult('操作提示','保存成功�);
 		        				}else{
 		        					ipm.extjs.warningResult('操作提示',result.errorMessage);
 		        				}
@@ -231,7 +235,8 @@ $(function(){
 	             'Ext.data.*',
 	             'Ext.util.*',
 	             'Ext.state.*',
-	             'Ext.form.*'
+	             'Ext.form.*',
+    			 'Ext.window.MessageBox'
 	         ]);
 	Ext.onReady(function () {
 		Ext.QuickTips.init();

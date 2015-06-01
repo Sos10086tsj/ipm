@@ -24,7 +24,7 @@ import com.chinesedreamer.ipm.web.vo.ResponseVo;
 @RequestMapping(value = "cpq")
 public class CpqController {
 	/**
-	 * 跳转pdf order信息展示页
+	 * 跳转pdf order信息展示�
 	 * @param model
 	 * @return
 	 */
@@ -134,5 +134,15 @@ public class CpqController {
 		ResponseVo vo = new ResponseVo();
 		vo.setSuccess(Boolean.TRUE);
 		return vo;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "uploadPdf", method = RequestMethod.POST)
+	public ResponseVo uploadPdf(HttpServletRequest request, @RequestParam(value = "pdf", required = true)MultipartFile file){
+		
+		
+		ResponseVo responseVo = new ResponseVo();
+		responseVo.setSuccess(Boolean.TRUE);
+		return responseVo;
 	}
 }

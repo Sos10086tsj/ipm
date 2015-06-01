@@ -14,7 +14,7 @@ public class PrintOrderServiceCpqImplTest extends SpringTest{
 	@Test
 	@Rollback(false)
 	public void testReadPdf() {
-		this.factory.getService(PrintOrderType.CPQ).readPdf("F:/downloads/15年上半年大季箱单/出货计划总表格/NGB 1504 PO.pdf");
+		this.factory.getService(PrintOrderType.CPQ).readPdf("F:/downloads/15年上半年大季箱单/出货计划总表�NGB 1504 PO.pdf");
 	}
 
 }
