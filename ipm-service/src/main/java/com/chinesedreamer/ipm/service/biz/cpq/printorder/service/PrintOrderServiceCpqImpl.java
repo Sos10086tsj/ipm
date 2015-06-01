@@ -25,6 +25,7 @@ import com.chinesedreamer.ipm.domain.biz.cpq.printorder.item.logic.CpqOrderItemL
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.item.model.CpqOrderItem;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.logic.CpqOrderLogic;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.model.CpqOrder;
+import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.PdfVo;
 import com.chinesedreamer.ipm.tools.pdf.reader.constant.PdfReaderType;
 import com.chinesedreamer.ipm.tools.pdf.reader.model.IpmPdf;
 import com.chinesedreamer.ipm.tools.pdf.reader.service.PdfFactory;
@@ -254,6 +255,24 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	public void printOrder(String template) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public List<PdfVo> getPdf(String orderNo, String styleNo) {
+		List<CpqOrder> orders = null;
+		if (StringUtils.isNotEmpty(orderNo) && StringUtils.isNotEmpty(styleNo)) {
+			orders = this.cpqOrderLogic.findByOrderNoLikeAndStyleNoLike(orderNo, styleNo);
+		}else if (StringUtils.isEmpty(orderNo) && StringUtils.isNotEmpty(styleNo)) {
+			orders = this.cpqOrderLogic.findByStyleNoLike(styleNo);
+		}else if (StringUtils.isNotEmpty(orderNo) && StringUtils.isEmpty(styleNo)) {
+			orders = this.cpqOrderLogic.findByOrderNoLike(orderNo);
+		}else {
+			orders = this.cpqOrderLogic.findAll();
+		}
+		for (CpqOrder cpqOrder : orders) {
+			
+		}
+		return null;
 	}
 
 }

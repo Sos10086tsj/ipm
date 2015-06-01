@@ -60,3 +60,14 @@ CHANGE COLUMN `version` `version` BIGINT NULL DEFAULT '0' ;
 
 ALTER TABLE `ipm`.`ipm_biz_cpq_data_dictionary` 
 CHANGE COLUMN `key` `property` VARCHAR(45) NULL DEFAULT NULL ;
+
+CREATE TABLE `ipm_biz_cpq_pdf` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `file_name` varchar(200) DEFAULT NULL,
+  `file_path` varchar(200) DEFAULT NULL,
+  `file_size` bigint(20) DEFAULT NULL,
+  `upload_date` timestamp NULL DEFAULT NULL,
+  `deleted` tinyint(2) DEFAULT '0',
+  `version` bigint(20) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

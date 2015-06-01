@@ -8,7 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.chinesedreamer.ipm.web.vo.ResponseVo;
 
@@ -120,6 +122,15 @@ public class CpqController {
 		System.out.println("qty:" + qty);
 		System.out.println("grossWeight:" + grossWeight);
 		System.out.println("netWeight:" + netWeight);
+		ResponseVo vo = new ResponseVo();
+		vo.setSuccess(Boolean.TRUE);
+		return vo;
+	}
+	
+	@RequestMapping(value = "uploadPdf",method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseVo uploadPdf(Model model,HttpServletRequest request,
+			@RequestParam(value = "pdf", required = true)MultipartFile pdf){
 		ResponseVo vo = new ResponseVo();
 		vo.setSuccess(Boolean.TRUE);
 		return vo;

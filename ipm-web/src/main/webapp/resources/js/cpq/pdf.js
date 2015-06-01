@@ -1,6 +1,40 @@
 ipm.cpq = {
 	pdf : {
 		init : function(){
+			//upload
+			var pdfUpload = Ext.create('Ext.form.Panel', {
+				title: 'Upload a PDF',
+				width: 400,
+    			bodyPadding: 10,
+    			frame: true,
+    			renderTo: 'pdf_upload',
+    			items: [{
+        			xtype: 'filefield',
+        			name: 'pdf',
+        			fieldLabel: 'PDF',
+        			labelWidth: 50,
+        			msgTarget: 'side',
+        			allowBlank: false,
+        			anchor: '100%',
+        			buttonText: 'Select Pdf...'
+    			}],
+    			buttons: [{
+        			text: 'Upload',
+        			handler: function() {
+            			var form = this.up('form').getForm();
+            			if(form.isValid()){
+                			form.submit({
+                    			url: '/cpq/uploadPdf',
+                    			waitMsg: 'Uploading your pdf...',
+                    			success: function(fp, o) {
+                        			Ext.Msg.alert('Success');
+                    			}
+                			});
+            			}
+        			}
+    			}]
+			});
+			//grid
 		    var rowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
 		        saveBtnText: '保存', 
             	cancelBtnText: "取消", 

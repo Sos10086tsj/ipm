@@ -5,6 +5,8 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -12,6 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import com.chinesedreamer.ipm.domain.base.model.IpmVersionEntity;
+import com.chinesedreamer.ipm.domain.biz.cpq.file.model.CpqFile;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.item.model.CpqOrderItem;
 
 /**
@@ -82,6 +85,13 @@ public @Getter @Setter class CpqOrder extends IpmVersionEntity<Long>{
 	
 	@Column(name = "terms_payment")
 	private String terms_payment;
+	
+	@Column(name = "pdf_id")
+	private Long pdfId;
+	
+	@ManyToOne(fetch = FetchType.LAZY )
+	@JoinColumn(name = "pdf_id", referencedColumnName = "id", insertable =false, updatable = false)
+	private CpqFile pdf;
 	
 	@OneToMany(fetch = FetchType.LAZY,mappedBy = "cpqOrder")
 	private List<CpqOrderItem> cpqOrderItems;
