@@ -4,7 +4,7 @@ ipm.cpq = {
 			//文件上传
 			var fileUpload = Ext.create('Ext.form.Panel',{
 				renderTo: 'btn_pdf_upload',
-				title: 'Upload a pdf',
+				title: '上传PDF',
     			width: 400,
     			bodyPadding: 10,
     			frame: true,
@@ -12,12 +12,12 @@ ipm.cpq = {
         		{
         			xtype: 'filefield',
         			name: 'pdf',
-        			fieldLabel: 'Photo',
+        			fieldLabel: 'PDF',
         			labelWidth: 50,
         			msgTarget: 'side',
         			allowBlank: false,
         			anchor: '100%',
-        			buttonText: 'Select Photo...'
+        			buttonText: '浏览'
         		}
         		],
         		buttons : [
@@ -27,10 +27,22 @@ ipm.cpq = {
             			var form = this.up('form').getForm();
             			if(form.isValid()){
                 			form.submit({
-                    			url: '/cpq/uploadPdf',
-                    			waitMsg: 'Uploading your photo...',
+                    			url: ctx + '/cpq/uploadPdf',
+                    			waitMsg: 'Uploading...',
+                    			timeout: 300000,
                     			success: function(fp, o) {
-                        			Ext.Msg.alert('Success', 'Your photo "' + o.result.file + '" has been uploaded.');
+                    				var response = Ext.decode(o.response.responseText);
+                    				if(response.success){
+                    					//store.proxy.conn.url = ctx + '/cpq/getPdfStore/' + response.data.pdfId;
+                    					//store.proxy = new Ext.data.HttpProxy({url: ctx + '/cpq/getPdfStore/' + response.data.pdfId });
+                    					store.proxy.url = ctx + '/cpq/getPdfStore/' + response.data.pdfId;
+                    					store.reload();
+                    				}else{
+                    					ipm.extjs.warningResult('提示','系统异常，请重试');
+                    				}
+                    			},
+                    			failure : function(error){
+                    				ipm.extjs.warningResult('提示','系统异常，请重试');
                     			}
                 			});
             			}
@@ -51,7 +63,7 @@ ipm.cpq = {
 		        		
 		        		var record = context.record;
 		        		Ext.Ajax.request({
-		        			url : '/cpq/updatePdfRow',
+		        			url : ctx + '/cpq/updatePdfRow',
 		        			method : 'post', 
 		        			params : {
 		        				order : record.get('order'),
@@ -69,7 +81,7 @@ ipm.cpq = {
 		        				var result = Ext.decode(response.responseText);
 		        				progress.hide();
 		        				if(result.success){
-		        					ipm.extjs.warningResult('操作提示','保存成功�);
+		        					ipm.extjs.warningResult('操作提示','保存成功！');
 		        				}else{
 		        					ipm.extjs.warningResult('操作提示',result.errorMessage);
 		        				}
@@ -88,7 +100,8 @@ ipm.cpq = {
 		        columns: [{
 		            header: 'order',
 		            dataIndex: 'order',
-		            flex: 1,
+		            width: 160,
+		            //flex: 1,
 		            editor: {
 		                // defaults to textfield if no xtype is supplied
 		                allowBlank: false
@@ -103,7 +116,7 @@ ipm.cpq = {
 		        },  {
 		            header: 'colour',
 		            dataIndex: 'colour',
-		            width: 160,
+		            width: 60,
 		            editor: {
 		                allowBlank: false
 		            }
@@ -111,7 +124,8 @@ ipm.cpq = {
 		            xtype: 'numbercolumn',
 		            header: 'sizeS',
 		            dataIndex: 'sizeS',
-		            width: 90,
+		            format:'0',
+		            width: 60,
 		            editor: {
 		                xtype: 'numberfield',
 		                allowBlank: false,
@@ -122,7 +136,8 @@ ipm.cpq = {
 		            xtype: 'numbercolumn',
 		            header: 'sizeM',
 		            dataIndex: 'sizeM',
-		            width: 90,
+		            format:'0',
+		            width: 60,
 		            editor: {
 		                xtype: 'numberfield',
 		                allowBlank: false,
@@ -133,7 +148,8 @@ ipm.cpq = {
 		            xtype: 'numbercolumn',
 		            header: 'sizeL',
 		            dataIndex: 'sizeL',
-		            width: 90,
+		            format:'0',
+		            width: 60,
 		            editor: {
 		                xtype: 'numberfield',
 		                allowBlank: false,
@@ -144,7 +160,8 @@ ipm.cpq = {
 		            xtype: 'numbercolumn',
 		            header: 'sizeXL',
 		            dataIndex: 'sizeXL',
-		            width: 90,
+		            format:'0',
+		            width: 60,
 		            editor: {
 		                xtype: 'numberfield',
 		                allowBlank: false,
@@ -155,7 +172,8 @@ ipm.cpq = {
 		            xtype: 'numbercolumn',
 		            header: 'sizeXXL',
 		            dataIndex: 'sizeXXL',
-		            width: 90,
+		            format:'0',
+		            width: 60,
 		            editor: {
 		                xtype: 'numberfield',
 		                allowBlank: false,
@@ -167,7 +185,8 @@ ipm.cpq = {
 		            xtype: 'numbercolumn',
 		            header: 'tTL',
 		            dataIndex: 'tTL',
-		            width: 90
+		            format:'0',
+		            width: 60
 		        },
 		        {
 		            xtype: 'numbercolumn',
@@ -177,7 +196,7 @@ ipm.cpq = {
 		            width: 90
 		        }],
 		        renderTo: 'pdf_grid',
-		        width: 1000,
+		        width: 870,
 		        height: 600,
 		        title: 'Customer Orders',
 		        frame: true,

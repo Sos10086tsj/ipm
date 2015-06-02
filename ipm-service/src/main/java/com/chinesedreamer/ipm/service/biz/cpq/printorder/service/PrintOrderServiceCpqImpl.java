@@ -18,6 +18,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.chinesedreamer.ipm.common.utils.format.StringUtil;
+import com.chinesedreamer.ipm.domain.biz.cpq.file.constant.CpqFileType;
+import com.chinesedreamer.ipm.domain.biz.cpq.file.logic.CpqFileLogic;
+import com.chinesedreamer.ipm.domain.biz.cpq.file.model.CpqFile;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.datadictionary.constant.CpqDictionaryType;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.datadictionary.logic.CpqDictionaryLogic;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.datadictionary.model.CpqDictionary;
@@ -25,6 +28,7 @@ import com.chinesedreamer.ipm.domain.biz.cpq.printorder.item.logic.CpqOrderItemL
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.item.model.CpqOrderItem;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.logic.CpqOrderLogic;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.model.CpqOrder;
+import com.chinesedreamer.ipm.domain.supp.attachment.model.Attachment;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.PdfVo;
 import com.chinesedreamer.ipm.tools.pdf.reader.constant.PdfReaderType;
 import com.chinesedreamer.ipm.tools.pdf.reader.model.IpmPdf;
@@ -55,7 +59,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	private Set<String> existsColours;
 
 	@Override
-	public void readPdf(String filePath) {
+	public void readPdf(String filePath,CpqFile cpqFile) {
 		this.logger.info("********** readPdf starting ********");
 		PdfReader pdfReader = this.pdfFactory.getPdfReader(PdfReaderType.BOXPDF);
 		IpmPdf pdf = pdfReader.read(filePath);
@@ -102,7 +106,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 						itemBegin = true;
 					}else if(str.startsWith("Signed by")){
 						itemBegin = false;
-						this.saveOrder(datasource, items);//保存信息
+						this.saveOrder(datasource, items, cpqFile);//保存信息
 						datasource.clear();
 						items.clear();
 					}else if(itemBegin){
@@ -177,11 +181,12 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	 * 保存order以及item信息，重复时更新
 	 * @param datasource
 	 */
-	private void saveOrder(Map<String, String> datasource, List<Map<String, String>> items){
+	private void saveOrder(Map<String, String> datasource, List<Map<String, String>> items,CpqFile cpqFile){
 		CpqOrder order = this.cpqOrderLogic.findByOrderNoAndStyleNo(datasource.get("orderNo"), datasource.get("styleNo"));
 		if (null == order) {
 			order = new CpqOrder();
 		}
+		order.setPdfId(cpqFile.getId());
 		order.setOrderNo(datasource.get("orderNo"));
 		order.setStyleNo(datasource.get("styleNo"));
 		order.setMaker(datasource.get("maker"));
@@ -257,22 +262,56 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		
 	}
 
+	@Resource
+	private CpqFileLogic cpqFileLogic;
 	@Override
-	public List<PdfVo> getPdf(String orderNo, String styleNo) {
-		List<CpqOrder> orders = null;
-		if (StringUtils.isNotEmpty(orderNo) && StringUtils.isNotEmpty(styleNo)) {
-			orders = this.cpqOrderLogic.findByOrderNoLikeAndStyleNoLike(orderNo, styleNo);
-		}else if (StringUtils.isEmpty(orderNo) && StringUtils.isNotEmpty(styleNo)) {
-			orders = this.cpqOrderLogic.findByStyleNoLike(styleNo);
-		}else if (StringUtils.isNotEmpty(orderNo) && StringUtils.isEmpty(styleNo)) {
-			orders = this.cpqOrderLogic.findByOrderNoLike(orderNo);
-		}else {
-			orders = this.cpqOrderLogic.findAll();
-		}
-		for (CpqOrder cpqOrder : orders) {
-			
-		}
-		return null;
+	public CpqFile saveFileBizValue(Attachment attachment) {
+		CpqFile file = new CpqFile();
+		file.setFileName(attachment.getFileName());
+		file.setType(CpqFileType.getType(attachment.getFileName()));
+		file.setAttachRefId(attachment.getId());
+		file.setDeleted(Boolean.FALSE);
+		return this.cpqFileLogic.save(file);
 	}
 
+	@Override
+	public List<PdfVo> getPdfItems(Long pdfId) {
+		List<PdfVo> vos = new ArrayList<PdfVo>();
+		List<CpqOrder> orders = this.cpqOrderLogic.findByPdfId(pdfId);
+		for (CpqOrder order : orders) {
+			List<CpqOrderItem> orderItems = this.cpqOrderItemLogic.findByOrderId(order.getId());
+			for (CpqOrderItem orderItem : orderItems) {
+				vos.add(this.convert2Vo(order, orderItem));
+			}
+		}
+		return vos;
+	}
+
+	private PdfVo convert2Vo(CpqOrder order,CpqOrderItem orderItem) {
+		PdfVo vo = new PdfVo();
+		vo.setOrder(order.getOrderNo());
+		vo.setStyle(order.getStyleNo());
+		vo.setColour(orderItem.getColor());
+		vo.setSizeL(orderItem.getSizeL());
+		vo.setSizeM(orderItem.getSizeM());
+		vo.setSizeS(orderItem.getSizeS());
+		vo.setSizeXL(orderItem.getSizeXl());
+		vo.setSizeXXL(orderItem.getSizeXxl());
+		Integer total = this.calculateTotal(orderItem.getSizeL(),orderItem.getSizeM(),orderItem.getSizeS(),orderItem.getSizeXl(),orderItem.getSizeXxl());
+		vo.setTTL(total);
+		if (StringUtils.isNotEmpty(order.getPrice())) {
+			vo.setTotalAmount(total * Integer.parseInt(order.getPrice()));
+		}
+		return vo;
+	}
+	
+	private Integer calculateTotal(Integer... sizes){
+		Integer total = 0;
+		for (Integer size : sizes) {
+			if (null != size) {
+				total += size;
+			}
+		}
+		return total;
+	}
 }

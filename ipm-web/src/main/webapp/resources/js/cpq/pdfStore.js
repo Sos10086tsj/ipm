@@ -20,14 +20,14 @@ ipm.cpq.pdf.store = {
 			model: pdfModel,
 			proxy : {
 				type: 'ajax',
-				url : '/cpq/getPdfStore',
+				url : ctx + '/cpq/getPdfStore/',
 				method : 'get',
 				reader: {
 		             type: 'json',
 		             root : ''
 		         }
 			},
-			autoLoad : true,
+			autoLoad : false,
 			sorters: [
 				{
 					property: 'order',

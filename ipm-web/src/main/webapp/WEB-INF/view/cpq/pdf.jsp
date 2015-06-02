@@ -8,9 +8,8 @@
 </head>
 <body>
 	<div>
-		<h1>File Upload</h1>
+		<h1>上传客户PDF</h1>
 		<div id="btn_pdf_upload"></div>
-    	<div id="msg_pdf_upload" style="display:none;"></div>
 	</div>
 	<div>
 		<h1>PDF Order 解析结果</h1>
@@ -21,4 +20,7 @@
 <%@include file="/WEB-INF/view/base/baselib.jspf" %>
 <script type="text/javascript" src="${ctx}/resources/js/cpq/pdf.js"></script>
 <script type="text/javascript" src="${ctx}/resources/js/cpq/pdfStore.js"></script>
+<script>
+	var ctx = '${ctx}';
+</script>
 </html>

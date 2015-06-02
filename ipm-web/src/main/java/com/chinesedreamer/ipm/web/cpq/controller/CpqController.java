@@ -1,17 +1,29 @@
 package com.chinesedreamer.ipm.web.cpq.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.chinesedreamer.ipm.domain.biz.cpq.file.model.CpqFile;
+import com.chinesedreamer.ipm.domain.supp.attachment.model.Attachment;
+import com.chinesedreamer.ipm.service.biz.cpq.printorder.constant.PrintOrderType;
+import com.chinesedreamer.ipm.service.biz.cpq.printorder.service.PrintOrderFacotry;
+import com.chinesedreamer.ipm.service.biz.cpq.printorder.service.PrintOrderService;
+import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.PdfVo;
+import com.chinesedreamer.ipm.service.supp.attachment.service.AttachmentService;
+import com.chinesedreamer.ipm.service.system.user.constant.UserConstant;
 import com.chinesedreamer.ipm.web.vo.ResponseVo;
 
 /**
@@ -23,14 +35,18 @@ import com.chinesedreamer.ipm.web.vo.ResponseVo;
 @Controller
 @RequestMapping(value = "cpq")
 public class CpqController {
+	
+	@Resource
+	private AttachmentService attachmentService;
+	
 	/**
-	 * 跳转pdf order信息展示�
+	 * 跳转pdf order信息展示�
 	 * @param model
 	 * @return
 	 */
 	@RequestMapping(value = "pdf", method = RequestMethod.GET)
 	public String showPdf(Model model){
-		return "cpq/pdf";
+		return "/cpq/pdf";
 	}
 	
 	/**
@@ -39,9 +55,9 @@ public class CpqController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "getPdfStore", method = RequestMethod.GET)
-	public List<PdfVo> getPdfStore(Model model){
-		return PdfVo.localInstance();
+	@RequestMapping(value = "getPdfStore/{pdfId}", method = RequestMethod.GET)
+	public List<PdfVo> getPdfStore(Model model,@PathVariable Long pdfId){
+		return this.facotry.getService(PrintOrderType.CPQ).getPdfItems(pdfId);
 	}
 	
 	/**
@@ -126,23 +142,26 @@ public class CpqController {
 		vo.setSuccess(Boolean.TRUE);
 		return vo;
 	}
-	
+
+	/*****************************/
+	@Resource
+	private PrintOrderFacotry facotry;
 	@RequestMapping(value = "uploadPdf",method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseVo uploadPdf(Model model,HttpServletRequest request,
 			@RequestParam(value = "pdf", required = true)MultipartFile pdf){
+		//1. 保存附件
+		Attachment attachment = this.attachmentService.save(pdf, UserConstant.NO_USER_ID);
+		PrintOrderService service = this.facotry.getService(PrintOrderType.CPQ);
+		//2. 保存pdf业务对象
+		CpqFile cpqFile = service.saveFileBizValue(attachment);
+		//3. 解析pdf
+		service.readPdf(attachment.getFilePath(),cpqFile);
 		ResponseVo vo = new ResponseVo();
 		vo.setSuccess(Boolean.TRUE);
+		Map<String, Long> rst = new HashMap<String, Long>();
+		rst.put("pdfId", cpqFile.getId());
+		vo.setData(rst);
 		return vo;
-	}
-	
-	@ResponseBody
-	@RequestMapping(value = "uploadPdf", method = RequestMethod.POST)
-	public ResponseVo uploadPdf(HttpServletRequest request, @RequestParam(value = "pdf", required = true)MultipartFile file){
-		
-		
-		ResponseVo responseVo = new ResponseVo();
-		responseVo.setSuccess(Boolean.TRUE);
-		return responseVo;
 	}
 }

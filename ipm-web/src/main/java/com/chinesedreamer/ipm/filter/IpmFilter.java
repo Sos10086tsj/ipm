@@ -35,6 +35,7 @@ public class IpmFilter implements Filter{
 			String ctx = req.getContextPath();
     		session.setAttribute("ctx", (null == ctx  ? "" : ctx) );
 		}
+		chain.doFilter(request, response);
 	}
 
 	@Override

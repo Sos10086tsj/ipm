@@ -1,5 +1,7 @@
 package com.chinesedreamer.ipm.domain.biz.cpq.printorder.item.logic;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -16,5 +18,8 @@ public class CpqOrderItemLogicImpl extends IpmLogicImpl<CpqOrderItem, Long> impl
 	public CpqOrderItem findByOrderIdAndColor(Long orderId, String color) {
 		return this.repository.findByOrderIdAndColor(orderId, color);
 	}
-
+	@Override
+	public List<CpqOrderItem> findByOrderId(Long orderId) {
+		return this.repository.findByOrderIdOrderByColorAsc(orderId);
+	}
 }

@@ -1,8 +1,8 @@
 package com.chinesedreamer.ipm.service.supp.attachment.service;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.annotation.Resource;
 
@@ -12,10 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.chinesedreamer.ipm.common.utils.io.PropertiesUtils;
-import com.chinesedreamer.ipm.domain.supp.attachment.constant.AttachBizType;
 import com.chinesedreamer.ipm.domain.supp.attachment.logic.AttachmentLogic;
 import com.chinesedreamer.ipm.domain.supp.attachment.model.Attachment;
-import com.chinesedreamer.ipm.service.supp.attachment.constant.AttachmentVo;
 
 /**
  * Description: 
@@ -31,14 +29,16 @@ public class AttachmentServiceImpl implements AttachmentService{
 	private AttachmentLogic logic;
 
 	@Override
-	public AttachmentVo save(MultipartFile file, AttachBizType bizType,
-			String bizReference) {
+	public Attachment save(MultipartFile file, Long userId) {
 		//1. 保存文件
 		PropertiesUtils pu = new PropertiesUtils("config.properties");
-		String prefix = pu.getProperty("file.upload.prefix") + bizType.toString() + "/";
+		Calendar calendar = Calendar.getInstance();
+		String prefix = pu.getProperty("file.upload.prefix") 
+				+ calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.DAY_OF_MONTH) 
+				+ "/" ;
 		File folder = new File(prefix);
 		if (!folder.exists()) {
-			folder.mkdir();
+			folder.mkdirs();
 		}
 		File uploadFile = new File(prefix + file.getOriginalFilename());
 		try {
@@ -48,21 +48,12 @@ public class AttachmentServiceImpl implements AttachmentService{
 		}
 		//2. 保存到db
 		Attachment attachment = new Attachment();
-		attachment.setBizType(bizType);
-		attachment.setBizReference(bizReference);
 		attachment.setFileName(file.getOriginalFilename());
-		attachment.setFilePath(bizType.toString() + "/" + file.getName());
-		return null;
-	}
-
-	@Override
-	public List<AttachmentVo> find(AttachBizType bizType, String bizReference) {
-		List<Attachment> attachments = this.logic.findByBizTypeAndBizReference(bizType, bizReference);
-		List<AttachmentVo> vos = new ArrayList<AttachmentVo>();
-		for (Attachment attach : attachments) {
-			vos.add(new AttachmentVo(attach.getFileName(), attach.getFilePath(), attach.getFileSize()));
-		}
-		return vos;
+		attachment.setFilePath(prefix + file.getOriginalFilename());
+		attachment.setFileSize(file.getSize());
+		attachment.setUploadDate(new Date());
+		attachment.setUploadUser(userId);
+		return this.logic.save(attachment);
 	}
 
 }
