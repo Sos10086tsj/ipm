@@ -65,6 +65,7 @@ CREATE TABLE `ipm_biz_cpq_data_dictionary` (
   `value` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=latin1;
+commit;
 
 INSERT INTO `ipm_biz_cpq_data_dictionary` (`type`,`property`,`value`) VALUES (1,'11','11-ginger');
 INSERT INTO `ipm_biz_cpq_data_dictionary` (`type`,`property`,`value`) VALUES (1,'17','17-prune');
@@ -108,3 +109,4 @@ INSERT INTO `ipm_biz_cpq_data_dictionary` (`type`,`property`,`value`) VALUES (1,
 INSERT INTO `ipm_biz_cpq_data_dictionary` (`type`,`property`,`value`) VALUES (1,'E','E-dessin E');
 INSERT INTO `ipm_biz_cpq_data_dictionary` (`type`,`property`,`value`) VALUES (1,'F','F-dessin F');
 INSERT INTO `ipm_biz_cpq_data_dictionary` (`type`,`property`,`value`) VALUES (1,'G','G-dessin G');
+commit;
