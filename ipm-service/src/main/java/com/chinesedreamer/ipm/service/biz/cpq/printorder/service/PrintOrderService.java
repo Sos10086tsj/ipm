@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.chinesedreamer.ipm.domain.biz.cpq.file.model.CpqFile;
 import com.chinesedreamer.ipm.domain.supp.attachment.model.Attachment;
+import com.chinesedreamer.ipm.service.biz.cpq.printorder.constant.CpqExcelType;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.PdfVo;
 
 /**
@@ -17,7 +18,7 @@ public interface PrintOrderService {
 	 * 读取excel工厂文件
 	 * @param filePaths
 	 */
-	public void readExcels(List<String> filePaths);
+	public void readExcels(List<String> filePaths, CpqExcelType template);
 	
 	/**
 	 * 打印订单

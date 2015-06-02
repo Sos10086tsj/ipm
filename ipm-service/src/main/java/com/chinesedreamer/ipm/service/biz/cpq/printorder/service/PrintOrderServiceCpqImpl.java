@@ -1,6 +1,7 @@
 package com.chinesedreamer.ipm.service.biz.cpq.printorder.service;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -13,6 +14,8 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,7 @@ import com.chinesedreamer.ipm.domain.biz.cpq.printorder.item.model.CpqOrderItem;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.logic.CpqOrderLogic;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.model.CpqOrder;
 import com.chinesedreamer.ipm.domain.supp.attachment.model.Attachment;
+import com.chinesedreamer.ipm.service.biz.cpq.printorder.constant.CpqExcelType;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.PdfVo;
 import com.chinesedreamer.ipm.tools.pdf.reader.constant.PdfReaderType;
 import com.chinesedreamer.ipm.tools.pdf.reader.model.IpmPdf;
@@ -251,8 +255,53 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	}
 
 	@Override
-	public void readExcels(List<String> filePaths) {
-		// TODO Auto-generated method stub
+	public void readExcels(List<String> filePaths, CpqExcelType template) {
+		for (String filePath : filePaths) {
+			FileInputStream is = null;
+			HSSFWorkbook workbook = null;
+			try {
+				is = new FileInputStream(filePath);
+				workbook = new HSSFWorkbook(is);
+				switch (template) {
+				case JIANAN:
+					this.readJiananExcel(workbook);
+					break;
+				case PUTIANMU:
+					break;
+				default:
+					break;
+				}
+			} catch (Exception e) {
+				this.logger.error("{}",e);
+			}finally{
+				if (null != workbook) {
+					try {
+						workbook.close();
+					} catch (IOException e) {
+						this.logger.error("{}",e);
+					}
+				}
+				if (null != is) {
+					try {
+						is.close();
+					} catch (IOException e) {
+						this.logger.error("{}",e);
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 佳楠长excel解析
+	 * @param workbook
+	 */
+	private void readJiananExcel(HSSFWorkbook workbook) {
+		Sheet helanSheet = workbook.getSheet("出荷兰");
+		Sheet hkSheet = workbook.getSheet("香港");
+		Sheet sheet01 = workbook.getSheet("01");
+	}
+	private void readJiananExcelSheet(Sheet... sheets) {
 		
 	}
 

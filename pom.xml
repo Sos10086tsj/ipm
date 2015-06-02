@@ -46,6 +46,7 @@
 		<com.belerweb.pinyin4j.version>2.5.0</com.belerweb.pinyin4j.version>
 		<org.antlr.version>2.7.6</org.antlr.version>
 		<org.apache.pdfbox.version>1.8.8</org.apache.pdfbox.version>
+		<org.apache.poi.version>3.11</org.apache.poi.version>
 	</properties>
 
 	<dependencyManagement>
@@ -333,6 +334,12 @@
 				<version>${org.apache.pdfbox.version}</version>
 			</dependency>
 
+			<!-- poi -->
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi</artifactId>
+				<version>${org.apache.poi.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
