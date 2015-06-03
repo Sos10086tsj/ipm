@@ -7,4 +7,6 @@ import com.chinesedreamer.ipm.domain.biz.cpq.file.model.CpqFile;
 
 public interface CpqFileRepository extends IpmRepository<CpqFile, Long>{
 	public List<CpqFile> findByFileNameLike(String fileName);
+	
+	public List<CpqFile> findByDeletedFalseOrderByUploadDateDesc();
 }

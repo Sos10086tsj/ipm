@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -39,6 +40,7 @@ import com.chinesedreamer.ipm.domain.system.config.constant.IpmConfigConstant;
 import com.chinesedreamer.ipm.domain.system.config.logic.IpmConfigLogic;
 import com.chinesedreamer.ipm.domain.system.config.model.IpmConfig;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.constant.CpqExcelType;
+import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.PdfSelectVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.PdfVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.SelectVo;
 import com.chinesedreamer.ipm.tools.pdf.reader.constant.PdfReaderType;
@@ -396,6 +398,16 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		List<CpqDictionary> dictionaries = this.cpqDictionaryLogic.findByType(CpqDictionaryType.CLOTHING_CATEGORY);
 		for (CpqDictionary dict : dictionaries) {
 			vos.add(new SelectVo(dict.getProperty(), dict.getValue()));
+		}
+		return vos;
+	}
+
+	@Override
+	public List<PdfSelectVo> getUploadedPdfStore() {
+		List<CpqFile> files = this.cpqFileLogic.findAllOrderByUploadDate();
+		List<PdfSelectVo> vos = new ArrayList<PdfSelectVo>();
+		for (CpqFile file : files) {
+			vos.add(new PdfSelectVo(file.getId().toString(), file.getFileName() + "(" + DateFormatUtils.format(file.getUploadDate(), "MM/dd HH:mm") + ")", file.getClothingType().toString()));
 		}
 		return vos;
 	}

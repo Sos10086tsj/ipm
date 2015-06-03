@@ -18,4 +18,6 @@ public interface CpqFileLogic extends IpmLogic<CpqFile, Long>{
 	 * @return
 	 */
 	public List<CpqFile> findByFileName(String fileName);
+	
+	public List<CpqFile> findAllOrderByUploadDate();
 }

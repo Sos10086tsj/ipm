@@ -15,6 +15,7 @@ ipm.cpq = {
         			name: 'clothingType',
         			fieldLabel: '服装类型',
     				store: clothingTypeStore,
+    				labelWidth:60,
     				queryMode: 'remote',
     				displayField: 'label',
     				valueField: 'value'
@@ -23,7 +24,7 @@ ipm.cpq = {
         			xtype: 'filefield',
         			name: 'pdf',
         			fieldLabel: 'PDF',
-        			labelWidth: 50,
+        			labelWidth: 60,
         			msgTarget: 'side',
         			allowBlank: false,
         			anchor: '100%',
@@ -43,11 +44,7 @@ ipm.cpq = {
                     			success: function(fp, o) {
                     				var response = Ext.decode(o.response.responseText);
                     				if(response.success){
-                    					//store.proxy.conn.url = ctx + '/cpq/getPdfStore/' + response.data.pdfId;
-                    					//store.proxy = new Ext.data.HttpProxy({url: ctx + '/cpq/getPdfStore/' + response.data.pdfId });
-                    					store.proxy.url = ctx + '/cpq/getPdfStore/' + response.data.pdfId;
-                    					//TODO 隐藏不需要的列 grid.columns[i].setVisible(false/true); grid.columns[i].hide()/show()
-                    					store.reload();
+                    					ipm.cpq.pdf.reloadStore(grid,store,response.data.pdfId,response.data.clothingType);
                     				}else{
                     					ipm.extjs.warningResult('提示','系统异常，请重试');
                     				}
@@ -85,6 +82,17 @@ ipm.cpq = {
 	            				sizeL:record.get('sizeL'),
 	            				sizeXL:record.get('sizeXl'),
 	            				sizeXXL:record.get('sizeXxl'),
+	            				sizeXXL:record.get('sizeP'),
+	            				sizeXXL:record.get('size1'),
+	            				sizeXXL:record.get('size2'),
+	            				sizeXXL:record.get('size3'),
+	            				sizeXXL:record.get('size4'),
+	            				sizeXXL:record.get('size6'),
+	            				sizeXXL:record.get('size8'),
+	            				sizeXXL:record.get('size10'),
+	            				sizeXXL:record.get('size12'),
+	            				sizeXXL:record.get('size14'),
+	            				sizeXXL:record.get('size16'),
 	            				tTL:record.get('ttl'),
 	            				totalAmount:record.get('totalAmount')
 		        			},
@@ -377,7 +385,28 @@ ipm.cpq = {
 		                }
 		            },
 		            disabled: true
-		        }],
+		        },
+		        "->",
+		        {
+        			xtype: 'combobox',
+        			name: 'pdfId',
+        			fieldLabel: '选择上传过的pdf',
+        			width:550,
+        			labelWidth:120,
+    				store: ipm.cpq.pdf.store.uploadedPdf(),
+    				queryMode: 'remote',
+    				displayField: 'label',
+    				region:'east',
+    				valueField: 'value',
+    				listeners:{
+    					select:function(combo,record,opts) {
+    						var pdfId = record[0].get("value");
+    						var pdfId = record[0].get("clothingType");
+    						ipm.cpq.pdf.reloadStore(grid,store,pdfId);
+   						}
+    				}
+        		}
+		        ],
 		        plugins: [rowEditing],
 		        listeners: {
 		            'selectionchange': function(view, records) {
@@ -385,6 +414,32 @@ ipm.cpq = {
 		            }
 		        }
 		    });
+		},
+		
+		reloadStore : function(grid,store,pdfId, clothingType){
+			store.proxy.url = ctx + '/cpq/getPdfStore/' + pdfId;
+            //TODO 隐藏不需要的列 grid.columns[i].setVisible(false/true); grid.columns[i].hide()/show()
+			//1. 全部隐藏
+			for(var i = 3; i < 19 ; i++){
+				grid.columns[i].hide();
+			}
+			//2. 开发部分
+			if(clothingType == 'MALE'){//男 Size S,Size M,Size L,Size XL,Size XXL
+				for(var i = 3; i < 8 ; i++){
+					grid.columns[i].show();
+				}
+			}else if(clothingType == 'FEMALE'){//女 Size P.Size 1.Size 2.Size 3.Size 4
+				for(var i = 8; i < 13 ; i++){
+					grid.columns[i].show();
+				}
+			}else if(clothingType == 'BOY' || clothingType == 'GIRL'){//男童 Size 4,Size 6,Size 8,Size 10,Size 12,Size 14,Size 16
+				for(var i = 12; i < 19 ; i++){
+					grid.columns[i].show();
+				}
+			}else{
+				return;
+			}
+            store.reload();
 		}
 	}
 };

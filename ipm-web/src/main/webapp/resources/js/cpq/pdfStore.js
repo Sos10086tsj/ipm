@@ -80,5 +80,31 @@ ipm.cpq.pdf.store = {
 			autoLoad : true
 		});
 		return clothingTypeStore;
+	},
+	
+	uploadedPdf : function(){
+		var pdfSelecteModel = Ext.define('pdfSelectModel', {
+	        extend: 'Ext.data.Model',
+	        fields: [
+	            'value',
+	            'label',
+	            'clothingType'
+	        ]
+		});
+		
+		var pdfSelectStore = Ext.create('Ext.data.Store',{
+			model: pdfSelecteModel,
+			proxy : {
+				type: 'ajax',
+				url : ctx + '/cpq/getUploadedPdfStore/',
+				method : 'get',
+				reader: {
+		             type: 'json',
+		             root : ''
+		         }
+			},
+			autoLoad : true
+		});
+		return pdfSelectStore;
 	}
 };

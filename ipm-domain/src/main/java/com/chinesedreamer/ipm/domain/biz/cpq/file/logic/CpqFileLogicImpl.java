@@ -25,5 +25,9 @@ public class CpqFileLogicImpl extends IpmLogicImpl<CpqFile, Long> implements Cpq
 	public List<CpqFile> findByFileName(String fileName) {
 		return this.repository.findByFileNameLike("%" + fileName + "%");
 	}
+	@Override
+	public List<CpqFile> findAllOrderByUploadDate() {
+		return this.repository.findByDeletedFalseOrderByUploadDateDesc();
+	}
 	
 }

@@ -21,6 +21,7 @@ import com.chinesedreamer.ipm.domain.supp.attachment.model.Attachment;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.constant.PrintOrderType;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.service.PrintOrderFacotry;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.service.PrintOrderService;
+import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.PdfSelectVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.PdfVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.SelectVo;
 import com.chinesedreamer.ipm.service.supp.attachment.service.AttachmentService;
@@ -62,10 +63,24 @@ public class CpqController {
 		return this.facotry.getService(PrintOrderType.CPQ).getPdfItems(pdfId);
 	}
 	
+	/**
+	 * 获取服装类型
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "getClothingTypeStore", method = RequestMethod.GET)
 	public List<SelectVo> getClothingTypeStore(){
 		return this.facotry.getService(PrintOrderType.CPQ).getClothingTypes();
+	}
+	
+	/**
+	 * 获取已经上传过的pdf，按时间倒叙排序
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getUploadedPdfStore", method = RequestMethod.GET)
+	public List<PdfSelectVo> getUploadedPdfStore(){
+		return this.facotry.getService(PrintOrderType.CPQ).getUploadedPdfStore();
 	}
 	
 	/**
@@ -167,8 +182,9 @@ public class CpqController {
 		service.readPdf(attachment.getFilePath(),cpqFile);
 		ResponseVo vo = new ResponseVo();
 		vo.setSuccess(Boolean.TRUE);
-		Map<String, Long> rst = new HashMap<String, Long>();
-		rst.put("pdfId", cpqFile.getId());
+		Map<String, String> rst = new HashMap<String, String>();
+		rst.put("pdfId", cpqFile.getId().toString());
+		rst.put("clothingType", cpqFile.getClothingType().toString());
 		vo.setData(rst);
 		return vo;
 	}

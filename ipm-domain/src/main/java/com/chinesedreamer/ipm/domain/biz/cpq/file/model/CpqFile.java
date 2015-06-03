@@ -18,6 +18,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import lombok.Getter;
 import lombok.Setter;
 
+import com.chinesedreamer.ipm.domain.base.model.IpmEntity;
 import com.chinesedreamer.ipm.domain.base.model.IpmLogicDeleteEntity;
 import com.chinesedreamer.ipm.domain.biz.cpq.file.constant.CpqFileClothingType;
 import com.chinesedreamer.ipm.domain.biz.cpq.file.constant.CpqFileType;
@@ -26,7 +27,7 @@ import com.chinesedreamer.ipm.domain.supp.attachment.model.Attachment;
 
 @Entity
 @Table(name = "ipm_biz_cpq_file")
-public @Getter @Setter class CpqFile extends IpmLogicDeleteEntity<Long>{
+public @Getter @Setter class CpqFile extends IpmEntity<Long>{
 
 	/**
 	 * 
@@ -50,6 +51,9 @@ public @Getter @Setter class CpqFile extends IpmLogicDeleteEntity<Long>{
 	@Column(name = "clothing_type")
 	@Enumerated(EnumType.ORDINAL)
 	private CpqFileClothingType clothingType;
+	
+	@Column(name = "deleted",columnDefinition = "TINYINT(1)")
+	private Boolean deleted = Boolean.FALSE;
 	
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "attach_ref_id", referencedColumnName = "id", insertable = false, updatable =false)

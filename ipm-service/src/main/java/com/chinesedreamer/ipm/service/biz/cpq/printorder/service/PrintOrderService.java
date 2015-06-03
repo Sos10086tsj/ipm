@@ -5,6 +5,7 @@ import java.util.List;
 import com.chinesedreamer.ipm.domain.biz.cpq.file.model.CpqFile;
 import com.chinesedreamer.ipm.domain.supp.attachment.model.Attachment;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.constant.CpqExcelType;
+import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.PdfSelectVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.PdfVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.SelectVo;
 
@@ -54,4 +55,10 @@ public interface PrintOrderService {
 	 * @return
 	 */
 	public List<SelectVo> getClothingTypes();
+	
+	/**
+	 * 获取已经上传过的pdf，按时间倒叙排序
+	 * @return
+	 */
+	public List<PdfSelectVo> getUploadedPdfStore();
 }

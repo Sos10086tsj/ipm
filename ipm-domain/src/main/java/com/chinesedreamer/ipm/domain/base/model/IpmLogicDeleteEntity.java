@@ -19,7 +19,7 @@ public abstract class IpmLogicDeleteEntity<ID extends Serializable> extends IpmE
 	 */
 	private static final long serialVersionUID = -5671224425420703646L;
 
-	@Column(name = "deleted")
+	@Column(name = "deleted",columnDefinition = "TINYINT(1)")
 	private @Getter @Setter Boolean deleted;
 
 }
