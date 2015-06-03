@@ -17,6 +17,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -69,6 +70,8 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	private CpqDictionaryLogic cpqDictionaryLogic;
 	@Resource
 	private IpmConfigLogic configLogic;
+	@Resource
+	private CpqFileLogic cpqFileLogic;
 	
 	private Map<String, String> errorMap = new HashMap<String, String>();
 	
@@ -327,6 +330,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		}
 	}
 	private void readJiananExcelSheet(Sheet... sheets) {
+		String beginSymble = "宁波承天一楠制衣有限公司";
 		for (Sheet sheet : sheets) {
 			if (null != sheet) {
 				int rows = sheet.getPhysicalNumberOfRows();
@@ -334,13 +338,50 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 					this.logger.info("sheet:{} is empty.",sheet.getSheetName());
 				}
 				boolean begin = false;
+				int startRow = 0;
 				for (int i = 0; i < rows; i++) {
 					Row row = sheet.getRow(i);
 					int columnNum = row.getLastCellNum();//列数
-					//1. 获得起始符
+					for (int j = 0; j < columnNum; j++) {
+						Cell cell = row.getCell(j);
+						String cellValue = cell.getStringCellValue();
+						if (cellValue.startsWith(beginSymble)) {
+							begin = true;
+							startRow = j;
+						}
+						if (begin) {		
+							//第一行：订单号、款号
+							Row row1 = sheet.getRow(startRow+1);
+							String orderNo = row1.getCell(2).getStringCellValue();//订单号
+							String styleNo = row1.getCell(12).getStringCellValue();//款号
+							//第二行：国家、备注号
+							Row row2 = sheet.getRow(startRow+2);
+							String country = row2.getCell(5).getStringCellValue();//国家
+							String memo = row2.getCell(12).getStringCellValue();//备注
+							//第四行：item开始
+							Row row3 = sheet.getRow(startRow + 4);
+							Row row4 = sheet.getRow(startRow + 5);
+							String from = row4.getCell(0).getStringCellValue();//from
+							//String to = row4.getCell(1).getStringCellValue();//to TODO 目前没有
+							Integer quality = Integer.parseInt(row4.getCell(1).getStringCellValue());//箱数
+							String color = this.formatColor(row4.getCell(2).getStringCellValue());//颜色
+							
+						}
+					}
 				}
 			}
 		}
+	}
+	
+	private String formatColor(String color){
+		if (StringUtils.isEmpty(color)) {
+			return color;
+		}
+		int index = color.indexOf("-");
+		if (index == -1) {
+			return color;
+		}
+		return color.substring(0, index - 1);
 	}
 
 	@Override
@@ -349,8 +390,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		
 	}
 
-	@Resource
-	private CpqFileLogic cpqFileLogic;
+	
 	@Override
 	public CpqFile saveFileBizValue(Attachment attachment,String clothingType) {
 		CpqFile file = new CpqFile();
