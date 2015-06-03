@@ -17,6 +17,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
@@ -332,7 +333,12 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 				if (rows < 1) {
 					this.logger.info("sheet:{} is empty.",sheet.getSheetName());
 				}
-				
+				boolean begin = false;
+				for (int i = 0; i < rows; i++) {
+					Row row = sheet.getRow(i);
+					int columnNum = row.getLastCellNum();//列数
+					//1. 获得起始符
+				}
 			}
 		}
 	}

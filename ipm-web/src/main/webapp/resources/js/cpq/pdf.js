@@ -12,7 +12,9 @@ ipm.cpq = {
     			frame: true,
         		items : [
         		{
+        			id:'js_cloting_type_id',
         			xtype: 'combobox',
+        			allowBlank : false,
         			name: 'clothingType',
         			fieldLabel: '服装类型',
     				store: clothingTypeStore,
@@ -25,6 +27,7 @@ ipm.cpq = {
         			xtype: 'filefield',
         			name: 'pdf',
         			fieldLabel: 'PDF',
+        			allowBlank : false,
         			labelWidth: 60,
         			msgTarget: 'side',
         			allowBlank: false,
@@ -36,25 +39,30 @@ ipm.cpq = {
         		{
         			text: 'Upload',
         			handler: function() {
-            			var form = this.up('form').getForm();
-            			if(form.isValid()){
-                			form.submit({
-                    			url: ctx + '/cpq/uploadPdf',
-                    			waitMsg: 'Uploading...',
-                    			timeout: 300000,
-                    			success: function(fp, o) {
-                    				var response = Ext.decode(o.response.responseText);
-                    				if(response.success){
-                    					ipm.cpq.pdf.reloadStore(response.data.pdfId,response.data.clothingType);
-                    				}else{
+        				var clothingType = Ext.getCmp('js_cloting_type_id').getValue();
+        				if(clothingType && clothingType.length > 0){
+        					var form = this.up('form').getForm();
+            				if(form.isValid()){
+                				form.submit({
+                    				url: ctx + '/cpq/uploadPdf',
+                    				waitMsg: 'Uploading...',
+                    				timeout: 600000,
+                    				success: function(fp, o) {
+                    					var response = Ext.decode(o.response.responseText);
+                    					if(response.success){
+                    						ipm.cpq.pdf.reloadStore(response.data.pdfId,response.data.clothingType);
+                    					}else{
+                    						ipm.extjs.warningResult('提示','系统异常，请重试');
+                    					}
+                    				},
+                    				failure : function(error){
                     					ipm.extjs.warningResult('提示','系统异常，请重试');
                     				}
-                    			},
-                    			failure : function(error){
-                    				ipm.extjs.warningResult('提示','系统异常，请重试');
-                    			}
-                			});
-            			}
+                				});
+            				}
+        				}else{
+        					ipm.extjs.warningResult('提示','请先选择服装类型');
+        				}
         			}
         		}
         		]
