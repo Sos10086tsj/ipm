@@ -43,16 +43,41 @@ public @Getter @Setter class CpqOrderItem extends IpmVersionEntity<Long>{
 	@Column(name = "size_xxl")
 	private Integer sizeXxl;
 	
+	@Column(name = "size_p")
+	private Integer sizeP;
+	
+	@Column(name = "size_1")
+	private Integer size1;
+	
+	@Column(name = "size_2")
+	private Integer size2;
+
+	@Column(name = "size_3")
+	private Integer size3;
+	
+	@Column(name = "size_4")
+	private Integer size4;
+	
+	@Column(name = "size_6")
+	private Integer size6;
+	
+	@Column(name = "size_8")
+	private Integer size8;
+	
+	@Column(name = "size_10")
+	private Integer size10;
+	
+	@Column(name = "size_12")
+	private Integer size12;
+	
+	@Column(name = "size_14")
+	private Integer size14;
+	
+	@Column(name = "size_16")
+	private Integer size16;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private CpqOrder cpqOrder;
-
-	@Override
-	public String toString() {
-		return "CpqOrderItem [orderId=" + orderId + ", color=" + color
-				+ ", sizeS=" + sizeS + ", sizeM=" + sizeM + ", sizeL=" + sizeL
-				+ ", sizeXl=" + sizeXl + ", sizeXxl=" + sizeXxl + "]";
-	}
-	
 	
 }

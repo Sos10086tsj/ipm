@@ -7,7 +7,6 @@ import com.chinesedreamer.ipm.domain.biz.cpq.printorder.datadictionary.constant.
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.datadictionary.model.CpqDictionary;
 
 public interface CpqDictionaryRepository extends IpmRepository<CpqDictionary, Long>{
-	public CpqDictionary findByTypeAndProperty(CpqDictionaryType type, String property);
-	public CpqDictionary findByTypeAndValue(CpqDictionaryType type, String value);
-	public List<CpqDictionary> findByType(CpqDictionaryType type);
+	public List<CpqDictionary> findByTypeAndPropertyOrderBySeqAsc(CpqDictionaryType type, String property);
+	public List<CpqDictionary> findByTypeOrderBySeqAsc(CpqDictionaryType type);
 }

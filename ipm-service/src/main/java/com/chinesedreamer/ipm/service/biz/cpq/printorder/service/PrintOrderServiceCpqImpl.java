@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,11 +17,13 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.chinesedreamer.ipm.common.utils.format.StringUtil;
+import com.chinesedreamer.ipm.domain.biz.cpq.file.constant.CpqFileClothingType;
 import com.chinesedreamer.ipm.domain.biz.cpq.file.constant.CpqFileType;
 import com.chinesedreamer.ipm.domain.biz.cpq.file.logic.CpqFileLogic;
 import com.chinesedreamer.ipm.domain.biz.cpq.file.model.CpqFile;
@@ -32,8 +35,12 @@ import com.chinesedreamer.ipm.domain.biz.cpq.printorder.item.model.CpqOrderItem;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.logic.CpqOrderLogic;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.model.CpqOrder;
 import com.chinesedreamer.ipm.domain.supp.attachment.model.Attachment;
+import com.chinesedreamer.ipm.domain.system.config.constant.IpmConfigConstant;
+import com.chinesedreamer.ipm.domain.system.config.logic.IpmConfigLogic;
+import com.chinesedreamer.ipm.domain.system.config.model.IpmConfig;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.constant.CpqExcelType;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.PdfVo;
+import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.SelectVo;
 import com.chinesedreamer.ipm.tools.pdf.reader.constant.PdfReaderType;
 import com.chinesedreamer.ipm.tools.pdf.reader.model.IpmPdf;
 import com.chinesedreamer.ipm.tools.pdf.reader.service.PdfFactory;
@@ -57,6 +64,8 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	private CpqOrderItemLogic cpqOrderItemLogic;
 	@Resource
 	private CpqDictionaryLogic cpqDictionaryLogic;
+	@Resource
+	private IpmConfigLogic configLogic;
 	
 	private Map<String, String> errorMap = new HashMap<String, String>();
 	
@@ -82,6 +91,9 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			BufferedReader br = new BufferedReader(sr);
 			String str = null;
 			StringBuffer buffer = new StringBuffer();
+			
+			//获取不同类型的size列表
+			List<CpqDictionary> sizeDicts = this.cpqDictionaryLogic.findByTypeAndProperty(CpqDictionaryType.CLOTHING_CATEGORY_SIZE, cpqFile.getClothingType().toString());
 			try {
 				while ((str = br.readLine()) != null) {
 					if (str.startsWith("ORDERNR")) {//表示一个新订单开始
@@ -110,7 +122,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 						itemBegin = true;
 					}else if(str.startsWith("Signed by")){
 						itemBegin = false;
-						this.saveOrder(datasource, items, cpqFile);//保存信息
+						this.saveOrder(datasource, items, cpqFile, sizeDicts);//保存信息
 						datasource.clear();
 						items.clear();
 					}else if(itemBegin){
@@ -126,49 +138,16 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 									}
 								}
 							}
-						}else if (str.startsWith("Size S")) {
-							String[] sizeS = StringUtil.subString(str, "Size S", true).split(" ");
-							for (int i = 0; i < this.getMinSize(items, sizeS); i++) {
-								String size = sizeS[i];
-								if (StringUtils.isNotEmpty(size)) {
-									Map<String, String> item = items.get(i);
-									item.put("sizeS", size);
-								}
-							}
-						}else if (str.startsWith("Size M")) {
-							String[] sizeS = StringUtil.subString(str, "Size M", true).split(" ");
-							for (int i = 0; i < this.getMinSize(items, sizeS); i++) {
-								String size = sizeS[i];
-								if (StringUtils.isNotEmpty(size)) {
-									Map<String, String> item = items.get(i);
-									item.put("sizeM", size);
-								}
-							}
-						}else if (str.startsWith("Size L")) {
-							String[] sizeS = StringUtil.subString(str, "Size L", true).split(" ");
-							for (int i = 0; i < this.getMinSize(items, sizeS); i++) {
-								String size = sizeS[i];
-								if (StringUtils.isNotEmpty(size)) {
-									Map<String, String> item = items.get(i);
-									item.put("sizeL", size);
-								}
-							}
-						}else if (str.startsWith("Size XL")) {
-							String[] sizeS = StringUtil.subString(str, "Size XL", true).split(" ");
-							for (int i = 0; i < this.getMinSize(items, sizeS); i++) {
-								String size = sizeS[i];
-								if (StringUtils.isNotEmpty(size)) {
-									Map<String, String> item = items.get(i);
-									item.put("sizeXL", size);
-								}
-							}
-						}else if (str.startsWith("Size XXL")) {
-							String[] sizeS = StringUtil.subString(str, "Size XXL", true).split(" ");
-							for (int i = 0; i < this.getMinSize(items, sizeS); i++) {
-								String size = sizeS[i];
-								if (StringUtils.isNotEmpty(size)) {
-									Map<String, String> item = items.get(i);
-									item.put("sizeXXL", size);
+						}else{
+							String sizeParam = this.getSizeParam(sizeDicts, str);
+							if(StringUtils.isNotEmpty(sizeParam)){
+								String[] sizeS = StringUtil.subString(str, sizeParam, true).split(" ");
+								for (int i = 0; i < this.getMinSize(items, sizeS); i++) {
+									String size = sizeS[i];
+									if (StringUtils.isNotEmpty(size)) {
+										Map<String, String> item = items.get(i);
+										item.put(this.formatSizeKey(sizeParam), size);
+									}
 								}
 							}
 						}
@@ -182,10 +161,29 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	}
 	
 	/**
+	 * 判断解析到的字段是某种size类型
+	 * @param sizeDicts
+	 * @param str
+	 * @return
+	 */
+	private String getSizeParam(List<CpqDictionary> sizeDicts, String str) {
+		for (CpqDictionary dict : sizeDicts) {
+			if (str.startsWith(dict.getValue())) {
+				return dict.getValue();
+			}
+		}
+		return "";
+	}
+	
+	private String formatSizeKey(String sizeParam) {
+		return sizeParam.replace(" ", "");
+	}
+	
+	/**
 	 * 保存order以及item信息，重复时更新
 	 * @param datasource
 	 */
-	private void saveOrder(Map<String, String> datasource, List<Map<String, String>> items,CpqFile cpqFile){
+	private void saveOrder(Map<String, String> datasource, List<Map<String, String>> items,CpqFile cpqFile,List<CpqDictionary> sizeDicts){
 		CpqOrder order = this.cpqOrderLogic.findByOrderNoAndStyleNo(datasource.get("orderNo"), datasource.get("styleNo"));
 		if (null == order) {
 			order = new CpqOrder();
@@ -210,20 +208,16 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 				return ;
 			}
 			orderItem.setColor(color);
-			if (StringUtils.isNotEmpty(item.get("sizeS"))) {
-				orderItem.setSizeS(Integer.parseInt(item.get("sizeS")));
-			}
-			if (StringUtils.isNotEmpty(item.get("sizeM"))) {
-				orderItem.setSizeM(Integer.parseInt(item.get("sizeM")));
-			}
-			if (StringUtils.isNotEmpty(item.get("sizeL"))) {
-				orderItem.setSizeL(Integer.parseInt(item.get("sizeL")));
-			}
-			if (StringUtils.isNotEmpty(item.get("sizeXL"))) {
-				orderItem.setSizeXl(Integer.parseInt(item.get("sizeXL")));
-			}
-			if (StringUtils.isNotEmpty(item.get("sizeXXL"))) {
-				orderItem.setSizeXxl(Integer.parseInt(item.get("sizeXXL")));
+			for (CpqDictionary dict : sizeDicts) {
+				String sizeParam = this.formatSizeKey(dict.getValue());
+				if (StringUtils.isNotEmpty(item.get(sizeParam))) {
+					try {
+						Method method = CpqOrderItem.class.getDeclaredMethod("set" + sizeParam, Integer.class);
+						method.invoke(orderItem, Integer.parseInt(item.get(sizeParam)));
+					} catch (Exception e) {
+						this.logger.error("{}",e);
+					}
+				}
 			}
 			this.logger.debug("********* orderItem:", orderItem.toString());
 			orderItem.setOrderId(order.getId());
@@ -258,10 +252,17 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	public void readExcels(List<String> filePaths, CpqExcelType template) {
 		for (String filePath : filePaths) {
 			FileInputStream is = null;
-			HSSFWorkbook workbook = null;
+			Workbook workbook = null;
 			try {
 				is = new FileInputStream(filePath);
-				workbook = new HSSFWorkbook(is);
+				if (filePath.endsWith(".xls")) {
+					workbook = new HSSFWorkbook(is);
+				}else if (filePath.endsWith(".xlsx")) {
+					//TODO 07
+				}else {
+					logger.info("not support file:{}", filePath);
+					return;
+				}
 				switch (template) {
 				case JIANAN:
 					this.readJiananExcel(workbook);
@@ -296,13 +297,31 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	 * 佳楠长excel解析
 	 * @param workbook
 	 */
-	private void readJiananExcel(HSSFWorkbook workbook) {
+	private void readJiananExcel(Workbook workbook) {
+		IpmConfig jiananConfig = this.configLogic.findByProperty(IpmConfigConstant.CPQ_EXCEL_JIANAN);
+		if (null == jiananConfig) {
+			logger.info("Missing 佳楠 normal configuration.");
+		}
 		Sheet helanSheet = workbook.getSheet("出荷兰");
 		Sheet hkSheet = workbook.getSheet("香港");
 		Sheet sheet01 = workbook.getSheet("01");
+		if (null == helanSheet) {
+			logger.info("sheet:{} not exist.","出荷兰");
+		}
+		if (null == hkSheet) {
+			logger.info("sheet:{} not exist.","香港");
+		}
+		if (null == sheet01) {
+			logger.info("sheet:{} not exist.","01");
+		}
 	}
 	private void readJiananExcelSheet(Sheet... sheets) {
-		
+		for (Sheet sheet : sheets) {
+			if (null != sheet) {
+				int rows = sheet.getPhysicalNumberOfRows();
+				
+			}
+		}
 	}
 
 	@Override
@@ -314,53 +333,70 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	@Resource
 	private CpqFileLogic cpqFileLogic;
 	@Override
-	public CpqFile saveFileBizValue(Attachment attachment) {
+	public CpqFile saveFileBizValue(Attachment attachment,String clothingType) {
 		CpqFile file = new CpqFile();
 		file.setFileName(attachment.getFileName());
 		file.setType(CpqFileType.getType(attachment.getFileName()));
 		file.setAttachRefId(attachment.getId());
 		file.setDeleted(Boolean.FALSE);
+		file.setUploadDate(attachment.getUploadDate());
+		file.setClothingType(CpqFileClothingType.valueOf(clothingType));
 		return this.cpqFileLogic.save(file);
 	}
 
 	@Override
 	public List<PdfVo> getPdfItems(Long pdfId) {
 		List<PdfVo> vos = new ArrayList<PdfVo>();
+		CpqFile cpqFile = this.cpqFileLogic.findOne(pdfId);
+		//获取不同类型的size列表
+		List<CpqDictionary> sizeDicts = this.cpqDictionaryLogic.findByTypeAndProperty(CpqDictionaryType.CLOTHING_CATEGORY_SIZE, cpqFile.getClothingType().toString());
+		List<String> sizes = new ArrayList<String>();
+		for (CpqDictionary dict : sizeDicts) {
+			sizes.add(this.formatSizeKey(dict.getValue()));//比如SizeS
+		}
+		
 		List<CpqOrder> orders = this.cpqOrderLogic.findByPdfId(pdfId);
 		for (CpqOrder order : orders) {
 			List<CpqOrderItem> orderItems = this.cpqOrderItemLogic.findByOrderId(order.getId());
 			for (CpqOrderItem orderItem : orderItems) {
-				vos.add(this.convert2Vo(order, orderItem));
+				vos.add(this.convert2Vo(order, orderItem,sizes));
 			}
 		}
 		return vos;
 	}
 
-	private PdfVo convert2Vo(CpqOrder order,CpqOrderItem orderItem) {
+	private PdfVo convert2Vo(CpqOrder order,CpqOrderItem orderItem,List<String> sizes) {
 		PdfVo vo = new PdfVo();
 		vo.setOrder(order.getOrderNo());
 		vo.setStyle(order.getStyleNo());
-		vo.setColour(orderItem.getColor());
-		vo.setSizeL(orderItem.getSizeL());
-		vo.setSizeM(orderItem.getSizeM());
-		vo.setSizeS(orderItem.getSizeS());
-		vo.setSizeXL(orderItem.getSizeXl());
-		vo.setSizeXXL(orderItem.getSizeXxl());
-		Integer total = this.calculateTotal(orderItem.getSizeL(),orderItem.getSizeM(),orderItem.getSizeS(),orderItem.getSizeXl(),orderItem.getSizeXxl());
-		vo.setTTL(total);
+		Integer total = 0;
+		for (String size : sizes) {
+			try {
+				Method getMethod = CpqOrderItem.class.getDeclaredMethod("get"+size);
+				Integer value = (Integer)getMethod.invoke(orderItem);
+				if (null != value) {
+					total += value;
+					Method setMethod  = PdfVo.class.getDeclaredMethod("set"+size, Integer.class);
+					setMethod.invoke(vo, value);
+				} 
+			}catch (Exception e) {
+				this.logger.error("{}",e);
+			} 
+		}
+		vo.setTtl(total);
 		if (StringUtils.isNotEmpty(order.getPrice())) {
 			vo.setTotalAmount(total * Integer.parseInt(order.getPrice()));
 		}
 		return vo;
 	}
-	
-	private Integer calculateTotal(Integer... sizes){
-		Integer total = 0;
-		for (Integer size : sizes) {
-			if (null != size) {
-				total += size;
-			}
+
+	@Override
+	public List<SelectVo> getClothingTypes() {
+		List<SelectVo> vos = new ArrayList<SelectVo>();
+		List<CpqDictionary> dictionaries = this.cpqDictionaryLogic.findByType(CpqDictionaryType.CLOTHING_CATEGORY);
+		for (CpqDictionary dict : dictionaries) {
+			vos.add(new SelectVo(dict.getProperty(), dict.getValue()));
 		}
-		return total;
+		return vos;
 	}
 }

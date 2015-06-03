@@ -30,4 +30,7 @@ public @Getter @Setter class CpqDictionary extends IpmEntity<Long>{
 	
 	@Column
 	private String value;
+	
+	@Column
+	private Integer seq;
 }

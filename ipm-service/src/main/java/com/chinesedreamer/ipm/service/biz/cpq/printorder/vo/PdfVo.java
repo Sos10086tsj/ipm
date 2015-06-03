@@ -17,8 +17,19 @@ public @Getter @Setter class PdfVo {
 	private Integer sizeS;
 	private Integer sizeM;
 	private Integer sizeL;
-	private Integer sizeXL;
-	private Integer sizeXXL;
-	private Integer tTL;
+	private Integer sizeXl;
+	private Integer sizeXxl;
+	private Integer sizeP;
+	private Integer size1;
+	private Integer size2;
+	private Integer size3;
+	private Integer size4;
+	private Integer size6;
+	private Integer size8;
+	private Integer size10;
+	private Integer size12;
+	private Integer size14;
+	private Integer size16;
+	private Integer ttl;
 	private Integer totalAmount;
 }

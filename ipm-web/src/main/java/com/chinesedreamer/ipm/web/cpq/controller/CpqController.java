@@ -22,6 +22,7 @@ import com.chinesedreamer.ipm.service.biz.cpq.printorder.constant.PrintOrderType
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.service.PrintOrderFacotry;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.service.PrintOrderService;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.PdfVo;
+import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.SelectVo;
 import com.chinesedreamer.ipm.service.supp.attachment.service.AttachmentService;
 import com.chinesedreamer.ipm.service.system.user.constant.UserConstant;
 import com.chinesedreamer.ipm.web.vo.ResponseVo;
@@ -35,7 +36,8 @@ import com.chinesedreamer.ipm.web.vo.ResponseVo;
 @Controller
 @RequestMapping(value = "cpq")
 public class CpqController {
-	
+	@Resource
+	private PrintOrderFacotry facotry;
 	@Resource
 	private AttachmentService attachmentService;
 	
@@ -45,7 +47,7 @@ public class CpqController {
 	 * @return
 	 */
 	@RequestMapping(value = "pdf", method = RequestMethod.GET)
-	public String showPdf(Model model){
+	public String showPdf(Model model){	
 		return "/cpq/pdf";
 	}
 	
@@ -58,6 +60,12 @@ public class CpqController {
 	@RequestMapping(value = "getPdfStore/{pdfId}", method = RequestMethod.GET)
 	public List<PdfVo> getPdfStore(Model model,@PathVariable Long pdfId){
 		return this.facotry.getService(PrintOrderType.CPQ).getPdfItems(pdfId);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "getClothingTypeStore", method = RequestMethod.GET)
+	public List<SelectVo> getClothingTypeStore(){
+		return this.facotry.getService(PrintOrderType.CPQ).getClothingTypes();
 	}
 	
 	/**
@@ -144,8 +152,7 @@ public class CpqController {
 	}
 
 	/*****************************/
-	@Resource
-	private PrintOrderFacotry facotry;
+	
 	@RequestMapping(value = "uploadPdf",method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseVo uploadPdf(Model model,HttpServletRequest request,
@@ -154,7 +161,8 @@ public class CpqController {
 		Attachment attachment = this.attachmentService.save(pdf, UserConstant.NO_USER_ID);
 		PrintOrderService service = this.facotry.getService(PrintOrderType.CPQ);
 		//2. 保存pdf业务对象
-		CpqFile cpqFile = service.saveFileBizValue(attachment);
+		String clothingType = request.getParameter("clothingType").trim();
+		CpqFile cpqFile = service.saveFileBizValue(attachment,clothingType);
 		//3. 解析pdf
 		service.readPdf(attachment.getFilePath(),cpqFile);
 		ResponseVo vo = new ResponseVo();

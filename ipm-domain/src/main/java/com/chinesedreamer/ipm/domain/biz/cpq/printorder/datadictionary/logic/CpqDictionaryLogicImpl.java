@@ -17,18 +17,13 @@ public class CpqDictionaryLogicImpl extends IpmLogicImpl<CpqDictionary, Long> im
 	private CpqDictionaryRepository repository;
 	
 	@Override
-	public CpqDictionary findByTypeAndProperty(CpqDictionaryType type, String property) {
-		return this.repository.findByTypeAndProperty(type, property);
-	}
-
-	@Override
-	public CpqDictionary findByTypeAndValue(CpqDictionaryType type, String value) {
-		return this.repository.findByTypeAndValue(type, value);
+	public List<CpqDictionary> findByTypeAndProperty(CpqDictionaryType type, String property) {
+		return this.repository.findByTypeAndPropertyOrderBySeqAsc(type, property);
 	}
 
 	@Override
 	public List<CpqDictionary> findByType(CpqDictionaryType type) {
-		return this.repository.findByType(type);
+		return this.repository.findByTypeOrderBySeqAsc(type);
 	}
 
 }

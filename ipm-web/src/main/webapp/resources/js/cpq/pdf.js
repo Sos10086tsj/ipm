@@ -1,6 +1,7 @@
 ipm.cpq = {
 	pdf : {
 		init : function(){
+			var clothingTypeStore = ipm.cpq.pdf.store.clothingType();
 			//文件上传
 			var fileUpload = Ext.create('Ext.form.Panel',{
 				renderTo: 'btn_pdf_upload',
@@ -9,6 +10,15 @@ ipm.cpq = {
     			bodyPadding: 10,
     			frame: true,
         		items : [
+        		{
+        			xtype: 'combobox',
+        			name: 'clothingType',
+        			fieldLabel: '服装类型',
+    				store: clothingTypeStore,
+    				queryMode: 'remote',
+    				displayField: 'label',
+    				valueField: 'value'
+        		},
         		{
         			xtype: 'filefield',
         			name: 'pdf',
@@ -36,6 +46,7 @@ ipm.cpq = {
                     					//store.proxy.conn.url = ctx + '/cpq/getPdfStore/' + response.data.pdfId;
                     					//store.proxy = new Ext.data.HttpProxy({url: ctx + '/cpq/getPdfStore/' + response.data.pdfId });
                     					store.proxy.url = ctx + '/cpq/getPdfStore/' + response.data.pdfId;
+                    					//TODO 隐藏不需要的列 grid.columns[i].setVisible(false/true); grid.columns[i].hide()/show()
                     					store.reload();
                     				}else{
                     					ipm.extjs.warningResult('提示','系统异常，请重试');
@@ -72,9 +83,9 @@ ipm.cpq = {
 	            				sizeS:record.get('sizeS'),
 	            				sizeM:record.get('sizeM'),
 	            				sizeL:record.get('sizeL'),
-	            				sizeXL:record.get('sizeXL'),
-	            				sizeXXL:record.get('sizeXXL'),
-	            				tTL:record.get('tTL'),
+	            				sizeXL:record.get('sizeXl'),
+	            				sizeXXL:record.get('sizeXxl'),
+	            				tTL:record.get('ttl'),
 	            				totalAmount:record.get('totalAmount')
 		        			},
 		        			success : function(response){
@@ -94,7 +105,7 @@ ipm.cpq = {
 		        	}
 		        }
 		    });
-			var store = ipm.cpq.pdf.store.init();
+			var store = ipm.cpq.pdf.store.grid();
 		    var grid = Ext.create('Ext.grid.Panel', {
 		        store: store,
 		        columns: [{
@@ -122,7 +133,7 @@ ipm.cpq = {
 		            }
 		        },{
 		            xtype: 'numbercolumn',
-		            header: 'sizeS',
+		            header: 'Size S',
 		            dataIndex: 'sizeS',
 		            format:'0',
 		            width: 60,
@@ -134,7 +145,7 @@ ipm.cpq = {
 		            }
 		        }, {
 		            xtype: 'numbercolumn',
-		            header: 'sizeM',
+		            header: 'Size M',
 		            dataIndex: 'sizeM',
 		            format:'0',
 		            width: 60,
@@ -146,7 +157,7 @@ ipm.cpq = {
 		            }
 		        },{
 		            xtype: 'numbercolumn',
-		            header: 'sizeL',
+		            header: 'Size L',
 		            dataIndex: 'sizeL',
 		            format:'0',
 		            width: 60,
@@ -158,8 +169,8 @@ ipm.cpq = {
 		            }
 		        },{
 		            xtype: 'numbercolumn',
-		            header: 'sizeXL',
-		            dataIndex: 'sizeXL',
+		            header: 'Size XL',
+		            dataIndex: 'sizeXl',
 		            format:'0',
 		            width: 60,
 		            editor: {
@@ -170,8 +181,8 @@ ipm.cpq = {
 		            }
 		        },{
 		            xtype: 'numbercolumn',
-		            header: 'sizeXXL',
-		            dataIndex: 'sizeXXL',
+		            header: 'Size XXL',
+		            dataIndex: 'sizeXxl',
 		            format:'0',
 		            width: 60,
 		            editor: {
@@ -183,8 +194,138 @@ ipm.cpq = {
 		        },
 		        {
 		            xtype: 'numbercolumn',
-		            header: 'tTL',
-		            dataIndex: 'tTL',
+		            header: 'Size P',
+		            dataIndex: 'sizeP',
+		            format:'0',
+		            width: 60,
+		            editor: {
+		                xtype: 'numberfield',
+		                allowBlank: false,
+		                minValue: 1,
+		                maxValue: 150000
+		            }
+		        },
+		        {
+		            xtype: 'numbercolumn',
+		            header: 'Size 1',
+		            dataIndex: 'size1',
+		            format:'0',
+		            width: 60,
+		            editor: {
+		                xtype: 'numberfield',
+		                allowBlank: false,
+		                minValue: 1,
+		                maxValue: 150000
+		            }
+		        },
+		        {
+		            xtype: 'numbercolumn',
+		            header: 'Size 2',
+		            dataIndex: 'size2',
+		            format:'0',
+		            width: 60,
+		            editor: {
+		                xtype: 'numberfield',
+		                allowBlank: false,
+		                minValue: 1,
+		                maxValue: 150000
+		            }
+		        },
+		        {
+		            xtype: 'numbercolumn',
+		            header: 'Size 4',
+		            dataIndex: 'size4',
+		            format:'0',
+		            width: 60,
+		            editor: {
+		                xtype: 'numberfield',
+		                allowBlank: false,
+		                minValue: 1,
+		                maxValue: 150000
+		            }
+		        },
+		        {
+		            xtype: 'numbercolumn',
+		            header: 'Size 6',
+		            dataIndex: 'size6',
+		            format:'0',
+		            width: 60,
+		            editor: {
+		                xtype: 'numberfield',
+		                allowBlank: false,
+		                minValue: 1,
+		                maxValue: 150000
+		            }
+		        },
+		        {
+		            xtype: 'numbercolumn',
+		            header: 'Size 8',
+		            dataIndex: 'size8',
+		            format:'0',
+		            width: 60,
+		            editor: {
+		                xtype: 'numberfield',
+		                allowBlank: false,
+		                minValue: 1,
+		                maxValue: 150000
+		            }
+		        },
+		        {
+		            xtype: 'numbercolumn',
+		            header: 'Size 10',
+		            dataIndex: 'size10',
+		            format:'0',
+		            width: 60,
+		            editor: {
+		                xtype: 'numberfield',
+		                allowBlank: false,
+		                minValue: 1,
+		                maxValue: 150000
+		            }
+		        },
+		        {
+		            xtype: 'numbercolumn',
+		            header: 'Size 12',
+		            dataIndex: 'size12',
+		            format:'0',
+		            width: 60,
+		            editor: {
+		                xtype: 'numberfield',
+		                allowBlank: false,
+		                minValue: 1,
+		                maxValue: 150000
+		            }
+		        },
+		        {
+		            xtype: 'numbercolumn',
+		            header: 'Size 14',
+		            dataIndex: 'size14',
+		            format:'0',
+		            width: 60,
+		            editor: {
+		                xtype: 'numberfield',
+		                allowBlank: false,
+		                minValue: 1,
+		                maxValue: 150000
+		            }
+		        },
+		        {
+		            xtype: 'numbercolumn',
+		            header: 'Size 16',
+		            dataIndex: 'size16',
+		            format:'0',
+		            width: 60,
+		            editor: {
+		                xtype: 'numberfield',
+		                allowBlank: false,
+		                minValue: 1,
+		                maxValue: 150000
+		            }
+		        },
+		        {
+		            xtype: 'numbercolumn',
+		            header: 'ttl',
+		            dataIndex: 'ttl',
 		            format:'0',
 		            width: 60
 		        },

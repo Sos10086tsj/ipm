@@ -1,5 +1,6 @@
 package com.chinesedreamer.ipm.domain.biz.cpq.file.model;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -12,10 +13,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.Getter;
 import lombok.Setter;
 
 import com.chinesedreamer.ipm.domain.base.model.IpmLogicDeleteEntity;
+import com.chinesedreamer.ipm.domain.biz.cpq.file.constant.CpqFileClothingType;
 import com.chinesedreamer.ipm.domain.biz.cpq.file.constant.CpqFileType;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.model.CpqOrder;
 import com.chinesedreamer.ipm.domain.supp.attachment.model.Attachment;
@@ -38,6 +42,14 @@ public @Getter @Setter class CpqFile extends IpmLogicDeleteEntity<Long>{
 	
 	@Column(name = "attach_ref_id")
 	private Long attachRefId;//附件id
+	
+	@Column(name = "upload_date")
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date uploadDate;
+	
+	@Column(name = "clothing_type")
+	@Enumerated(EnumType.ORDINAL)
+	private CpqFileClothingType clothingType;
 	
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "attach_ref_id", referencedColumnName = "id", insertable = false, updatable =false)
