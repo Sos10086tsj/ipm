@@ -103,7 +103,7 @@ ipm.cpq.pdf.store = {
 		             root : ''
 		         }
 			},
-			autoLoad : true
+			autoLoad : false
 		});
 		return pdfSelectStore;
 	}

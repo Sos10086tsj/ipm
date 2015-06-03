@@ -1,5 +1,6 @@
 ipm.cpq = {
 	pdf : {
+		grid : null,
 		init : function(){
 			var clothingTypeStore = ipm.cpq.pdf.store.clothingType();
 			//文件上传
@@ -44,7 +45,7 @@ ipm.cpq = {
                     			success: function(fp, o) {
                     				var response = Ext.decode(o.response.responseText);
                     				if(response.success){
-                    					ipm.cpq.pdf.reloadStore(grid,store,response.data.pdfId,response.data.clothingType);
+                    					ipm.cpq.pdf.reloadStore(response.data.pdfId,response.data.clothingType);
                     				}else{
                     					ipm.extjs.warningResult('提示','系统异常，请重试');
                     				}
@@ -114,7 +115,7 @@ ipm.cpq = {
 		        }
 		    });
 			var store = ipm.cpq.pdf.store.grid();
-		    var grid = Ext.create('Ext.grid.Panel', {
+		    ipm.cpq.pdf.grid = Ext.create('Ext.grid.Panel', {
 		        store: store,
 		        columns: [{
 		            header: 'order',
@@ -144,7 +145,7 @@ ipm.cpq = {
 		            header: 'Size S',
 		            dataIndex: 'sizeS',
 		            format:'0',
-		            width: 60,
+		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
 		                allowBlank: false,
@@ -156,7 +157,7 @@ ipm.cpq = {
 		            header: 'Size M',
 		            dataIndex: 'sizeM',
 		            format:'0',
-		            width: 60,
+		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
 		                allowBlank: false,
@@ -168,7 +169,7 @@ ipm.cpq = {
 		            header: 'Size L',
 		            dataIndex: 'sizeL',
 		            format:'0',
-		            width: 60,
+		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
 		                allowBlank: false,
@@ -180,7 +181,7 @@ ipm.cpq = {
 		            header: 'Size XL',
 		            dataIndex: 'sizeXl',
 		            format:'0',
-		            width: 60,
+		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
 		                allowBlank: false,
@@ -192,7 +193,7 @@ ipm.cpq = {
 		            header: 'Size XXL',
 		            dataIndex: 'sizeXxl',
 		            format:'0',
-		            width: 60,
+		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
 		                allowBlank: false,
@@ -218,7 +219,7 @@ ipm.cpq = {
 		            header: 'Size 1',
 		            dataIndex: 'size1',
 		            format:'0',
-		            width: 60,
+		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
 		                allowBlank: false,
@@ -231,7 +232,20 @@ ipm.cpq = {
 		            header: 'Size 2',
 		            dataIndex: 'size2',
 		            format:'0',
-		            width: 60,
+		            width: 90,
+		            editor: {
+		                xtype: 'numberfield',
+		                allowBlank: false,
+		                minValue: 1,
+		                maxValue: 150000
+		            }
+		        },
+		        {
+		            xtype: 'numbercolumn',
+		            header: 'Size 3',
+		            dataIndex: 'size3',
+		            format:'0',
+		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
 		                allowBlank: false,
@@ -244,7 +258,7 @@ ipm.cpq = {
 		            header: 'Size 4',
 		            dataIndex: 'size4',
 		            format:'0',
-		            width: 60,
+		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
 		                allowBlank: false,
@@ -257,7 +271,7 @@ ipm.cpq = {
 		            header: 'Size 6',
 		            dataIndex: 'size6',
 		            format:'0',
-		            width: 60,
+		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
 		                allowBlank: false,
@@ -270,7 +284,7 @@ ipm.cpq = {
 		            header: 'Size 8',
 		            dataIndex: 'size8',
 		            format:'0',
-		            width: 60,
+		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
 		                allowBlank: false,
@@ -283,7 +297,7 @@ ipm.cpq = {
 		            header: 'Size 10',
 		            dataIndex: 'size10',
 		            format:'0',
-		            width: 60,
+		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
 		                allowBlank: false,
@@ -296,7 +310,7 @@ ipm.cpq = {
 		            header: 'Size 12',
 		            dataIndex: 'size12',
 		            format:'0',
-		            width: 60,
+		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
 		                allowBlank: false,
@@ -309,7 +323,7 @@ ipm.cpq = {
 		            header: 'Size 14',
 		            dataIndex: 'size14',
 		            format:'0',
-		            width: 60,
+		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
 		                allowBlank: false,
@@ -322,7 +336,7 @@ ipm.cpq = {
 		            header: 'Size 16',
 		            dataIndex: 'size16',
 		            format:'0',
-		            width: 60,
+		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
 		                allowBlank: false,
@@ -335,17 +349,19 @@ ipm.cpq = {
 		            header: 'ttl',
 		            dataIndex: 'ttl',
 		            format:'0',
-		            width: 60
-		        },
-		        {
-		            xtype: 'numbercolumn',
-		            header: 'totalAmount',
-		            dataIndex: 'totalAmount',
-		            format: '$0,0',
 		            width: 90
-		        }],
+		        }
+//		        ,
+//		        {
+//		            xtype: 'numbercolumn',
+//		            header: 'totalAmount',
+//		            dataIndex: 'totalAmount',
+//		            format: '$0,0',
+//		            width: 90
+//		        }
+		        ],
 		        renderTo: 'pdf_grid',
-		        width: 870,
+		        width: 1000,
 		        height: 600,
 		        title: 'Customer Orders',
 		        frame: true,
@@ -363,9 +379,20 @@ ipm.cpq = {
 		                	'sizeS':'',
 		                	'sizeM':'',
 		                	'sizeL':'',
-		                	'sizeXL':'',
-		                	'sizeXXL':'',
-		                	'tTL':'',
+		                	'sizeXl':'',
+		                	'sizeXxl':'',
+		                	'sizeP':'',
+		                	'size1':'',
+		                	'size2':'',
+		                	'size3':'',
+		                	'size4':'',
+		                	'size6':'',
+		                	'size8':'',
+		                	'size10':'',
+		                	'size12':'',
+		                	'size14':'',
+		                	'size16':'',
+		                	'ttl':'',
 		                	'totalAmount':'0'
 		                });
 
@@ -390,9 +417,9 @@ ipm.cpq = {
 		        {
         			xtype: 'combobox',
         			name: 'pdfId',
-        			fieldLabel: '选择上传过的pdf',
+        			fieldLabel: '已经上传的pdf',
         			width:550,
-        			labelWidth:120,
+        			labelWidth:100,
     				store: ipm.cpq.pdf.store.uploadedPdf(),
     				queryMode: 'remote',
     				displayField: 'label',
@@ -401,8 +428,8 @@ ipm.cpq = {
     				listeners:{
     					select:function(combo,record,opts) {
     						var pdfId = record[0].get("value");
-    						var pdfId = record[0].get("clothingType");
-    						ipm.cpq.pdf.reloadStore(grid,store,pdfId);
+    						var clothingType = record[0].get("clothingType");
+    						ipm.cpq.pdf.reloadStore(pdfId,clothingType);
    						}
     				}
         		}
@@ -416,7 +443,9 @@ ipm.cpq = {
 		    });
 		},
 		
-		reloadStore : function(grid,store,pdfId, clothingType){
+		reloadStore : function(pdfId, clothingType){
+			var grid = ipm.cpq.pdf.grid;
+			var store = grid.store;
 			store.proxy.url = ctx + '/cpq/getPdfStore/' + pdfId;
             //TODO 隐藏不需要的列 grid.columns[i].setVisible(false/true); grid.columns[i].hide()/show()
 			//1. 全部隐藏
@@ -424,7 +453,7 @@ ipm.cpq = {
 				grid.columns[i].hide();
 			}
 			//2. 开发部分
-			if(clothingType == 'MALE'){//男 Size S,Size M,Size L,Size XL,Size XXL
+			if(clothingType == 'MALE'){//男 Size S,Size M,Size L,Size XL,Size XXL    3~7
 				for(var i = 3; i < 8 ; i++){
 					grid.columns[i].show();
 				}
@@ -433,7 +462,7 @@ ipm.cpq = {
 					grid.columns[i].show();
 				}
 			}else if(clothingType == 'BOY' || clothingType == 'GIRL'){//男童 Size 4,Size 6,Size 8,Size 10,Size 12,Size 14,Size 16
-				for(var i = 12; i < 19 ; i++){
+				for(var i = 11; i < 19 ; i++){
 					grid.columns[i].show();
 				}
 			}else{

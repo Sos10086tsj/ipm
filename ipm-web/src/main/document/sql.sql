@@ -139,8 +139,8 @@ ADD COLUMN `size_12` INT NULL AFTER `size_10`,
 ADD COLUMN `size_14` INT NULL AFTER `size_12`,
 ADD COLUMN `size_16` INT NULL AFTER `size_14`;
 
-UPDATE `ipm`.`ipm_biz_cpq_data_dictionary` SET `value`='男童' WHERE `type`='2' AND 'property' = 'BOY';
-UPDATE `ipm`.`ipm_biz_cpq_data_dictionary` SET `value`='女童' WHERE `type`='2' AND 'property' = 'GIRL';
+UPDATE `ipm`.`ipm_biz_cpq_data_dictionary` SET `value`='男童' WHERE `type`='2' AND `property` = 'BOY';
+UPDATE `ipm`.`ipm_biz_cpq_data_dictionary` SET `value`='女童' WHERE `type`='2' AND `property` = 'GIRL';
 
 ALTER TABLE `ipm`.`ipm_biz_cpq_file` 
 ADD COLUMN `deleted` TINYINT(1) NULL AFTER `clothing_type`;

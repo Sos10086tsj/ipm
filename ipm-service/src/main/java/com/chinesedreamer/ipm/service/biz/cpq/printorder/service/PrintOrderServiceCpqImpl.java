@@ -178,6 +178,14 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	}
 	
 	private String formatSizeKey(String sizeParam) {
+		sizeParam = sizeParam.replace(" ", "");//去空格
+		//Size XL, Size XXL 单独处理
+		if ("SizeXL".equals(sizeParam)) {
+			sizeParam = "SizeXl";
+		}
+		if ("SizeXXL".equals(sizeParam)) {
+			sizeParam = "SizeXxl";
+		}
 		return sizeParam.replace(" ", "");
 	}
 	
@@ -321,6 +329,9 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		for (Sheet sheet : sheets) {
 			if (null != sheet) {
 				int rows = sheet.getPhysicalNumberOfRows();
+				if (rows < 1) {
+					this.logger.info("sheet:{} is empty.",sheet.getSheetName());
+				}
 				
 			}
 		}
@@ -371,6 +382,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		PdfVo vo = new PdfVo();
 		vo.setOrder(order.getOrderNo());
 		vo.setStyle(order.getStyleNo());
+		vo.setColour(orderItem.getColor());
 		Integer total = 0;
 		for (String size : sizes) {
 			try {
@@ -407,7 +419,9 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		List<CpqFile> files = this.cpqFileLogic.findAllOrderByUploadDate();
 		List<PdfSelectVo> vos = new ArrayList<PdfSelectVo>();
 		for (CpqFile file : files) {
-			vos.add(new PdfSelectVo(file.getId().toString(), file.getFileName() + "(" + DateFormatUtils.format(file.getUploadDate(), "MM/dd HH:mm") + ")", file.getClothingType().toString()));
+			if(!this.cpqOrderLogic.findByPdfId(file.getId()).isEmpty()){
+				vos.add(new PdfSelectVo(file.getId().toString(), file.getFileName() + "(" + DateFormatUtils.format(file.getUploadDate(), "MM/dd HH:mm") + ")", file.getClothingType().toString()));
+			}
 		}
 		return vos;
 	}
