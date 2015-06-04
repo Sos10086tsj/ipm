@@ -13,13 +13,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 import lombok.Getter;
 import lombok.Setter;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.chinesedreamer.ipm.domain.base.model.IpmEntity;
-import com.chinesedreamer.ipm.domain.base.model.IpmLogicDeleteEntity;
 import com.chinesedreamer.ipm.domain.biz.cpq.file.constant.CpqFileClothingType;
 import com.chinesedreamer.ipm.domain.biz.cpq.file.constant.CpqFileType;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.model.CpqOrder;
@@ -54,6 +53,9 @@ public @Getter @Setter class CpqFile extends IpmEntity<Long>{
 	
 	@Column(name = "deleted",columnDefinition = "TINYINT(1)")
 	private Boolean deleted = Boolean.FALSE;
+	
+	@Column
+	private String owner;
 	
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "attach_ref_id", referencedColumnName = "id", insertable = false, updatable =false)

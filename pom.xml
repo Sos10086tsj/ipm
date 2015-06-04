@@ -47,6 +47,7 @@
 		<org.antlr.version>2.7.6</org.antlr.version>
 		<org.apache.pdfbox.version>1.8.8</org.apache.pdfbox.version>
 		<org.apache.poi.version>3.11</org.apache.poi.version>
+		<druid.version>1.0.7</druid.version>
 	</properties>
 
 	<dependencyManagement>
@@ -339,6 +340,13 @@
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi</artifactId>
 				<version>${org.apache.poi.version}</version>
+			</dependency>
+
+			<!-- druid -->
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>druid</artifactId>
+				<version>${druid.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

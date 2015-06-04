@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>订单PDF order 解析结果</title>
+<title>订单PDF解析</title>
 </head>
 <body>
 	<div>
@@ -12,7 +12,7 @@
 		<div id="btn_pdf_upload"></div>
 	</div>
 	<div>
-		<h1>PDF Order 解析结果</h1>
+		<h1>Excel解析结果</h1>
 		<p>请仔细审核解析的结果，如果有问题，请即时修改</p>
 		<div id="pdf_grid"></div>
 	</div>

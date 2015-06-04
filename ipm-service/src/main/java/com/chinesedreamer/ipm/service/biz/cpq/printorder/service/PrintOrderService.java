@@ -15,13 +15,6 @@ import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.SelectVo;
  *
  */
 public interface PrintOrderService {
-	
-	/**
-	 * 读取excel工厂文件
-	 * @param filePaths
-	 */
-	public void readExcels(List<String> filePaths, CpqExcelType template);
-	
 	/**
 	 * 打印订单
 	 * @param template
@@ -35,7 +28,7 @@ public interface PrintOrderService {
 	 * @param clothingType 衣服类型
 	 * @return
 	 */
-	public CpqFile saveFileBizValue(Attachment attachment,String clothingType);
+	public CpqFile saveFileBizValue(Attachment attachment,String clothingType, String owner);
 	
 	/**
 	 * 读取pdf客户文件
@@ -61,4 +54,18 @@ public interface PrintOrderService {
 	 * @return
 	 */
 	public List<PdfSelectVo> getUploadedPdfStore();
+	
+	
+	/***********excel **************/
+	/**
+	 * 获取工厂列表
+	 * @return
+	 */
+	public List<SelectVo> getManufactoryStore();
+	
+	/**
+	 * 读取excel工厂文件
+	 * @param filePaths
+	 */
+	public void readExcel(String filePath, CpqExcelType template, CpqFile cpqFile);
 }

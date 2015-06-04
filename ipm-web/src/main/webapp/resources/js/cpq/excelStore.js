@@ -1,60 +1,52 @@
 ipm.cpq.excel.store = {
-	init : function(){
-		var excelModel = Ext.define('excelModel', {
+	//excel工厂列表
+	getManufactorySotre : function(){
+		var manufactoryModel = Ext.define('manufactoryModel', {
 	        extend: 'Ext.data.Model',
 	        fields: [
-	            'order',
-	            'style',
-	            'from',
-	            'to',
-	            'colour',
-	            'sizeS',
-	            'sizeM',
-	            'sizeL',
-	            'sizeXL',
-	            'sizeXXL',
-	            'box',
-	            'qty',
-	            'grossWeight',
-	            'netWeight'
+	            'value',
+	            'label'
 	        ]
 		});
 		
-		var excelStore = Ext.create('Ext.data.Store',{
-			model: excelModel,
+		var manufactorySotre = Ext.create('Ext.data.Store',{
+			model: manufactoryModel,
 			proxy : {
 				type: 'ajax',
-				url : '/cpq/getExcelStore',
+				url : ctx + '/cpq/excel/getManufactoryStore',
 				method : 'get',
 				reader: {
 		             type: 'json',
 		             root : ''
 		         }
 			},
-			autoLoad : true,
-			sorters: [
-				{
-					property: 'order',
-					direction: 'ASC'
-				},
-				{
-					property: 'style',
-					direction: 'ASC'
-				},
-				{
-					property: 'from',
-					direction: 'ASC'
-				},
-				{
-					property: 'to',
-					direction: 'ASC'
-				},
-				{
-					property: 'colour',
-					direction: 'ASC'
-				}
-				]
+			autoLoad : true
 		});
-		return excelStore;
+		return manufactorySotre;
+	},
+	
+	getClothingTypeStore : function(){
+		var clothingTypeModel = Ext.define('clothingTypeModel', {
+	        extend: 'Ext.data.Model',
+	        fields: [
+	            'value',
+	            'label'
+	        ]
+		});
+		
+		var clothingTypeStore = Ext.create('Ext.data.Store',{
+			model: clothingTypeModel,
+			proxy : {
+				type: 'ajax',
+				url : ctx + '/cpq/getClothingTypeStore/',
+				method : 'get',
+				reader: {
+		             type: 'json',
+		             root : ''
+		         }
+			},
+			autoLoad : true
+		});
+		return clothingTypeStore;
 	}
 };

@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.chinesedreamer.ipm.domain.biz.cpq.file.model.CpqFile;
 import com.chinesedreamer.ipm.domain.supp.attachment.model.Attachment;
+import com.chinesedreamer.ipm.service.biz.cpq.printorder.constant.CpqExcelType;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.constant.PrintOrderType;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.service.PrintOrderFacotry;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.service.PrintOrderService;
@@ -91,27 +92,82 @@ public class CpqController {
 	@ResponseBody
 	@RequestMapping(value = "updatePdfRow", method = RequestMethod.POST)
 	public ResponseVo updatePdfRow(HttpServletRequest request){
-		String order = request.getParameter("order").trim();
-		String style = request.getParameter("style").trim();
-		String colour = request.getParameter("colour").trim();
-		String sizeS = request.getParameter("sizeS").trim();
-		String sizeM = request.getParameter("sizeM").trim();
-		String sizeL = request.getParameter("sizeL").trim();
-		String sizeXL = request.getParameter("sizeXL").trim();
-		String sizeXXL = request.getParameter("sizeXXL").trim();
-		System.out.println("params:");
-		System.out.println("order:" + order);
-		System.out.println("style:" + style);
-		System.out.println("colour:" + colour);
-		System.out.println("sizeS:" + sizeS);
-		System.out.println("sizeM:" + sizeM);
-		System.out.println("sizeL:" + sizeL);
-		System.out.println("sizeXL:" + sizeXL);
-		System.out.println("sizeXXL:" + sizeXXL);
+		//TODO 
 		ResponseVo vo = new ResponseVo();
 		vo.setSuccess(Boolean.TRUE);
 		return vo;
 	}
+	
+	/**
+	 * 上传pdf文件
+	 * @param model
+	 * @param request
+	 * @param pdf
+	 * @return
+	 */
+	@RequestMapping(value = "uploadPdf",method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseVo uploadPdf(Model model,HttpServletRequest request,
+			@RequestParam(value = "pdf", required = true)MultipartFile pdf){
+		//1. 保存附件
+		Attachment attachment = this.attachmentService.save(pdf, UserConstant.NO_USER_ID);
+		PrintOrderService service = this.facotry.getService(PrintOrderType.CPQ);
+		//2. 保存pdf业务对象
+		String clothingType = request.getParameter("clothingType").trim();
+		CpqFile cpqFile = service.saveFileBizValue(attachment,clothingType,"CUSTOMER");
+		//3. 解析pdf
+		service.readPdf(attachment.getFilePath(),cpqFile);
+		ResponseVo vo = new ResponseVo();
+		vo.setSuccess(Boolean.TRUE);
+		Map<String, String> rst = new HashMap<String, String>();
+		rst.put("pdfId", cpqFile.getId().toString());
+		rst.put("clothingType", cpqFile.getClothingType().toString());
+		vo.setData(rst);
+		return vo;
+	}
+	
+	/******************** excel 部分 *******************/
+	@RequestMapping(value = "excel", method = RequestMethod.GET)
+	public String showExcel(Model model){	
+		return "/cpq/excel";
+	}
+	
+	
+	/**
+	 * 获取工厂列表
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "excel/getManufactoryStore", method = RequestMethod.GET)
+	public List<SelectVo> getManufactoryStore(){
+		return this.facotry.getService(PrintOrderType.CPQ).getManufactoryStore();
+	}
+	
+	@RequestMapping(value = "uploadExcel",method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseVo uploadExcel(Model model,HttpServletRequest request,
+			@RequestParam(value = "excels", required = true)MultipartFile[] excels){
+		//1. 保存附件
+		String clothingType = request.getParameter("clothingType").trim();
+		String manufactory = request.getParameter("manufactory").trim();
+		StringBuffer fileIds = new StringBuffer();
+		for (MultipartFile excel : excels) {
+			Attachment attachment = this.attachmentService.save(excel, UserConstant.NO_USER_ID);
+			PrintOrderService service = this.facotry.getService(PrintOrderType.CPQ);
+			CpqFile cpqFile = service.saveFileBizValue(attachment,clothingType,manufactory);
+			service.readExcel(attachment.getFilePath(), CpqExcelType.valueOf(manufactory), cpqFile);
+			fileIds.append(cpqFile.getId())
+			.append(",");
+		}
+		ResponseVo vo = new ResponseVo();
+		vo.setSuccess(Boolean.TRUE);
+		Map<String, String> rst = new HashMap<String, String>();
+		rst.put("excelIds", fileIds.toString().substring(0, fileIds.length() - 1));
+		rst.put("clothingType", clothingType);
+		vo.setData(rst);
+		return vo;
+	}
+	
 	
 	/**
 	 * 获取excel order 信息
@@ -163,29 +219,6 @@ public class CpqController {
 		System.out.println("netWeight:" + netWeight);
 		ResponseVo vo = new ResponseVo();
 		vo.setSuccess(Boolean.TRUE);
-		return vo;
-	}
-
-	/*****************************/
-	
-	@RequestMapping(value = "uploadPdf",method = RequestMethod.POST)
-	@ResponseBody
-	public ResponseVo uploadPdf(Model model,HttpServletRequest request,
-			@RequestParam(value = "pdf", required = true)MultipartFile pdf){
-		//1. 保存附件
-		Attachment attachment = this.attachmentService.save(pdf, UserConstant.NO_USER_ID);
-		PrintOrderService service = this.facotry.getService(PrintOrderType.CPQ);
-		//2. 保存pdf业务对象
-		String clothingType = request.getParameter("clothingType").trim();
-		CpqFile cpqFile = service.saveFileBizValue(attachment,clothingType);
-		//3. 解析pdf
-		service.readPdf(attachment.getFilePath(),cpqFile);
-		ResponseVo vo = new ResponseVo();
-		vo.setSuccess(Boolean.TRUE);
-		Map<String, String> rst = new HashMap<String, String>();
-		rst.put("pdfId", cpqFile.getId().toString());
-		rst.put("clothingType", cpqFile.getClothingType().toString());
-		vo.setData(rst);
 		return vo;
 	}
 }

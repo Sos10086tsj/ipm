@@ -36,6 +36,8 @@ import com.chinesedreamer.ipm.domain.biz.cpq.printorder.datadictionary.model.Cpq
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.item.logic.CpqOrderItemLogic;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.item.model.CpqOrderItem;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.logic.CpqOrderLogic;
+import com.chinesedreamer.ipm.domain.biz.cpq.printorder.manufacotry.logic.CpqManufacotryOrderItemLogic;
+import com.chinesedreamer.ipm.domain.biz.cpq.printorder.manufacotry.model.CpqManufacotryOrderItem;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.model.CpqOrder;
 import com.chinesedreamer.ipm.domain.supp.attachment.model.Attachment;
 import com.chinesedreamer.ipm.domain.system.config.constant.IpmConfigConstant;
@@ -72,6 +74,8 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	private IpmConfigLogic configLogic;
 	@Resource
 	private CpqFileLogic cpqFileLogic;
+	@Resource
+	private CpqManufacotryOrderItemLogic cpqManufacotryOrderItemLogic;
 	
 	private Map<String, String> errorMap = new HashMap<String, String>();
 	
@@ -263,45 +267,43 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	}
 
 	@Override
-	public void readExcels(List<String> filePaths, CpqExcelType template) {
-		for (String filePath : filePaths) {
-			FileInputStream is = null;
-			Workbook workbook = null;
-			try {
-				is = new FileInputStream(filePath);
-				if (filePath.endsWith(".xls")) {
-					workbook = new HSSFWorkbook(is);
-				}else if (filePath.endsWith(".xlsx")) {
-					//TODO 07
-				}else {
-					logger.info("not support file:{}", filePath);
-					return;
+	public void readExcel(String filePath, CpqExcelType template, CpqFile cpqFile) {
+		FileInputStream is = null;
+		Workbook workbook = null;
+		try {
+			is = new FileInputStream(filePath);
+			if (filePath.endsWith(".xls")) {
+				workbook = new HSSFWorkbook(is);
+			}else if (filePath.endsWith(".xlsx")) {
+				//TODO 07
+			}else {
+				logger.info("not support file:{}", filePath);
+				return;
+			}
+			switch (template) {
+			case JIANAN:
+				this.readJiananExcel(workbook, cpqFile.getClothingType().toString());
+				break;
+			case PUTIANMU:
+				break;
+			default:
+				break;
+			}
+		} catch (Exception e) {
+			this.logger.error("{}",e);
+		}finally{
+			if (null != workbook) {
+				try {
+					workbook.close();
+				} catch (IOException e) {
+					this.logger.error("{}",e);
 				}
-				switch (template) {
-				case JIANAN:
-					this.readJiananExcel(workbook);
-					break;
-				case PUTIANMU:
-					break;
-				default:
-					break;
-				}
-			} catch (Exception e) {
-				this.logger.error("{}",e);
-			}finally{
-				if (null != workbook) {
-					try {
-						workbook.close();
-					} catch (IOException e) {
-						this.logger.error("{}",e);
-					}
-				}
-				if (null != is) {
-					try {
-						is.close();
-					} catch (IOException e) {
-						this.logger.error("{}",e);
-					}
+			}
+			if (null != is) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					this.logger.error("{}",e);
 				}
 			}
 		}
@@ -311,25 +313,34 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	 * 佳楠长excel解析
 	 * @param workbook
 	 */
-	private void readJiananExcel(Workbook workbook) {
+	private void readJiananExcel(Workbook workbook, String clothingType) {
 		IpmConfig jiananConfig = this.configLogic.findByProperty(IpmConfigConstant.CPQ_EXCEL_JIANAN);
 		if (null == jiananConfig) {
 			logger.info("Missing 佳楠 normal configuration.");
+		}else {
+			String[] jiananConfigs = jiananConfig.getPropertyValue().split(",");
+			Sheet[] jiananSheets = new Sheet[jiananConfigs.length];
+			for (int i = 0; i < jiananConfigs.length; i++) {
+				jiananSheets[i] = workbook.getSheet(jiananConfigs[i]);
+			}
+			this.readJiananExcelSheet(clothingType,jiananSheets);
 		}
-		Sheet helanSheet = workbook.getSheet("出荷兰");
-		Sheet hkSheet = workbook.getSheet("香港");
-		Sheet sheet01 = workbook.getSheet("01");
-		if (null == helanSheet) {
-			logger.info("sheet:{} not exist.","出荷兰");
+		
+		IpmConfig jiananSpecialConfig = this.configLogic.findByProperty(IpmConfigConstant.CPQ_EXCEL_JIANAN_SPECIAL);
+		if (null == jiananSpecialConfig) {
+			logger.info("Missing 佳楠 special configuration.");
+		}else {
+			String[] jiananConfigs = jiananSpecialConfig.getPropertyValue().split(",");
+			Sheet[] jiananSheets = new Sheet[jiananConfigs.length];
+			for (int i = 0; i < jiananConfigs.length; i++) {
+				jiananSheets[i] = workbook.getSheet(jiananConfigs[i]);
+			}
+			//TODO 
 		}
-		if (null == hkSheet) {
-			logger.info("sheet:{} not exist.","香港");
-		}
-		if (null == sheet01) {
-			logger.info("sheet:{} not exist.","01");
-		}
+		
+		
 	}
-	private void readJiananExcelSheet(Sheet... sheets) {
+	private void readJiananExcelSheet(String clothingType,Sheet... sheets) {
 		String beginSymble = "宁波承天一楠制衣有限公司";
 		for (Sheet sheet : sheets) {
 			if (null != sheet) {
@@ -337,8 +348,18 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 				if (rows < 1) {
 					this.logger.info("sheet:{} is empty.",sheet.getSheetName());
 				}
+				
 				boolean begin = false;
 				int startRow = 0;
+				int endRow = 0;
+				String tmpFrom = "";
+				String tmpTo = "";
+				String tmpColor = "";
+				Integer tmpBoxQty = 0;
+				Float tmpGrossWeight = 0f;
+				Float tmpNetWeight = 0f;
+				Float tmpVolume = 0f;
+				
 				for (int i = 0; i < rows; i++) {
 					Row row = sheet.getRow(i);
 					int columnNum = row.getLastCellNum();//列数
@@ -349,23 +370,97 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 							begin = true;
 							startRow = j;
 						}
-						if (begin) {		
+						if (begin) {
+							startRow++;
 							//第一行：订单号、款号
-							Row row1 = sheet.getRow(startRow+1);
+							Row row1 = sheet.getRow(startRow);
 							String orderNo = row1.getCell(2).getStringCellValue();//订单号
 							String styleNo = row1.getCell(12).getStringCellValue();//款号
+							//获取不同类型的size列表
+							List<CpqDictionary> sizeDicts = this.cpqDictionaryLogic.findByTypeAndProperty(CpqDictionaryType.CLOTHING_CATEGORY_SIZE, clothingType);
+							int sizes = sizeDicts.size();
 							//第二行：国家、备注号
-							Row row2 = sheet.getRow(startRow+2);
+							startRow++;
+							Row row2 = sheet.getRow(startRow);
 							String country = row2.getCell(5).getStringCellValue();//国家
-							String memo = row2.getCell(12).getStringCellValue();//备注
+							String remark = row2.getCell(12).getStringCellValue();//备注
 							//第四行：item开始
-							Row row3 = sheet.getRow(startRow + 4);
-							Row row4 = sheet.getRow(startRow + 5);
-							String from = row4.getCell(0).getStringCellValue();//from
-							//String to = row4.getCell(1).getStringCellValue();//to TODO 目前没有
-							Integer quality = Integer.parseInt(row4.getCell(1).getStringCellValue());//箱数
-							String color = this.formatColor(row4.getCell(2).getStringCellValue());//颜色
-							
+							startRow += 2;
+							for (int k = startRow; k < 100; k++) {
+								if (sheet.getRow(k).getCell(0).getStringCellValue().startsWith("合计")) {
+									endRow = k;
+									startRow ++;
+									break;
+								}
+							}
+							for (int k = startRow; k < endRow; k++) {
+								CpqManufacotryOrderItem item = this.cpqManufacotryOrderItemLogic.findByOrderNoAndStyleNo(orderNo, styleNo);
+								if (null == item) {
+									item = new CpqManufacotryOrderItem();
+								}	
+								item.setOrderNo(orderNo);
+								item.setStyleNo(styleNo);
+								item.setCountry(country);
+								item.setRemark(remark);
+								Row itemRow = sheet.getRow(k);
+								String from = itemRow.getCell(0).getStringCellValue();//from
+								if (StringUtils.isNotEmpty(from)) {
+									int index = from.indexOf("-");
+									tmpFrom = from.substring(0, index);
+									if (index == from.length() - 1) {
+										tmpTo = tmpFrom;
+									}else {
+										tmpTo = from.substring(index + 1, from.length());
+									}
+								}
+								item.setFrom(tmpFrom);
+								item.setTo(tmpTo);
+								//String to = row4.getCell(1).getStringCellValue();//to TODO 目前没有
+								Double qualityCellValue = itemRow.getCell(1).getNumericCellValue();
+								if (null != qualityCellValue) {
+									tmpBoxQty = qualityCellValue.intValue();
+								}
+								item.setBoxQty(tmpBoxQty);
+								String colorCellValue = itemRow.getCell(2).getStringCellValue();
+								if (StringUtils.isNotEmpty(colorCellValue)) {
+									tmpColor = this.formatColor(colorCellValue);
+								}
+								item.setColor(tmpColor);
+								for (int m = 0 ; m < sizes ; m++) {
+									CpqDictionary sizeDict = sizeDicts.get(m);
+									String sizeParam = this.formatSizeKey(sizeDict.getValue());
+									Double sizeCellValue = itemRow.getCell(2 + m).getNumericCellValue();
+									if (null != sizeCellValue) {
+										Integer sizeValue = sizeCellValue.intValue();
+										try {
+											Method setMethod = CpqManufacotryOrderItem.class.getDeclaredMethod("set"+sizeParam, Integer.class);
+											setMethod.invoke(item, sizeValue);
+										} catch (Exception e) {
+											this.logger.error("{}",e);
+										} 
+									}
+								}
+								Double pcs = itemRow.getCell(2 + sizes).getNumericCellValue();
+								item.setPcsPerBox(pcs.intValue());
+								Double grossWeightCellValue = itemRow.getCell(4 + sizes).getNumericCellValue();
+								if (null != grossWeightCellValue) {
+									tmpGrossWeight =  grossWeightCellValue.floatValue();
+								}
+								item.setGrossWeightPerBox(tmpGrossWeight);
+								Double netWeightCellValue = itemRow.getCell(5 + sizes).getNumericCellValue();
+								if (null != netWeightCellValue) {
+									tmpNetWeight = netWeightCellValue.floatValue();
+								}
+								item.setNetWeightPerBox(tmpNetWeight);
+								String volumeCellValue = itemRow.getCell(6 + sizes).getStringCellValue();
+								if (StringUtils.isNotEmpty(volumeCellValue)) {
+									tmpVolume = this.formatVolume(volumeCellValue);
+								}
+								item.setVolumePerBox(tmpVolume);
+								this.cpqManufacotryOrderItemLogic.save(item);
+								begin = false;
+								i += endRow + 5;
+							}
 						}
 					}
 				}
@@ -373,6 +468,11 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		}
 	}
 	
+	/**
+	 * 颜色值保留"-"符号之前的文字
+	 * @param color
+	 * @return
+	 */
 	private String formatColor(String color){
 		if (StringUtils.isEmpty(color)) {
 			return color;
@@ -383,6 +483,15 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		}
 		return color.substring(0, index - 1);
 	}
+	
+	private Float formatVolume(String volumeCellValue) {
+		if (volumeCellValue.endsWith("M³")) {
+			volumeCellValue = volumeCellValue.substring(0, volumeCellValue.length()-2);
+		}
+		int index = volumeCellValue.indexOf("=");
+		volumeCellValue = volumeCellValue.substring(0, index);
+		return Float.parseFloat(volumeCellValue);
+	}
 
 	@Override
 	public void printOrder(String template) {
@@ -392,7 +501,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 
 	
 	@Override
-	public CpqFile saveFileBizValue(Attachment attachment,String clothingType) {
+	public CpqFile saveFileBizValue(Attachment attachment,String clothingType, String owner) {
 		CpqFile file = new CpqFile();
 		file.setFileName(attachment.getFileName());
 		file.setType(CpqFileType.getType(attachment.getFileName()));
@@ -400,6 +509,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		file.setDeleted(Boolean.FALSE);
 		file.setUploadDate(attachment.getUploadDate());
 		file.setClothingType(CpqFileClothingType.valueOf(clothingType));
+		file.setOwner(owner);
 		return this.cpqFileLogic.save(file);
 	}
 
@@ -468,6 +578,15 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			if(!this.cpqOrderLogic.findByPdfId(file.getId()).isEmpty()){
 				vos.add(new PdfSelectVo(file.getId().toString(), file.getFileName() + "(" + DateFormatUtils.format(file.getUploadDate(), "MM/dd HH:mm") + ")", file.getClothingType().toString()));
 			}
+		}
+		return vos;
+	}
+
+	@Override
+	public List<SelectVo> getManufactoryStore() {
+		List<SelectVo> vos = new ArrayList<SelectVo>();
+		for (CpqExcelType type : CpqExcelType.values()) {
+			vos.add(new SelectVo(type.toString(), type.getName()));
 		}
 		return vos;
 	}

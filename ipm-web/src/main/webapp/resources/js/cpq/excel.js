@@ -1,247 +1,116 @@
 ipm.cpq = {
 	excel : {
 		init : function(){
-		    var rowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
-		        saveBtnText: '保存', 
-            	cancelBtnText: "取消", 
-           	 	autoCancel: false, 
-            	clicksToEdit:2 ,
-		        listeners : {
-		        	edit : function( editor, context, eOpts){
-		        		var progress = ipm.extjs.progressBar('正在修改，请稍后...');
-		        		progress.show();
-		        		
-		        		var record = context.record;
-		        		Ext.Ajax.request({
-		        			url : '/cpq/updatePdfRow',
-		        			method : 'post', 
-		        			params : {
-		        				order: record.get('order'),
-	            				style: record.get('style'),
-	            				from: record.get('from'),
-	            				to: record.get('to'),
-	            				colour:record.get('colour'),
-	            				sizeS: record.get('sizeS'),
-	            				sizeM: record.get('sizeM'),
-	            				sizeL: record.get('sizeL'),
-	            				sizeXL: record.get('sizeXL'),
-	            				sizeXXL: record.get('sizeXXL'),
-	            				box: record.get('box'),
-	            				qty: record.get('qty'),
-	            				grossWeight: record.get('grossWeight'),
-	            				netWeight: record.get('netWeight')
-		        			},
-		        			success : function(response){
-		        				var result = Ext.decode(response.responseText);
-		        				progress.hide();
-		        				if(result.success){
-		        					ipm.extjs.warningResult('操作提示','保存成功！');
-		        				}else{
-		        					ipm.extjs.warningResult('操作提示',result.errorMessage);
-		        				}
-		        			},
-		        			failure : function(response, opts){
-		        				progress.hide();
-		        				ipm.extjs.warningResult('操作提示','网络异常，保存失败！');
-		        			}
-		        		});
-		        	}
-		        }
-		    });
-			var store = ipm.cpq.excel.store.init();
-		    var grid = Ext.create('Ext.grid.Panel', {
-		        store: store,
-		        columns: [{
-		            header: 'order',
-		            dataIndex: 'order',
-		            flex: 1,
-		            editor: {
-		                // defaults to textfield if no xtype is supplied
-		                allowBlank: false
-		            }
-		        }, {
-		            header: 'style',
-		            dataIndex: 'style',
-		            width: 160,
-		            editor: {
-		                allowBlank: false
-		            }
-		        }, {
-		            header: 'from',
-		            dataIndex: 'from',
-		            width: 160,
-		            editor: {
-		                allowBlank: false
-		            }
-		        }, {
-		            header: 'to',
-		            dataIndex: 'to',
-		            width: 160,
-		            editor: {
-		                allowBlank: false
-		            }
-		        },  {
-		            header: 'colour',
-		            dataIndex: 'colour',
-		            width: 160,
-		            editor: {
-		                allowBlank: false
-		            }
-		        },{
-		            xtype: 'numbercolumn',
-		            header: 'sizeS',
-		            dataIndex: 'sizeS',
-		            width: 90,
-		            editor: {
-		                xtype: 'numberfield',
-		                allowBlank: false,
-		                minValue: 1,
-		                maxValue: 150000
-		            }
-		        }, {
-		            xtype: 'numbercolumn',
-		            header: 'sizeM',
-		            dataIndex: 'sizeM',
-		            width: 90,
-		            editor: {
-		                xtype: 'numberfield',
-		                allowBlank: false,
-		                minValue: 1,
-		                maxValue: 150000
-		            }
-		        },{
-		            xtype: 'numbercolumn',
-		            header: 'sizeL',
-		            dataIndex: 'sizeL',
-		            width: 90,
-		            editor: {
-		                xtype: 'numberfield',
-		                allowBlank: false,
-		                minValue: 1,
-		                maxValue: 150000
-		            }
-		        },{
-		            xtype: 'numbercolumn',
-		            header: 'sizeXL',
-		            dataIndex: 'sizeXL',
-		            width: 90,
-		            editor: {
-		                xtype: 'numberfield',
-		                allowBlank: false,
-		                minValue: 1,
-		                maxValue: 150000
-		            }
-		        },{
-		            xtype: 'numbercolumn',
-		            header: 'sizeXXL',
-		            dataIndex: 'sizeXXL',
-		            width: 90,
-		            editor: {
-		                xtype: 'numberfield',
-		                allowBlank: false,
-		                minValue: 1,
-		                maxValue: 150000
-		            }
-		        },{
-		            xtype: 'numbercolumn',
-		            header: 'box',
-		            dataIndex: 'box',
-		            width: 90,
-		            editor: {
-		                xtype: 'numberfield',
-		                allowBlank: false,
-		                minValue: 1,
-		                maxValue: 150000
-		            }
-		        },{
-		            xtype: 'numbercolumn',
-		            header: 'qty',
-		            dataIndex: 'qty',
-		            width: 90,
-		            editor: {
-		                xtype: 'numberfield',
-		                allowBlank: false,
-		                minValue: 1,
-		                maxValue: 150000
-		            }
-		        },{
-		            xtype: 'numbercolumn',
-		            header: 'grossWeight',
-		            dataIndex: 'grossWeight',
-		            width: 90,
-		            editor: {
-		                xtype: 'numberfield',
-		                allowBlank: false,
-		                minValue: 1,
-		                maxValue: 150000
-		            }
-		        },{
-		            xtype: 'numbercolumn',
-		            header: 'netWeight',
-		            dataIndex: 'netWeight',
-		            width: 90,
-		            editor: {
-		                xtype: 'numberfield',
-		                allowBlank: false,
-		                minValue: 1,
-		                maxValue: 150000
-		            }
-		        }
-		        ],
-		        renderTo: 'excel_grid',
-		        width: 600,
-		        height: 400,
-		        title: 'Company Orders',
-		        frame: true,
-		        tbar: [{
-		            text: 'Add Order',
-		            iconCls: 'employee-add',
-		            handler : function() {
-		                rowEditing.cancelEdit();
-
-		                // Create a model instance
-		                var r = Ext.create('pdfModel', {
-		                	'order': '',
-	            			'style': '',
-	            			'from': '',
-	            			'to': '',
-	            			'colour': '',
-	            			'sizeS': '',
-	            			'sizeM': '',
-	            			'sizeL': '',
-	            			'sizeXL': '',
-	            			'sizeXXL': '',
-	            			'box': '',
-	            			'qty': '',
-	            			'grossWeight': '',
-	            			'netWeight': ''
-		                });
-
-		                store.insert(0, r);
-		                rowEditing.startEdit(0, 0);
-		            }
-		        }, {
-		            itemId: 'removeExcelOrder',
-		            text: 'Remove Order',
-		            iconCls: 'employee-remove',
-		            handler: function() {
-		                var sm = grid.getSelectionModel();
-		                rowEditing.cancelEdit();
-		                store.remove(sm.getSelection());
-		                if (store.getCount() > 0) {
-		                    sm.select(0);
-		                }
-		            },
-		            disabled: true
-		        }],
-		        plugins: [rowEditing],
-		        listeners: {
-		            'selectionchange': function(view, records) {
-		            	console.log('updated');
-		                grid.down('#removeExcelOrder').setDisabled(!records.length);
-		            }
-		        }
-		    });
+		//1. 上传form
+		var excelUpload = Ext.create('Ext.form.Panel',{
+			renderTo: 'btn_excel_upload',
+			title: '上传Excel',
+			width: 400,
+    		bodyPadding: 10,
+    		frame: true,
+    		items : [
+    			{
+    				id:'js_manufactory_id',
+    				xtype: 'combobox',
+    				allowBlank : false,
+    				name: 'manufactory',
+    				fieldLabel: '选择工厂',
+    				store: ipm.cpq.excel.store.getManufactorySotre(),
+    				labelWidth:60,
+    				queryMode: 'remote',
+    				displayField: 'label',
+    				valueField: 'value'
+    			},
+    			{
+        			id:'js_cloting_type_id',
+        			xtype: 'combobox',
+        			allowBlank : false,
+        			name: 'clothingType',
+        			fieldLabel: '服装类型',
+    				store: ipm.cpq.excel.store.getClothingTypeStore(),
+    				labelWidth:60,
+    				queryMode: 'remote',
+    				displayField: 'label',
+    				valueField: 'value'
+        		},
+    			{
+    				xtype: 'filefield',
+        			name: 'excels',
+        			fieldLabel: 'Excel',
+        			allowBlank : false,
+        			labelWidth: 60,
+        			msgTarget: 'side',
+        			allowBlank: false,
+        			anchor: '100%',
+        			buttonText: '浏览',
+        			listeners:{
+        				afterrender:function(cmp){
+        					cmp.fileInputEl.set({
+        						multiple:'multiple'
+        					});
+        				}
+        			}
+    			}
+    		],
+    		buttons : [
+    			{
+    				text: 'Upload',
+    				handler: function() {
+    					var manufactory = Ext.getCmp('js_manufactory_id').getValue();
+    					var clothingType = Ext.getCmp('js_cloting_type_id').getValue();
+    					if(manufactory && manufactory.length > 0 && clothingType && clothingType.length > 0){
+    						var form = this.up('form').getForm();
+    						if(form.isValid()){
+    							form.submit({
+    								url: ctx + '/cpq/uploadExcel',
+    								waitMsg: 'Uploading...',
+    								timeout: 600000,
+    								success: function(fp, o) {
+    									var response = Ext.decode(o.response.responseText);
+    									if(response.success){
+                    						ipm.cpq.excel.reloadStore(response.data.excelIds,response.data.clothingType);
+                    					}else{
+                    						ipm.extjs.warningResult('提示','系统异常，请重试');
+                    					}
+    								}
+    							});
+    						}
+    					}else{
+    						ipm.extjs.warningResult('提示','请先选择工厂和服装类型');
+    					}
+    				}
+    			}
+    		]
+		});
+		//2. Grid
+	},
+	
+	reloadStore : function(pdfId, clothingType){
+//			var grid = ipm.cpq.pdf.grid;
+//			var store = grid.store;
+//			store.proxy.url = ctx + '/cpq/getPdfStore/' + pdfId;
+//            //TODO 隐藏不需要的列 grid.columns[i].setVisible(false/true); grid.columns[i].hide()/show()
+//			//1. 全部隐藏
+//			for(var i = 3; i < 19 ; i++){
+//				grid.columns[i].hide();
+//			}
+//			//2. 开发部分
+//			if(clothingType == 'MALE'){//男 Size S,Size M,Size L,Size XL,Size XXL    3~7
+//				for(var i = 3; i < 8 ; i++){
+//					grid.columns[i].show();
+//				}
+//			}else if(clothingType == 'FEMALE'){//女 Size P.Size 1.Size 2.Size 3.Size 4
+//				for(var i = 8; i < 13 ; i++){
+//					grid.columns[i].show();
+//				}
+//			}else if(clothingType == 'BOY' || clothingType == 'GIRL'){//男童 Size 4,Size 6,Size 8,Size 10,Size 12,Size 14,Size 16
+//				for(var i = 11; i < 19 ; i++){
+//					grid.columns[i].show();
+//				}
+//			}else{
+//				return;
+//			}
+//            store.reload();
 		}
 	}
 };
