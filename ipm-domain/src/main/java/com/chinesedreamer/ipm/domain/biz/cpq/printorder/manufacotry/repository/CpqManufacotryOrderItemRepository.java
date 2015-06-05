@@ -11,4 +11,5 @@ import com.chinesedreamer.ipm.domain.biz.cpq.printorder.manufacotry.model.CpqMan
  */
 public interface CpqManufacotryOrderItemRepository extends IpmRepository<CpqManufacotryOrderItem, Long>{
 	public CpqManufacotryOrderItem findByOrderNoAndStyleNoAndDeletedFalse(String orderNo,String styleNo);
+	public CpqManufacotryOrderItem findByOrderNoAndStyleNoAndColorAndFromNoAndToNo(String orderNo,String styleNo,String color, String fromNo, String toNo);
 }

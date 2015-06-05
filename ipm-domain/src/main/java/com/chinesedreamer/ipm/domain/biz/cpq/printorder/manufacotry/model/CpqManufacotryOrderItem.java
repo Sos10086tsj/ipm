@@ -7,7 +7,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-import com.chinesedreamer.ipm.domain.base.model.IpmEntity;
+import com.chinesedreamer.ipm.domain.base.model.IpmVersionEntity;
 
 /**
  * Description: 工厂excel信息item
@@ -17,7 +17,7 @@ import com.chinesedreamer.ipm.domain.base.model.IpmEntity;
  */
 @Entity
 @Table(name = "ipm_biz_cpq_manufactory_order_item")
-public @Getter @Setter class CpqManufacotryOrderItem extends IpmEntity<Long>{
+public @Getter @Setter class CpqManufacotryOrderItem extends IpmVersionEntity<Long>{
 
 	/**
 	 * 
@@ -30,11 +30,11 @@ public @Getter @Setter class CpqManufacotryOrderItem extends IpmEntity<Long>{
 	@Column(name = "style_no")
 	private String styleNo;//款号
 	
-	@Column
-	private String from;
+	@Column(name = "from_no")
+	private String fromNo;
 	
-	@Column
-	private String to;
+	@Column(name = "to_no")
+	private String toNo;
 	
 	@Column
 	private String color;//颜色
@@ -110,4 +110,23 @@ public @Getter @Setter class CpqManufacotryOrderItem extends IpmEntity<Long>{
 	
 	@Column(name = "deleted",columnDefinition = "TINYINT(1)")
 	private Boolean deleted = Boolean.FALSE;
+
+	@Override
+	public String toString() {
+		return "CpqManufacotryOrderItem [orderNo=" + orderNo + ", styleNo="
+				+ styleNo + ", fromNo=" + fromNo + ", toNo=" + toNo
+				+ ", color=" + color + ", sizeS=" + sizeS + ", sizeM=" + sizeM
+				+ ", sizeL=" + sizeL + ", sizeXl=" + sizeXl + ", sizeXxl="
+				+ sizeXxl + ", sizeP=" + sizeP + ", size1=" + size1
+				+ ", size2=" + size2 + ", size3=" + size3 + ", size4=" + size4
+				+ ", size6=" + size6 + ", size8=" + size8 + ", size10="
+				+ size10 + ", size12=" + size12 + ", size14=" + size14
+				+ ", size16=" + size16 + ", boxQty=" + boxQty + ", pcsPerBox="
+				+ pcsPerBox + ", remark=" + remark + ", country=" + country
+				+ ", grossWeightPerBox=" + grossWeightPerBox
+				+ ", netWeightPerBox=" + netWeightPerBox + ", volumePerBox="
+				+ volumePerBox + ", deleted=" + deleted + "]";
+	}
+	
+	
 }

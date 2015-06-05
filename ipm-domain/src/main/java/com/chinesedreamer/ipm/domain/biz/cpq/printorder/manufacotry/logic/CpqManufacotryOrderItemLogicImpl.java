@@ -22,5 +22,9 @@ public class CpqManufacotryOrderItemLogicImpl extends IpmLogicImpl<CpqManufacotr
 	public CpqManufacotryOrderItem findByOrderNoAndStyleNo(String orderNo,String styleNo) {
 		return this.repository.findByOrderNoAndStyleNoAndDeletedFalse(orderNo, styleNo);
 	}
+	@Override
+	public CpqManufacotryOrderItem findByOrderNoAndStyleNoAndColorAndFromNoAndToNo(String orderNo,String styleNo,String color, String fromNo, String toNo) {
+		return this.repository.findByOrderNoAndStyleNoAndColorAndFromNoAndToNo(orderNo, styleNo, color, fromNo, toNo);
+	}
 
 }

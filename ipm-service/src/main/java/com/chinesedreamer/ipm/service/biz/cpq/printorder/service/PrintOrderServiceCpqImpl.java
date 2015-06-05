@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.chinesedreamer.ipm.common.utils.format.StringUtil;
+import com.chinesedreamer.ipm.common.utils.office.ExcelUtil;
 import com.chinesedreamer.ipm.domain.biz.cpq.file.constant.CpqFileClothingType;
 import com.chinesedreamer.ipm.domain.biz.cpq.file.constant.CpqFileType;
 import com.chinesedreamer.ipm.domain.biz.cpq.file.logic.CpqFileLogic;
@@ -268,6 +269,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 
 	@Override
 	public void readExcel(String filePath, CpqExcelType template, CpqFile cpqFile) {
+		this.logger.info("********** readExcel start ********");
 		FileInputStream is = null;
 		Workbook workbook = null;
 		try {
@@ -307,6 +309,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 				}
 			}
 		}
+		this.logger.info("********** readExcel end ********");
 	}
 	
 	/**
@@ -314,6 +317,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	 * @param workbook
 	 */
 	private void readJiananExcel(Workbook workbook, String clothingType) {
+		Set<CpqManufacotryOrderItem> items = new HashSet<>();
 		IpmConfig jiananConfig = this.configLogic.findByProperty(IpmConfigConstant.CPQ_EXCEL_JIANAN);
 		if (null == jiananConfig) {
 			logger.info("Missing 佳楠 normal configuration.");
@@ -323,7 +327,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			for (int i = 0; i < jiananConfigs.length; i++) {
 				jiananSheets[i] = workbook.getSheet(jiananConfigs[i]);
 			}
-			this.readJiananExcelSheet(clothingType,jiananSheets);
+			items.addAll(this.readJiananExcelSheet(clothingType,jiananSheets));
 		}
 		
 		IpmConfig jiananSpecialConfig = this.configLogic.findByProperty(IpmConfigConstant.CPQ_EXCEL_JIANAN_SPECIAL);
@@ -337,11 +341,15 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			}
 			//TODO 
 		}
-		
-		
+		for (CpqManufacotryOrderItem item : items) {
+			this.cpqManufacotryOrderItemLogic.save(item);
+		}
 	}
-	private void readJiananExcelSheet(String clothingType,Sheet... sheets) {
+	
+	private Set<CpqManufacotryOrderItem> readJiananExcelSheet(String clothingType,Sheet... sheets) {
+		Set<CpqManufacotryOrderItem> items = new HashSet<>();
 		String beginSymble = "宁波承天一楠制衣有限公司";
+		String endSymble = "合计";
 		for (Sheet sheet : sheets) {
 			if (null != sheet) {
 				int rows = sheet.getPhysicalNumberOfRows();
@@ -349,7 +357,6 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 					this.logger.info("sheet:{} is empty.",sheet.getSheetName());
 				}
 				
-				boolean begin = false;
 				int startRow = 0;
 				int endRow = 0;
 				String tmpFrom = "";
@@ -360,112 +367,125 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 				Float tmpNetWeight = 0f;
 				Float tmpVolume = 0f;
 				
-				for (int i = 0; i < rows; i++) {
-					Row row = sheet.getRow(i);
-					int columnNum = row.getLastCellNum();//列数
-					for (int j = 0; j < columnNum; j++) {
-						Cell cell = row.getCell(j);
-						String cellValue = cell.getStringCellValue();
-						if (cellValue.startsWith(beginSymble)) {
-							begin = true;
-							startRow = j;
-						}
-						if (begin) {
-							startRow++;
-							//第一行：订单号、款号
-							Row row1 = sheet.getRow(startRow);
-							String orderNo = row1.getCell(2).getStringCellValue();//订单号
-							String styleNo = row1.getCell(12).getStringCellValue();//款号
-							//获取不同类型的size列表
-							List<CpqDictionary> sizeDicts = this.cpqDictionaryLogic.findByTypeAndProperty(CpqDictionaryType.CLOTHING_CATEGORY_SIZE, clothingType);
-							int sizes = sizeDicts.size();
-							//第二行：国家、备注号
-							startRow++;
-							Row row2 = sheet.getRow(startRow);
-							String country = row2.getCell(5).getStringCellValue();//国家
-							String remark = row2.getCell(12).getStringCellValue();//备注
-							//第四行：item开始
-							startRow += 2;
-							for (int k = startRow; k < 100; k++) {
-								if (sheet.getRow(k).getCell(0).getStringCellValue().startsWith("合计")) {
-									endRow = k;
-									startRow ++;
-									break;
-								}
-							}
-							for (int k = startRow; k < endRow; k++) {
-								CpqManufacotryOrderItem item = this.cpqManufacotryOrderItemLogic.findByOrderNoAndStyleNo(orderNo, styleNo);
-								if (null == item) {
-									item = new CpqManufacotryOrderItem();
-								}	
-								item.setOrderNo(orderNo);
-								item.setStyleNo(styleNo);
-								item.setCountry(country);
-								item.setRemark(remark);
-								Row itemRow = sheet.getRow(k);
-								String from = itemRow.getCell(0).getStringCellValue();//from
-								if (StringUtils.isNotEmpty(from)) {
-									int index = from.indexOf("-");
-									tmpFrom = from.substring(0, index);
-									if (index == from.length() - 1) {
-										tmpTo = tmpFrom;
-									}else {
-										tmpTo = from.substring(index + 1, from.length());
-									}
-								}
-								item.setFrom(tmpFrom);
-								item.setTo(tmpTo);
-								//String to = row4.getCell(1).getStringCellValue();//to TODO 目前没有
-								Double qualityCellValue = itemRow.getCell(1).getNumericCellValue();
-								if (null != qualityCellValue) {
-									tmpBoxQty = qualityCellValue.intValue();
-								}
-								item.setBoxQty(tmpBoxQty);
-								String colorCellValue = itemRow.getCell(2).getStringCellValue();
-								if (StringUtils.isNotEmpty(colorCellValue)) {
-									tmpColor = this.formatColor(colorCellValue);
-								}
-								item.setColor(tmpColor);
-								for (int m = 0 ; m < sizes ; m++) {
-									CpqDictionary sizeDict = sizeDicts.get(m);
-									String sizeParam = this.formatSizeKey(sizeDict.getValue());
-									Double sizeCellValue = itemRow.getCell(2 + m).getNumericCellValue();
-									if (null != sizeCellValue) {
-										Integer sizeValue = sizeCellValue.intValue();
-										try {
-											Method setMethod = CpqManufacotryOrderItem.class.getDeclaredMethod("set"+sizeParam, Integer.class);
-											setMethod.invoke(item, sizeValue);
-										} catch (Exception e) {
-											this.logger.error("{}",e);
-										} 
-									}
-								}
-								Double pcs = itemRow.getCell(2 + sizes).getNumericCellValue();
-								item.setPcsPerBox(pcs.intValue());
-								Double grossWeightCellValue = itemRow.getCell(4 + sizes).getNumericCellValue();
-								if (null != grossWeightCellValue) {
-									tmpGrossWeight =  grossWeightCellValue.floatValue();
-								}
-								item.setGrossWeightPerBox(tmpGrossWeight);
-								Double netWeightCellValue = itemRow.getCell(5 + sizes).getNumericCellValue();
-								if (null != netWeightCellValue) {
-									tmpNetWeight = netWeightCellValue.floatValue();
-								}
-								item.setNetWeightPerBox(tmpNetWeight);
-								String volumeCellValue = itemRow.getCell(6 + sizes).getStringCellValue();
-								if (StringUtils.isNotEmpty(volumeCellValue)) {
-									tmpVolume = this.formatVolume(volumeCellValue);
-								}
-								item.setVolumePerBox(tmpVolume);
-								this.cpqManufacotryOrderItemLogic.save(item);
-								begin = false;
-								i += endRow + 5;
-							}
+				for (int i = 0; i < rows;) {
+					Row row = sheet.getRow(i);	
+					if (null == row) {//excel已经到底
+						break;
+					}
+					Cell cell = row.getCell(0);
+					String cellValue = cell.getStringCellValue();
+					if (cellValue.startsWith(beginSymble)) {
+						startRow = i + 1;
+					}else {
+						i++;
+						continue;
+					}
+					
+					//第一行：订单号、款号
+					Row row1 = sheet.getRow(startRow);
+					String orderNo = row1.getCell(2).getStringCellValue();//订单号
+					String styleNo = row1.getCell(12).getStringCellValue();//款号
+					//获取不同类型的size列表
+					List<CpqDictionary> sizeDicts = this.cpqDictionaryLogic.findByTypeAndProperty(CpqDictionaryType.CLOTHING_CATEGORY_SIZE, clothingType);
+					int sizes = sizeDicts.size();
+					//第二行：国家、备注号
+					startRow++;
+					Row row2 = sheet.getRow(startRow);
+					String country = row2.getCell(5).getStringCellValue();//国家
+					String remark = row2.getCell(12).getStringCellValue();//备注
+					startRow += 3;
+					
+					for (int j = startRow; j < rows; j++) {
+						Row end = sheet.getRow(j);
+						if (endSymble.equals(end.getCell(0).getStringCellValue())) {
+							endRow = j;
+							break;
 						}
 					}
+					
+					for (int j = startRow; j < endRow; j++) {
+						//第四行：item开始
+						Row itemRow = sheet.getRow(j);
+						String from = ExcelUtil.getCellStringValue(itemRow.getCell(0));
+						if (StringUtils.isNotEmpty(from)) {
+							int index = from.indexOf("-");
+							if (index == -1) {
+								tmpFrom = from;
+								tmpTo = from;
+							}else {
+								tmpFrom = from.substring(0, index);
+								if (index == from.length() - 1) {
+									tmpTo = tmpFrom;
+								}else {
+									tmpTo = from.substring(index + 1, from.length());
+								}
+							}
+						}
+						//String to = row4.getCell(1).getStringCellValue();//to TODO 目前没有
+						
+						String colorCellValue = ExcelUtil.getCellStringValue(itemRow.getCell(2));
+						if (StringUtils.isNotEmpty(colorCellValue)) {
+							tmpColor = this.formatColor(colorCellValue);
+						}
+						
+						CpqManufacotryOrderItem item = this.cpqManufacotryOrderItemLogic.findByOrderNoAndStyleNoAndColorAndFromNoAndToNo(orderNo, styleNo, tmpColor, tmpFrom, tmpTo);
+						if (null == item) {
+							item = new CpqManufacotryOrderItem();
+						}	
+						item.setOrderNo(orderNo);
+						item.setStyleNo(styleNo);
+						item.setCountry(country);
+						item.setRemark(remark);
+						item.setFromNo(tmpFrom);
+						item.setToNo(tmpTo);
+						item.setColor(tmpColor);
+						
+						Integer qualityCellValue = ExcelUtil.getCellIntegerValue(itemRow.getCell(1));
+						if (null != qualityCellValue) {
+							tmpBoxQty = qualityCellValue;
+						}
+						item.setBoxQty(tmpBoxQty);
+						
+						for (int m = 0 ; m < sizes ; m++) {
+							CpqDictionary sizeDict = sizeDicts.get(m);
+							String sizeParam = this.formatSizeKey(sizeDict.getValue());
+							Integer sizeCellValue = ExcelUtil.getCellIntegerValue(itemRow.getCell(3 + m));
+							if (null != sizeCellValue) {
+								Integer sizeValue = sizeCellValue;
+								try {
+									Method setMethod = CpqManufacotryOrderItem.class.getDeclaredMethod("set"+sizeParam, Integer.class);
+									setMethod.invoke(item, sizeValue);
+								} catch (Exception e) {
+									this.logger.error("{}",e);
+								} 
+							}
+						}
+						Integer pcs = ExcelUtil.getCellIntegerValue(itemRow.getCell(3 + sizes));
+						if (null != pcs) {
+							item.setPcsPerBox(pcs);
+						}
+						Float grossWeightCellValue = ExcelUtil.getCellFloatValue(itemRow.getCell(5 + sizes));
+						if (null != grossWeightCellValue) {
+							tmpGrossWeight =  grossWeightCellValue;
+						}
+						item.setGrossWeightPerBox(tmpGrossWeight);
+						Float netWeightCellValue = ExcelUtil.getCellFloatValue(itemRow.getCell(6 + sizes));
+						if (null != netWeightCellValue) {
+							tmpNetWeight = netWeightCellValue;
+						}
+						item.setNetWeightPerBox(tmpNetWeight);
+						String volumeCellValue = ExcelUtil.getCellStringValue(itemRow.getCell(7 + sizes));
+						if (StringUtils.isNotEmpty(volumeCellValue)) {
+							tmpVolume = this.formatVolume(volumeCellValue);
+						}
+						item.setVolumePerBox(tmpVolume);
+						items.add(item);
+					}
+					i = endRow + 5;
 				}
 			}
 		}
+		return items;
 	}
 	
 	/**
@@ -481,15 +501,15 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		if (index == -1) {
 			return color;
 		}
-		return color.substring(0, index - 1);
+		return color.substring(0, index);
 	}
 	
 	private Float formatVolume(String volumeCellValue) {
-		if (volumeCellValue.endsWith("M³")) {
+		if (volumeCellValue.endsWith("M3")) {
 			volumeCellValue = volumeCellValue.substring(0, volumeCellValue.length()-2);
 		}
 		int index = volumeCellValue.indexOf("=");
-		volumeCellValue = volumeCellValue.substring(0, index);
+		volumeCellValue = volumeCellValue.substring(index + 1, volumeCellValue.length());
 		return Float.parseFloat(volumeCellValue);
 	}
 

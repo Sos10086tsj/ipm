@@ -41,3 +41,13 @@ ADD COLUMN `volume_per_box` FLOAT NULL AFTER `net_weight_per_box`;
 
 ALTER TABLE `ipm`.`ipm_biz_cpq_file` 
 ADD COLUMN `owner` VARCHAR(45) NULL AFTER `clothing_type`;
+
+ALTER TABLE `ipm`.`ipm_biz_cpq_manufactory_order_item` 
+CHANGE COLUMN `from` `from_no` VARCHAR(45) NULL DEFAULT NULL ,
+CHANGE COLUMN `to` `to_no` VARCHAR(45) NULL DEFAULT NULL ;
+
+ALTER TABLE `ipm`.`ipm_biz_cpq_manufactory_order_item` 
+CHANGE COLUMN `country` `country` VARCHAR(45) CHARACTER SET 'utf8' NULL DEFAULT NULL ;
+ALTER TABLE `ipm`.`ipm_biz_cpq_manufactory_order_item` 
+CHANGE COLUMN `order_no` `order_no` VARCHAR(45) CHARACTER SET 'utf8' NULL DEFAULT NULL COMMENT '订单号' ,
+CHANGE COLUMN `style_no` `style_no` VARCHAR(45) CHARACTER SET 'utf8' NULL DEFAULT NULL COMMENT '款号' ;
