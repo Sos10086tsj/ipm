@@ -113,6 +113,9 @@ public @Getter @Setter class CpqManufacotryOrderItem extends IpmVersionEntity<Lo
 	
 	@Column(name = "excel_id")
 	private Long excelId;
+	
+	@Column
+	private String owner;
 
 	@Override
 	public String toString() {

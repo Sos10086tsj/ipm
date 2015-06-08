@@ -13,6 +13,7 @@ import com.chinesedreamer.ipm.domain.biz.cpq.printorder.manufacotry.model.CpqMan
  */
 public interface CpqManufacotryOrderItemLogic extends IpmLogic<CpqManufacotryOrderItem, Long>{
 	public CpqManufacotryOrderItem findByOrderNoAndStyleNo(String orderNo,String styleNo);
-	public CpqManufacotryOrderItem findByOrderNoAndStyleNoAndColorAndFromNoAndToNo(String orderNo,String styleNo,String color, Integer fromNo, Integer toNo);
-	public List<CpqManufacotryOrderItem> getExcelItems(Long excelId,String excelType);
+	public CpqManufacotryOrderItem findByOrderNoAndStyleNoAndColorAndFromNoAndToNoAndOwner(String orderNo,String styleNo,String color, Integer fromNo, Integer toNo, String owner);
+	public List<CpqManufacotryOrderItem> getExcelItems(Long excelId,String owner);
+	public List<CpqManufacotryOrderItem> findByOrderNoAndOwner(String orderNo, String owner);
 }

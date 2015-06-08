@@ -25,12 +25,16 @@ public class CpqManufacotryOrderItemLogicImpl extends IpmLogicImpl<CpqManufacotr
 		return this.repository.findByOrderNoAndStyleNoAndDeletedFalse(orderNo, styleNo);
 	}
 	@Override
-	public CpqManufacotryOrderItem findByOrderNoAndStyleNoAndColorAndFromNoAndToNo(String orderNo,String styleNo,String color, Integer fromNo, Integer toNo) {
-		return this.repository.findByOrderNoAndStyleNoAndColorAndFromNoAndToNo(orderNo, styleNo, color, fromNo, toNo);
+	public CpqManufacotryOrderItem findByOrderNoAndStyleNoAndColorAndFromNoAndToNoAndOwner(String orderNo,String styleNo,String color, Integer fromNo, Integer toNo, String owner) {
+		return this.repository.findByOrderNoAndStyleNoAndColorAndFromNoAndToNoAndOwner(orderNo, styleNo, color, fromNo, toNo, owner);
 	}
 	@Override
-	public List<CpqManufacotryOrderItem> getExcelItems(Long excelId,String excelType) {
-		return this.repository.getExcelItems(excelId,excelType);
+	public List<CpqManufacotryOrderItem> getExcelItems(Long excelId,String owner) {
+		return this.repository.findByExcelIdAndOwner(excelId, owner);
+	}
+	@Override
+	public List<CpqManufacotryOrderItem> findByOrderNoAndOwner(String orderNo,String owner) {
+		return this.repository.findByOrderNoAndOwner(orderNo, owner);
 	}
 
 }
