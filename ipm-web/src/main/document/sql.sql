@@ -51,3 +51,11 @@ CHANGE COLUMN `country` `country` VARCHAR(45) CHARACTER SET 'utf8' NULL DEFAULT 
 ALTER TABLE `ipm`.`ipm_biz_cpq_manufactory_order_item` 
 CHANGE COLUMN `order_no` `order_no` VARCHAR(45) CHARACTER SET 'utf8' NULL DEFAULT NULL COMMENT '订单号' ,
 CHANGE COLUMN `style_no` `style_no` VARCHAR(45) CHARACTER SET 'utf8' NULL DEFAULT NULL COMMENT '款号' ;
+
+
+ALTER TABLE `ipm`.`ipm_biz_cpq_manufactory_order_item` 
+CHANGE COLUMN `from_no` `from_no` INT NULL DEFAULT NULL ,
+CHANGE COLUMN `to_no` `to_no` INT NULL DEFAULT NULL ;
+
+ALTER TABLE `ipm`.`ipm_biz_cpq_file` 
+ADD COLUMN `excel_id` BIGINT NULL AFTER `deleted`;

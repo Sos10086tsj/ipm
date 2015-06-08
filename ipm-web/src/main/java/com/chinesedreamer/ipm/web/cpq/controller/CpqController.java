@@ -16,13 +16,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.chinesedreamer.ipm.domain.biz.cpq.file.constant.CpqFileType;
 import com.chinesedreamer.ipm.domain.biz.cpq.file.model.CpqFile;
 import com.chinesedreamer.ipm.domain.supp.attachment.model.Attachment;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.constant.CpqExcelType;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.constant.PrintOrderType;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.service.PrintOrderFacotry;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.service.PrintOrderService;
-import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.PdfSelectVo;
+import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.ExcelVo;
+import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.FileSelectVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.PdfVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.SelectVo;
 import com.chinesedreamer.ipm.service.supp.attachment.service.AttachmentService;
@@ -80,8 +82,8 @@ public class CpqController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "getUploadedPdfStore", method = RequestMethod.GET)
-	public List<PdfSelectVo> getUploadedPdfStore(){
-		return this.facotry.getService(PrintOrderType.CPQ).getUploadedPdfStore();
+	public List<FileSelectVo> getUploadedPdfStore(){
+		return this.facotry.getService(PrintOrderType.CPQ).getUploadedFileStore(CpqFileType.PDF);
 	}
 	
 	/**
@@ -143,6 +145,23 @@ public class CpqController {
 		return this.facotry.getService(PrintOrderType.CPQ).getManufactoryStore();
 	}
 	
+	/**
+	 * 获取已经上传过的Excel，按时间倒叙排序
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getUploadedExcelStore", method = RequestMethod.GET)
+	public List<FileSelectVo> getUploadedExcelStore(){
+		return this.facotry.getService(PrintOrderType.CPQ).getUploadedFileStore(CpqFileType.EXCEL);
+	}
+	
+	/**
+	 * Excel批量上传
+	 * @param model
+	 * @param request
+	 * @param excels
+	 * @return
+	 */
 	@RequestMapping(value = "uploadExcel",method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseVo uploadExcel(Model model,HttpServletRequest request,
@@ -168,16 +187,15 @@ public class CpqController {
 		return vo;
 	}
 	
-	
 	/**
-	 * 获取excel order 信息
+	 * 获取Excel item 信息列表
 	 * @param model
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "getExcelStore", method = RequestMethod.GET)
-	public List<ExcelVo> getExcelStore(Model model){
-		return ExcelVo.localInstance();
+	@RequestMapping(value = "getExcelStore/{excelId}", method = RequestMethod.GET)
+	public List<ExcelVo> getExcelStore(Model model,@PathVariable Long excelId){
+		return this.facotry.getService(PrintOrderType.CPQ).getExcelItems(excelId);
 	}
 	
 	/**
@@ -188,37 +206,20 @@ public class CpqController {
 	@ResponseBody
 	@RequestMapping(value = "updateExcelRow", method = RequestMethod.POST)
 	public ResponseVo updateExcelRow(HttpServletRequest request){
-		String order = request.getParameter("order").trim();
-		String style = request.getParameter("style").trim();
-		String from = request.getParameter("from").trim();
-		String to = request.getParameter("to").trim();
-		String colour = request.getParameter("colour").trim();
-		String sizeS = request.getParameter("sizeS").trim();
-		String sizeM = request.getParameter("sizeM").trim();
-		String sizeL = request.getParameter("sizeL").trim();
-		String sizeXL = request.getParameter("sizeXL").trim();
-		String sizeXXL = request.getParameter("sizeXXL").trim();
-		String box = request.getParameter("box").trim();
-		String qty = request.getParameter("qty").trim();
-		String grossWeight = request.getParameter("grossWeight").trim();
-		String netWeight = request.getParameter("netWeight").trim();
-		System.out.println("params:");
-		System.out.println("order:" + order);
-		System.out.println("from:" + from);
-		System.out.println("to:" + to);
-		System.out.println("style:" + style);
-		System.out.println("colour:" + colour);
-		System.out.println("sizeS:" + sizeS);
-		System.out.println("sizeM:" + sizeM);
-		System.out.println("sizeL:" + sizeL);
-		System.out.println("sizeXL:" + sizeXL);
-		System.out.println("sizeXXL:" + sizeXXL);
-		System.out.println("box:" + box);
-		System.out.println("qty:" + qty);
-		System.out.println("grossWeight:" + grossWeight);
-		System.out.println("netWeight:" + netWeight);
+		//TODO
 		ResponseVo vo = new ResponseVo();
 		vo.setSuccess(Boolean.TRUE);
 		return vo;
+	}
+	
+	/**
+	 * 获取pdf order 信息列表
+	 * @param model
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getExcelItemStore/{excelId}", method = RequestMethod.GET)
+	public List<ExcelVo> getExcelItemStore(Model model,@PathVariable Long excelId){
+		return this.facotry.getService(PrintOrderType.CPQ).getExcelItems(excelId);
 	}
 }

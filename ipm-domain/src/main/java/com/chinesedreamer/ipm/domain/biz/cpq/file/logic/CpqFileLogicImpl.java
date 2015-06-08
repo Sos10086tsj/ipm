@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.chinesedreamer.ipm.domain.base.logic.impl.IpmLogicImpl;
+import com.chinesedreamer.ipm.domain.biz.cpq.file.constant.CpqFileType;
 import com.chinesedreamer.ipm.domain.biz.cpq.file.model.CpqFile;
 import com.chinesedreamer.ipm.domain.biz.cpq.file.repository.CpqFileRepository;
 
@@ -26,8 +27,8 @@ public class CpqFileLogicImpl extends IpmLogicImpl<CpqFile, Long> implements Cpq
 		return this.repository.findByFileNameLike("%" + fileName + "%");
 	}
 	@Override
-	public List<CpqFile> findAllOrderByUploadDate() {
-		return this.repository.findByDeletedFalseOrderByUploadDateDesc();
+	public List<CpqFile> findByTypeOrderByUploadDate(CpqFileType type) {
+		return this.repository.findByTypeAndDeletedFalseOrderByUploadDateDesc(type);
 	}
 	
 }

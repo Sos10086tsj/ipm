@@ -31,10 +31,10 @@ public @Getter @Setter class CpqManufacotryOrderItem extends IpmVersionEntity<Lo
 	private String styleNo;//款号
 	
 	@Column(name = "from_no")
-	private String fromNo;
+	private Integer fromNo;
 	
 	@Column(name = "to_no")
-	private String toNo;
+	private Integer toNo;
 	
 	@Column
 	private String color;//颜色
@@ -110,6 +110,9 @@ public @Getter @Setter class CpqManufacotryOrderItem extends IpmVersionEntity<Lo
 	
 	@Column(name = "deleted",columnDefinition = "TINYINT(1)")
 	private Boolean deleted = Boolean.FALSE;
+	
+	@Column(name = "excel_id")
+	private Long excelId;
 
 	@Override
 	public String toString() {

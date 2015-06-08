@@ -1,5 +1,7 @@
 package com.chinesedreamer.ipm.domain.biz.cpq.printorder.manufacotry.logic;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -23,8 +25,16 @@ public class CpqManufacotryOrderItemLogicImpl extends IpmLogicImpl<CpqManufacotr
 		return this.repository.findByOrderNoAndStyleNoAndDeletedFalse(orderNo, styleNo);
 	}
 	@Override
-	public CpqManufacotryOrderItem findByOrderNoAndStyleNoAndColorAndFromNoAndToNo(String orderNo,String styleNo,String color, String fromNo, String toNo) {
+	public CpqManufacotryOrderItem findByOrderNoAndStyleNoAndColorAndFromNoAndToNo(String orderNo,String styleNo,String color, Integer fromNo, Integer toNo) {
 		return this.repository.findByOrderNoAndStyleNoAndColorAndFromNoAndToNo(orderNo, styleNo, color, fromNo, toNo);
+	}
+	@Override
+	public List<CpqManufacotryOrderItem> getExcelItems(Long excelId) {
+		return this.repository.getExcelItems(excelId);
+	}
+	@Override
+	public List<CpqManufacotryOrderItem> findByExcelId(Long excelId) {
+		return this.repository.findByExcelIdAndDeletedFalse(excelId);
 	}
 
 }

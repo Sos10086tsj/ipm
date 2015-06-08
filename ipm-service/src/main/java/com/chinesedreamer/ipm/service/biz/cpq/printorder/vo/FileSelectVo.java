@@ -8,12 +8,12 @@ import lombok.Setter;
  * @date Jun 3, 20152:21:55 PM
  * @version beta
  */
-public @Getter @Setter class PdfSelectVo {
+public @Getter @Setter class FileSelectVo {
 	private String value;
 	private String label;
 	private String clothingType;
 	
-	public PdfSelectVo(String value,String label,String clothingType){
+	public FileSelectVo(String value,String label,String clothingType){
 		this.value = value;
 		this.label = label;
 		this.clothingType = clothingType;

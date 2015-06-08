@@ -91,17 +91,17 @@ ipm.cpq = {
 	            				sizeL:record.get('sizeL'),
 	            				sizeXL:record.get('sizeXl'),
 	            				sizeXXL:record.get('sizeXxl'),
-	            				sizeXXL:record.get('sizeP'),
-	            				sizeXXL:record.get('size1'),
-	            				sizeXXL:record.get('size2'),
-	            				sizeXXL:record.get('size3'),
-	            				sizeXXL:record.get('size4'),
-	            				sizeXXL:record.get('size6'),
-	            				sizeXXL:record.get('size8'),
-	            				sizeXXL:record.get('size10'),
-	            				sizeXXL:record.get('size12'),
-	            				sizeXXL:record.get('size14'),
-	            				sizeXXL:record.get('size16'),
+	            				sizeP:record.get('sizeP'),
+	            				size1:record.get('size1'),
+	            				size2:record.get('size2'),
+	            				size3:record.get('size3'),
+	            				size4:record.get('size4'),
+	            				size6:record.get('size6'),
+	            				size8:record.get('size8'),
+	            				size10:record.get('size10'),
+	            				size12:record.get('size12'),
+	            				size14:record.get('size14'),
+	            				size16:record.get('size16'),
 	            				tTL:record.get('ttl'),
 	            				totalAmount:record.get('totalAmount')
 		        			},
@@ -470,9 +470,10 @@ ipm.cpq = {
 					grid.columns[i].show();
 				}
 			}else if(clothingType == 'BOY' || clothingType == 'GIRL'){//男童 Size 4,Size 6,Size 8,Size 10,Size 12,Size 14,Size 16
-				for(var i = 11; i < 19 ; i++){
+				for(var i = 12; i < 19 ; i++){
 					grid.columns[i].show();
 				}
+				grid.columns[10].show();
 			}else{
 				return;
 			}

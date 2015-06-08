@@ -1,5 +1,7 @@
 package com.chinesedreamer.ipm.domain.biz.cpq.printorder.manufacotry.logic;
 
+import java.util.List;
+
 import com.chinesedreamer.ipm.domain.base.logic.IpmLogic;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.manufacotry.model.CpqManufacotryOrderItem;
 
@@ -11,5 +13,7 @@ import com.chinesedreamer.ipm.domain.biz.cpq.printorder.manufacotry.model.CpqMan
  */
 public interface CpqManufacotryOrderItemLogic extends IpmLogic<CpqManufacotryOrderItem, Long>{
 	public CpqManufacotryOrderItem findByOrderNoAndStyleNo(String orderNo,String styleNo);
-	public CpqManufacotryOrderItem findByOrderNoAndStyleNoAndColorAndFromNoAndToNo(String orderNo,String styleNo,String color, String fromNo, String toNo);
+	public CpqManufacotryOrderItem findByOrderNoAndStyleNoAndColorAndFromNoAndToNo(String orderNo,String styleNo,String color, Integer fromNo, Integer toNo);
+	public List<CpqManufacotryOrderItem> getExcelItems(Long excelId);
+	public List<CpqManufacotryOrderItem> findByExcelId(Long excelId);
 }
