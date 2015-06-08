@@ -1,12 +1,16 @@
 package com.chinesedreamer.ipm.web.cpq.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.chinesedreamer.ipm.common.component.DefaultDownloadComponent;
+import com.chinesedreamer.ipm.common.component.DownloadComponent;
 import com.chinesedreamer.ipm.domain.biz.cpq.file.constant.CpqFileType;
 import com.chinesedreamer.ipm.domain.biz.cpq.file.model.CpqFile;
 import com.chinesedreamer.ipm.domain.supp.attachment.model.Attachment;
@@ -26,6 +32,7 @@ import com.chinesedreamer.ipm.service.biz.cpq.printorder.service.PrintOrderServi
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.ExcelVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.FileSelectVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.PdfVo;
+import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.RptOrderSelectVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.SelectVo;
 import com.chinesedreamer.ipm.service.supp.attachment.service.AttachmentService;
 import com.chinesedreamer.ipm.service.system.user.constant.UserConstant;
@@ -83,7 +90,7 @@ public class CpqController {
 	@ResponseBody
 	@RequestMapping(value = "getUploadedPdfStore", method = RequestMethod.GET)
 	public List<FileSelectVo> getUploadedPdfStore(){
-		return this.facotry.getService(PrintOrderType.CPQ).getUploadedFileStore(CpqFileType.PDF);
+		return this.facotry.getService(PrintOrderType.CPQ).getUploadedFileStore(CpqFileType.PDF, null);
 	}
 	
 	/**
@@ -151,8 +158,9 @@ public class CpqController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "getUploadedExcelStore", method = RequestMethod.GET)
-	public List<FileSelectVo> getUploadedExcelStore(){
-		return this.facotry.getService(PrintOrderType.CPQ).getUploadedFileStore(CpqFileType.EXCEL);
+	public List<FileSelectVo> getUploadedExcelStore(HttpServletRequest request){
+		String manufactory = request.getParameter("manufactory");
+		return this.facotry.getService(PrintOrderType.CPQ).getUploadedFileStore(CpqFileType.EXCEL, manufactory);
 	}
 	
 	/**
@@ -188,17 +196,6 @@ public class CpqController {
 	}
 	
 	/**
-	 * 获取Excel item 信息列表
-	 * @param model
-	 * @return
-	 */
-	@ResponseBody
-	@RequestMapping(value = "getExcelStore/{excelId}", method = RequestMethod.GET)
-	public List<ExcelVo> getExcelStore(Model model,@PathVariable Long excelId){
-		return this.facotry.getService(PrintOrderType.CPQ).getExcelItems(excelId);
-	}
-	
-	/**
 	 * 更新
 	 * @param request
 	 * @return
@@ -213,13 +210,48 @@ public class CpqController {
 	}
 	
 	/**
-	 * 获取pdf order 信息列表
+	 * 获取excel order 信息列表
 	 * @param model
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "getExcelItemStore/{excelId}", method = RequestMethod.GET)
-	public List<ExcelVo> getExcelItemStore(Model model,@PathVariable Long excelId){
-		return this.facotry.getService(PrintOrderType.CPQ).getExcelItems(excelId);
+	public List<ExcelVo> getExcelItemStore(Model model,@PathVariable Long excelId,HttpServletRequest request){
+		String manufactory = request.getParameter("manufactory");
+		return this.facotry.getService(PrintOrderType.CPQ).getExcelItems(excelId,manufactory);
+	}
+	
+	/******** 打印报表 ************/
+	/**
+	 * 进入报表打印菜单
+	 * @return
+	 */
+	@RequestMapping(value = "report", method = RequestMethod.GET)
+	public String report(Model model){
+		return "/cpq/report";
+	}
+	/**
+	 * 获取order 列表
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "getRptOrders",method = RequestMethod.GET)
+	public List<RptOrderSelectVo> getRptOrders(HttpServletRequest request){
+		String orderNoKey = request.getParameter("orderNo");
+		return this.facotry.getService(PrintOrderType.CPQ).getOrders(orderNoKey);
+	}
+	
+	/**
+	 * 打印
+	 * @throws IOException 
+	 */
+	@RequestMapping(value ="print", method = RequestMethod.POST)
+	public void print(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		String orderNos = request.getParameter("orderNos");
+		String manufactory = request.getParameter("manufactory");
+		File report = this.facotry.getService(PrintOrderType.CPQ).printExcelReport(orderNos,manufactory);
+		DownloadComponent downloadComponent = new DefaultDownloadComponent();
+		downloadComponent.download(request, response, report.getPath());
+		FileUtils.deleteQuietly(report);
 	}
 }

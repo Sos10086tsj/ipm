@@ -24,6 +24,14 @@ public class CpqOrderLogicImpl extends IpmLogicImpl<CpqOrder, Long> implements C
 		Sort sort =  new Sort(Sort.Direction.ASC, "orderNo","styleNo");
 		return this.repository.findByPdfId(pdfId, sort);
 	}
+	@Override
+	public List<String> findOrders() {
+		return this.repository.findAllOrderByOrderNoAsc();
+	}
+	@Override
+	public List<String> findOrdersByOrderNoLike(String orderNo) {
+		return this.repository.findOrdersByOrderNoLike(orderNo);
+	}
 
 
 }

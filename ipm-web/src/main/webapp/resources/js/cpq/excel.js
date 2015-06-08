@@ -532,6 +532,19 @@ ipm.cpq = {
 		        },
 		        "->",
 		        {
+        			id:'js_item_manufactory_id',
+    				xtype: 'combobox',
+    				allowBlank : false,
+    				name: 'itemManufactory',
+    				fieldLabel: '选择工厂',
+    				store: ipm.cpq.excel.store.getManufactorySotre()
+    				labelWidth:60,
+    				queryMode: 'remote',
+    				displayField: 'label',
+    				valueField: 'value'
+        		},
+        		"->",
+		        {
         			xtype: 'combobox',
         			name: 'excelId',
         			fieldLabel: '已经上传的Excel',
@@ -546,7 +559,12 @@ ipm.cpq = {
     					select:function(combo,record,opts) {
     						var excelId = record[0].get("value");
     						var clothingType = record[0].get("clothingType");
-    						ipm.cpq.excel.reloadStore(excelId,clothingType);
+    						var manufactory = Ext.getCmp('js_item_manufactory_id').getValue();
+    						if(manufactory && manufactory.length > 0){
+    							ipm.cpq.excel.reloadStore(excelId,clothingType,manufactory);
+    						}else{
+    							ipm.extjs.warningResult('提示','请先选择工厂');
+    						}
    						}
     				}
         		}
@@ -560,10 +578,10 @@ ipm.cpq = {
 		    });
 	},
 	
-	reloadStore : function(excelId, clothingType){
+	reloadStore : function(excelId, clothingType,manufactory){
 			var grid = ipm.cpq.excel.grid;
 			var store = grid.store;
-			store.proxy.url = ctx + '/cpq/getExcelItemStore/' + excelId;
+			store.proxy.url = ctx + '/cpq/getExcelItemStore/' + excelId + "?manufactory=" + manufactory;
             //TODO 隐藏不需要的列 grid.columns[i].setVisible(false/true); grid.columns[i].hide()/show()
 			//1. 全部隐藏
 			for(var i = 5; i < 21 ; i++){

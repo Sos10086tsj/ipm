@@ -1,6 +1,7 @@
 package com.chinesedreamer.ipm.service.biz.cpq.printorder.service;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader;
@@ -48,6 +49,7 @@ import com.chinesedreamer.ipm.service.biz.cpq.printorder.constant.CpqExcelType;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.ExcelVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.FileSelectVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.PdfVo;
+import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.RptOrderSelectVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.SelectVo;
 import com.chinesedreamer.ipm.tools.pdf.reader.constant.PdfReaderType;
 import com.chinesedreamer.ipm.tools.pdf.reader.model.IpmPdf;
@@ -288,6 +290,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 				this.readJiananExcel(workbook, cpqFile);
 				break;
 			case PUTIANMU:
+				this.readPutianmuExcel(workbook, cpqFile);
 				break;
 			default:
 				break;
@@ -347,6 +350,21 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		}
 	}
 	
+	/**
+	 * 解析普天姆excel
+	 * @param workbook
+	 * @param cpqFile
+	 */
+	private void readPutianmuExcel(Workbook workbook, CpqFile cpqFile){
+		
+	}
+	
+	/**
+	 * 解析佳楠sheet
+	 * @param cpqFile
+	 * @param sheets
+	 * @return
+	 */
 	private Set<CpqManufacotryOrderItem> readJiananExcelSheet(CpqFile cpqFile, Sheet... sheets) {
 		Set<CpqManufacotryOrderItem> items = new HashSet<>();
 		String beginSymble = "宁波承天一楠制衣有限公司";
@@ -586,11 +604,14 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	}
 
 	@Override
-	public List<FileSelectVo> getUploadedFileStore(CpqFileType type) {
+	public List<FileSelectVo> getUploadedFileStore(CpqFileType type, String manufactory) {
 		List<CpqFile> files = this.cpqFileLogic.findByTypeOrderByUploadDate(type);
 		List<FileSelectVo> vos = new ArrayList<FileSelectVo>();
 		for (CpqFile file : files) {
-			if(!this.cpqManufacotryOrderItemLogic.findByExcelId(file.getId()).isEmpty()){
+			if (StringUtils.isEmpty(manufactory) && !this.cpqOrderLogic.findByPdfId(file.getId()).isEmpty()) {
+				vos.add(new FileSelectVo(file.getId().toString(), file.getFileName() + "(" + DateFormatUtils.format(file.getUploadDate(), "MM/dd HH:mm") + ")", file.getClothingType().toString()));
+			}
+			if (StringUtils.isNotEmpty(manufactory) && !this.cpqManufacotryOrderItemLogic.getExcelItems(file.getId(),manufactory).isEmpty()) {
 				vos.add(new FileSelectVo(file.getId().toString(), file.getFileName() + "(" + DateFormatUtils.format(file.getUploadDate(), "MM/dd HH:mm") + ")", file.getClothingType().toString()));
 			}
 		}
@@ -607,11 +628,11 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	}
 
 	@Override
-	public List<ExcelVo> getExcelItems(Long excelId) {
+	public List<ExcelVo> getExcelItems(Long excelId, String excelType) {
 		List<ExcelVo> vos = new ArrayList<ExcelVo>();
 		CpqFile cpqFile = this.cpqFileLogic.findOne(excelId);
 		List<String> sizes = this.getClothingTypeSizes(cpqFile.getClothingType().toString());
-		List<CpqManufacotryOrderItem> items = this.cpqManufacotryOrderItemLogic.getExcelItems(excelId);
+		List<CpqManufacotryOrderItem> items = this.cpqManufacotryOrderItemLogic.getExcelItems(excelId, excelType);
 		for (CpqManufacotryOrderItem item : items) {
 			vos.add(this.convert2ExcelVo(item, sizes));
 		}
@@ -659,5 +680,27 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			sizes.add(this.formatSizeKey(dict.getValue()));//比如SizeS
 		}
 		return sizes;
+	}
+
+	/************* 打印 ********************/
+	@Override
+	public List<RptOrderSelectVo> getOrders(String key) {
+		List<String> orders = null;
+		if (StringUtils.isEmpty(key)) {
+			orders = this.cpqOrderLogic.findOrders();
+		}else {
+			orders = this.cpqOrderLogic.findOrdersByOrderNoLike("%" + key.trim() + "%");
+		}
+		List<RptOrderSelectVo> vos = new ArrayList<RptOrderSelectVo>();
+		for (String order : orders) {
+			vos.add(new RptOrderSelectVo(order));
+		}
+		return vos;
+	}
+
+	@Override
+	public File printExcelReport(String orderNos, String manufactory) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

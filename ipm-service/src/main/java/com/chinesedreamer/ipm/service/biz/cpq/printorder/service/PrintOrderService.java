@@ -1,5 +1,6 @@
 package com.chinesedreamer.ipm.service.biz.cpq.printorder.service;
 
+import java.io.File;
 import java.util.List;
 
 import com.chinesedreamer.ipm.domain.biz.cpq.file.constant.CpqFileType;
@@ -9,6 +10,7 @@ import com.chinesedreamer.ipm.service.biz.cpq.printorder.constant.CpqExcelType;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.ExcelVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.FileSelectVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.PdfVo;
+import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.RptOrderSelectVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.SelectVo;
 
 /**
@@ -50,7 +52,7 @@ public interface PrintOrderService {
 	 * 获取已经上传过的pdf，按时间倒叙排序
 	 * @return
 	 */
-	public List<FileSelectVo> getUploadedFileStore(CpqFileType type);
+	public List<FileSelectVo> getUploadedFileStore(CpqFileType type, String manufactory);
 	
 	
 	/***********excel **************/
@@ -71,5 +73,10 @@ public interface PrintOrderService {
 	 * @param excelId
 	 * @return
 	 */
-	public List<ExcelVo> getExcelItems(Long excelId);
+	public List<ExcelVo> getExcelItems(Long excelId, String excelType);
+	
+	/*********** 报表打印 **************/
+	public List<RptOrderSelectVo> getOrders(String key);
+	
+	public File printExcelReport(String orderNos,String manufactory);
 }

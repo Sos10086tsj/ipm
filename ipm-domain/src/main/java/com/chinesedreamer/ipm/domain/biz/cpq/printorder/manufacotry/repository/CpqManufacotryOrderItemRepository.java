@@ -18,8 +18,10 @@ public interface CpqManufacotryOrderItemRepository extends IpmRepository<CpqManu
 	public CpqManufacotryOrderItem findByOrderNoAndStyleNoAndDeletedFalse(String orderNo,String styleNo);
 	public CpqManufacotryOrderItem findByOrderNoAndStyleNoAndColorAndFromNoAndToNo(String orderNo,String styleNo,String color, Integer fromNo, Integer toNo);
 	
-	@Query(" FROM CpqManufacotryOrderItem item WHERE item.excelId = :excelId AND item.deleted = false ORDER BY item.orderNo ,item.fromNo, item.toNo ASC ")
-	public List<CpqManufacotryOrderItem> getExcelItems(@Param("excelId")Long excelId);
-	
-	public List<CpqManufacotryOrderItem> findByExcelIdAndDeletedFalse(Long excelId);
+	@Query(" FROM CpqManufacotryOrderItem item inner join CpqFile cf on cf.id = item.excelId "
+			+ " WHERE item.excelId = :excelId "
+			+ " AND item.deleted = false "
+			+ " AND cf.owner = :excelType "
+			+ " ORDER BY item.orderNo ,item.fromNo, item.toNo ASC ")
+	public List<CpqManufacotryOrderItem> getExcelItems(@Param("excelId")Long excelId,@Param("excelType") String excelType);
 }
