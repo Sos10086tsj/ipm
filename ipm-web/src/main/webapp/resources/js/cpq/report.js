@@ -3,7 +3,7 @@ ipm.cpq = {
 		grid : null,
 		init : function(){
 			ipm.cpq.rpt.grid = Ext.create('Ext.grid.Panel',{
-				store: ipm.cpq.report.store.getRptStore(),
+				store: ipm.cpq.rpt.store.getRptStore(),
 				selModel:Ext.create('Ext.selection.CheckboxModel'),
 				columns: [{
 		            header: 'orderNo',
@@ -23,7 +23,7 @@ ipm.cpq = {
         				fieldLabel: '选择工厂',
         				width:550,
         				labelWidth:100,
-    					store: ipm.cpq.report.store.getManufactorySotre(),
+    					store: ipm.cpq.rpt.store.getManufactorySotre(),
     					queryMode: 'remote',
     					displayField: 'label',
     					region:'east',

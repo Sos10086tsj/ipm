@@ -1,4 +1,4 @@
-ipm.cpq.report.store = {
+ipm.cpq.rpt.store = {
 	getRptStore : function(){
 		var rptModel = Ext.define('rptModel', {
 	        extend: 'Ext.data.Model',
