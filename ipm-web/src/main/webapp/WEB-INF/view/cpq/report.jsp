@@ -8,18 +8,13 @@
 </head>
 <body>
 	<div>
-		<h1>上传客户PDF</h1>
-		<div id="btn_pdf_upload"></div>
-	</div>
-	<div>
-		<h1>Excel解析结果</h1>
-		<p>请仔细审核解析的结果，如果有问题，请即时修改</p>
-		<div id="pdf_grid"></div>
+		<h1>选择导出条件</h1>
+		<div id="js_report_export"></div>
 	</div>
 </body>
 <%@include file="/WEB-INF/view/base/baselib.jspf" %>
-<script type="text/javascript" src="${ctx}/resources/js/cpq/pdf.js"></script>
-<script type="text/javascript" src="${ctx}/resources/js/cpq/pdfStore.js"></script>
+<script type="text/javascript" src="${ctx}/resources/js/cpq/report.js"></script>
+<script type="text/javascript" src="${ctx}/resources/js/cpq/reportStore.js"></script>
 <script>
 	var ctx = '${ctx}';
 </script>

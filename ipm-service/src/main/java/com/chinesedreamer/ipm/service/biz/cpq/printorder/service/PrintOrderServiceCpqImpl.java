@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,6 +34,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.chinesedreamer.ipm.common.constant.ConfigPropertiesConstant;
+import com.chinesedreamer.ipm.common.utils.format.MathUtil;
 import com.chinesedreamer.ipm.common.utils.format.StringUtil;
 import com.chinesedreamer.ipm.common.utils.io.PropertiesUtils;
 import com.chinesedreamer.ipm.common.utils.office.ExcelUtil;
@@ -55,6 +58,7 @@ import com.chinesedreamer.ipm.domain.system.config.logic.IpmConfigLogic;
 import com.chinesedreamer.ipm.domain.system.config.model.IpmConfig;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.constant.CpqExcelType;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.ColorSizeVo;
+import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.ColorSizeVoComparator;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.ExcelVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.FileSelectVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.PdfVo;
@@ -718,7 +722,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		String[] orders = orderNos.split(",");
 		PropertiesUtils propertiesUtils = new PropertiesUtils("config.properties");
-		String outputPath = propertiesUtils.getProperty("i:/test/files/output/ipm/");
+		String outputPath = propertiesUtils.getProperty(ConfigPropertiesConstant.fILE_OUTPUT_PATH);
 		File folder = new File(outputPath);
 		if (!folder.exists()) {
 			folder.mkdirs();
@@ -890,7 +894,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 							mapSetMethod.invoke(mapValue, vo);
 							mapShippedSetMethod.invoke(mapValue, vo);
 							colorSizeMap.put(item.getColor(), vo);
-							this.printNormalCell(itemRow, 3 + j, value , cellStyle_x);
+							this.printNormalCell(itemRow, 4 + j, value , cellStyle_x);
 						} 
 					}catch (Exception e) {
 						this.logger.error("{}",e);
@@ -936,6 +940,63 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 				this.printNormalCell(row21, 4 + i, sizeXValue, cellStyle_x);
 			}
 			//22. color vo 
+			List<ColorSizeVo> vos = this.getColorSizes(colorSizeMap);
+			for (int i = 0; i < vos.size(); i++) {
+				ColorSizeVo vo = vos.get(i);
+				//空一行
+				//order qty 行
+				HSSFRow row22 = sheet.createRow(23 + items.size() + i * 5);
+				this.printNormalCell(row22, 2, "ORDER QTY", cellStyle_x);
+				this.printNormalCell(row22, 3, vo.getColor(), cellStyle_x);
+				for (int j = 0; j < sizes.size(); j++) {
+					String size = sizes.get(i);
+					try {
+						Method getMethod = ColorSizeVo.class.getDeclaredMethod("get"+size);
+						Integer value = (Integer)getMethod.invoke(vo);
+						if (null != value) {
+							this.printNormalCell(row22, 4 + j, value , cellStyle_x);
+						} 
+					}catch (Exception e) {
+						this.logger.error("{}",e);
+					}
+				}
+				//shipped qty 行
+				HSSFRow row23 = sheet.createRow(24 + items.size() + i * 5);
+				this.printNormalCell(row23, 2, "SHIPPED QTY", cellStyle_x);
+				this.printNormalCell(row23, 3, vo.getColor(), cellStyle_x);
+				for (int j = 0; j < sizes.size(); j++) {
+					String size = sizes.get(i);
+					try {
+						Method getMethod = ColorSizeVo.class.getDeclaredMethod("getActual"+size);
+						Integer value = (Integer)getMethod.invoke(vo);
+						if (null != value) {
+							this.printNormalCell(row23, 4 + j, value , cellStyle_x);
+						} 
+					}catch (Exception e) {
+						this.logger.error("{}",e);
+					}
+				}
+				//DISCREPANCY      %
+				HSSFRow row24 = sheet.createRow(25 + items.size() + i * 5);
+				HSSFRow row25 = sheet.createRow(26 + items.size() + i * 5);
+				this.printNormalCell(row24, 2, "DISCREPANCY", cellStyle_x);
+				this.printNormalCell(row25, 2, "%", cellStyle_x);
+				for (int j = 0; j < sizes.size(); j++) {
+					String size = sizes.get(i);
+					try {
+						Method orderedMethod = ColorSizeVo.class.getDeclaredMethod("get"+size);
+						Integer orderedValue = (Integer)orderedMethod.invoke(vo);
+						if (null != orderedValue) {
+							Method actualMethod = ColorSizeVo.class.getDeclaredMethod("getActual"+size);
+							Integer actualValue = (Integer)actualMethod.invoke(vo);
+							this.printNormalCell(row24, 4 + j, actualValue - orderedValue , cellStyle_x);
+							this.printNormalCell(row25, 4 + j, MathUtil.percent(orderedValue, actualValue - orderedValue, null) , cellStyle_x);
+						} 
+					}catch (Exception e) {
+						this.logger.error("{}",e);
+					}
+				}
+			}
 		}
 		//2. 打印
 		FileOutputStream out = null;
@@ -996,7 +1057,17 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		}
 	}
 	
-	private List<ColorSizeVo> getColorSizes() {
-		
+	/**
+	 * 颜色重排序
+	 * @param colorSizeMap
+	 * @return
+	 */
+	private List<ColorSizeVo> getColorSizes(Map<String, ColorSizeVo> colorSizeMap) {
+		List<ColorSizeVo> vos = new ArrayList<ColorSizeVo>();
+		for (String key : colorSizeMap.keySet()) {
+			vos.add(colorSizeMap.get(key));
+		}
+		Collections.sort(vos, new ColorSizeVoComparator());
+		return vos;
 	}
 }

@@ -11,7 +11,6 @@ import lombok.Setter;
  */
 public @Getter @Setter class RptOrderSelectVo {
 	private String orderNo;
-	private Boolean selected = Boolean.TRUE;
 	
 	public RptOrderSelectVo(String orderNo){
 		this.orderNo = orderNo;

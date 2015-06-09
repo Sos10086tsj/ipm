@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.chinesedreamer.ipm.common.constant.ConfigPropertiesConstant;
 import com.chinesedreamer.ipm.common.utils.io.PropertiesUtils;
 import com.chinesedreamer.ipm.domain.supp.attachment.logic.AttachmentLogic;
 import com.chinesedreamer.ipm.domain.supp.attachment.model.Attachment;
@@ -33,7 +34,7 @@ public class AttachmentServiceImpl implements AttachmentService{
 		//1. 保存文件
 		PropertiesUtils pu = new PropertiesUtils("config.properties");
 		Calendar calendar = Calendar.getInstance();
-		String prefix = pu.getProperty("file.upload.prefix") 
+		String prefix = pu.getProperty(ConfigPropertiesConstant.fILE_UPLOAD_PREFIX) 
 				+ calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.DAY_OF_MONTH) 
 				+ "/" ;
 		File folder = new File(prefix);
