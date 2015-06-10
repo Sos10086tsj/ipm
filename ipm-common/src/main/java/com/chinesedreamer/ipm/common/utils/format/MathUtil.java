@@ -27,6 +27,9 @@ public class MathUtil {
 			df = new DecimalFormat(format);
 		}
 		percent = df.format(p);
+		if (percent.equals(".00%")) {
+			return "0.00%";
+		}
 		return percent;
 	}
 	
@@ -40,6 +43,9 @@ public class MathUtil {
 			df = new DecimalFormat(format);
 		}
 		percent = df.format(p);
+		if (percent.equals(".00%")) {
+			return "0.00%";
+		}
 		return percent;
 	}
 }

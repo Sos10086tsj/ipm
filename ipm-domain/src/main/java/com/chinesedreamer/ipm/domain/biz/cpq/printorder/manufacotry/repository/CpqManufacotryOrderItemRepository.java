@@ -17,5 +17,5 @@ public interface CpqManufacotryOrderItemRepository extends IpmRepository<CpqManu
 
 	public List<CpqManufacotryOrderItem> findByExcelIdAndOwner(Long excelId, String owner);
 	
-	List<CpqManufacotryOrderItem> findByOrderNoAndOwner(String orderNo,String owner);
+	public List<CpqManufacotryOrderItem> findByOrderNoAndOwnerOrderByFromNoAsc(String orderNo,String owner);
 }

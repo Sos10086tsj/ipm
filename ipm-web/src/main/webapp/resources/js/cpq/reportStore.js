@@ -3,8 +3,7 @@ ipm.cpq.rpt.store = {
 		var rptModel = Ext.define('rptModel', {
 	        extend: 'Ext.data.Model',
 	        fields: [
-	            'orderNo',
-				'selected'
+	            'orderNo'
 	        ]
 		});
 		

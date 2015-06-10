@@ -235,6 +235,7 @@ public class CpqController {
 	 * @param request
 	 * @return
 	 */
+	@ResponseBody
 	@RequestMapping(value = "getRptOrders",method = RequestMethod.GET)
 	public List<RptOrderSelectVo> getRptOrders(HttpServletRequest request){
 		String orderNoKey = request.getParameter("orderNo");
@@ -245,7 +246,7 @@ public class CpqController {
 	 * 打印
 	 * @throws IOException 
 	 */
-	@RequestMapping(value ="print", method = RequestMethod.POST)
+	@RequestMapping(value ="print", method = {RequestMethod.POST,RequestMethod.GET})
 	public void print(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		String orderNos = request.getParameter("orderNos");
 		String manufactory = request.getParameter("manufactory");

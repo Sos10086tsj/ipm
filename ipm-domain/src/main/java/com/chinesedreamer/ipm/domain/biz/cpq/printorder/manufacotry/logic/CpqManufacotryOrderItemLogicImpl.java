@@ -34,7 +34,7 @@ public class CpqManufacotryOrderItemLogicImpl extends IpmLogicImpl<CpqManufacotr
 	}
 	@Override
 	public List<CpqManufacotryOrderItem> findByOrderNoAndOwner(String orderNo,String owner) {
-		return this.repository.findByOrderNoAndOwner(orderNo, owner);
+		return this.repository.findByOrderNoAndOwnerOrderByFromNoAsc(orderNo, owner);
 	}
 
 }
