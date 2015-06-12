@@ -537,19 +537,30 @@ ipm.cpq = {
     				allowBlank : false,
     				name: 'itemManufactory',
     				fieldLabel: '选择工厂',
-    				store: ipm.cpq.excel.store.getManufactorySotre()
+    				store: ipm.cpq.excel.store.getManufactorySotre(),
     				labelWidth:60,
     				queryMode: 'remote',
     				displayField: 'label',
-    				valueField: 'value'
+    				valueField: 'value',
+    				listeners:{
+    					select:function(combo,record,opts) {
+    						var manufactory = record[0].get("value");
+    						if(manufactory && manufactory.length > 0){
+    							uploadedExcelStore.proxy.url = ctx + '/cpq/getUploadedExcelStore/?manufactory=' + manufactory;
+    							uploadedExcelStore.reload();
+    						}else{
+    							ipm.extjs.warningResult('提示','请先选择工厂');
+    						}
+   						}
+    				}
         		},
         		"->",
 		        {
         			xtype: 'combobox',
         			name: 'excelId',
         			fieldLabel: '已经上传的Excel',
-        			width:550,
-        			labelWidth:100,
+        			width:300,
+        			labelWidth:120,
     				store: uploadedExcelStore,
     				queryMode: 'remote',
     				displayField: 'label',

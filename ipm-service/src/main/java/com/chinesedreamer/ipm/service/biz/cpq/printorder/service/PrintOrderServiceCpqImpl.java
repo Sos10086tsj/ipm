@@ -351,7 +351,8 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			for (int i = 0; i < jiananConfigs.length; i++) {
 				jiananSheets[i] = workbook.getSheet(jiananConfigs[i]);
 			}
-			items.addAll(this.readJiananExcelSheet(cpqFile,jiananSheets));
+			//TODO 01有隐藏行
+			//items.addAll(this.readJiananExcelSheet(cpqFile,jiananSheets));
 		}
 		for (CpqManufacotryOrderItem item : items) {
 			this.cpqManufacotryOrderItemLogic.save(item);
@@ -365,7 +366,6 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	 */
 	private void readPutianmuExcel(Workbook workbook, CpqFile cpqFile){
 		Set<CpqManufacotryOrderItem> items = new HashSet<>();
-		
 		for (CpqManufacotryOrderItem item : items) {
 			this.cpqManufacotryOrderItemLogic.save(item);
 		}
@@ -379,7 +379,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	 */
 	private Set<CpqManufacotryOrderItem> readJiananExcelSheet(CpqFile cpqFile, Sheet... sheets) {
 		Set<CpqManufacotryOrderItem> items = new HashSet<>();
-		String beginSymble = "宁波承天一楠制衣有限公司";
+		String beginSymble = "合约号";
 		String endSymble = "合计";
 		for (Sheet sheet : sheets) {
 			if (null != sheet) {
@@ -387,7 +387,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 				if (rows < 1) {
 					this.logger.info("sheet:{} is empty.",sheet.getSheetName());
 				}
-				
+				this.logger.info("sheet name:{}", sheet.getSheetName());
 				int startRow = 0;
 				int endRow = 0;
 				Integer tmpFrom = -1;
@@ -409,12 +409,12 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 					}
 					String cellValue = ExcelUtil.getCellStringValue(cell);
 					if (StringUtils.isNotEmpty(cellValue) && cellValue.startsWith(beginSymble)) {
-						startRow = i + 1;
+						startRow = i;
 					}else {
 						i++;
 						continue;
 					}
-					
+					this.logger.info("start row number:{}", startRow);
 					//第一行：订单号、款号
 					Row row1 = sheet.getRow(startRow);
 					String orderNo = ExcelUtil.getCellStringValue(row1.getCell(2));//订单号
@@ -495,10 +495,9 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 								} 
 							}
 						}
-						String pcs = ExcelUtil.getCellStringValue(itemRow.getCell(3 + sizes));
-								//ExcelUtil.getCellIntegerValue(itemRow.getCell(3 + sizes));
-						if (StringUtils.isNotEmpty(pcs)) {
-							item.setPcsPerBox(Integer.parseInt(pcs));
+						Float pcs = ExcelUtil.getCellFloatValue(itemRow.getCell(3 + sizes));
+						if (null != pcs) {
+							item.setPcsPerBox(pcs.intValue());
 						}
 						Float grossWeightCellValue = ExcelUtil.getCellFloatValue(itemRow.getCell(5 + sizes));
 						if (null != grossWeightCellValue) {

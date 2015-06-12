@@ -516,7 +516,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		sheet.getRow(35 + vos.size() * 5 + items.size()).getCell(2).setCellValue("KGS");
 		//Meas
 		sheet.getRow(36 + vos.size() * 5 + items.size()).getCell(0).setCellValue("Meas:");
-		sheet.getRow(35 + vos.size() * 5 + items.size()).getCell(1).setCellValue(totalVolume);
+		sheet.getRow(36 + vos.size() * 5 + items.size()).getCell(1).setCellValue(totalVolume);
 		sheet.getRow(36 + vos.size() * 5 + items.size()).getCell(2).setCellValue("CBM");
 	}
 	

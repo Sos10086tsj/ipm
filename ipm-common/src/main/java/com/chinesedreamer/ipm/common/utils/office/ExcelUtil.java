@@ -1,6 +1,5 @@
 package com.chinesedreamer.ipm.common.utils.office;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 
 /**
@@ -11,50 +10,79 @@ import org.apache.poi.ss.usermodel.Cell;
  */
 public class ExcelUtil {
 	public static Integer getCellIntegerValue(Cell cell){
-		if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-			Double value = cell.getNumericCellValue();
-			if (null != value && value > 0.0) {
-				return value.intValue();
+		Integer value = null;
+		switch (cell.getCellType()) {
+		case Cell.CELL_TYPE_NUMERIC:
+			value = (int)cell.getNumericCellValue();
+			break;
+		case Cell.CELL_TYPE_STRING:
+			value = Integer.valueOf(cell.getStringCellValue());
+			break;
+		case Cell.CELL_TYPE_FORMULA:
+			String valueStr = getFormulaValue(cell).toString();
+			int index = valueStr.indexOf(".");
+			if (-1 != index) {
+				valueStr = valueStr.substring(0, index-1);
 			}
+			value = Integer.valueOf(valueStr);
+			break;
+		default:
+			break;
 		}
-		if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
-			String value = cell.getStringCellValue();
-			if (StringUtils.isNotEmpty(value)) {
-				return Integer.parseInt(value);
-			}
-		}
-		return null;
+		return value;
 	}
 	
 	public static Float getCellFloatValue(Cell cell){
-		if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-			Double value = cell.getNumericCellValue();
-			if (null != value && value > 0.0) {
-				return value.floatValue();
-			}
+		Double value = null;
+		switch (cell.getCellType()) {
+		case Cell.CELL_TYPE_NUMERIC:
+			value = Double.valueOf(cell.getNumericCellValue());
+			break;
+		case Cell.CELL_TYPE_STRING:
+			value = Double.valueOf(cell.getStringCellValue());
+			break;
+		case Cell.CELL_TYPE_FORMULA:
+			value = Double.valueOf(getFormulaValue(cell).toString());
+			break;
+		default:
+			break;
 		}
-		if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
-			String value = cell.getStringCellValue();
-			if (StringUtils.isNotEmpty(value)) {
-				return Float.parseFloat(value);
-			}
+		if (null == value) {
+			return null;
 		}
-		return null;
+		return value.floatValue();
 	}
 	
 	public static String getCellStringValue(Cell cell) {
-		if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-			Double value = cell.getNumericCellValue();
-			if (null != value && value > 0.0) {
-				return value.toString();
-			}
+		String value = null;
+		switch (cell.getCellType()) {
+		case Cell.CELL_TYPE_NUMERIC:
+			value = String.valueOf(cell.getNumericCellValue());
+			break;
+		case Cell.CELL_TYPE_STRING:
+			value = cell.getStringCellValue();
+			break;
+		case Cell.CELL_TYPE_FORMULA:
+			value = String.valueOf(getFormulaValue(cell));
+			break;
+		default:
+			break;
 		}
-		if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
-			String value = cell.getStringCellValue();
-			if (StringUtils.isNotEmpty(value)) {
-				return value;
-			}
+		return value;
+	}
+	
+	public static Object getFormulaValue(Cell cell) {
+		Object obj = null;
+		switch (cell.getCachedFormulaResultType()) {
+		case Cell.CELL_TYPE_NUMERIC:
+			obj = cell.getSheet().getWorkbook().getCreationHelper().createFormulaEvaluator().evaluate(cell).getNumberValue();
+			break;
+		case Cell.CELL_TYPE_STRING:
+			obj = cell.getSheet().getWorkbook().getCreationHelper().createFormulaEvaluator().evaluate(cell).getNumberValue();
+			break;
+		default:
+			break;
 		}
-		return null;
+		return obj;
 	}
 }
