@@ -1,4 +1,4 @@
-package com.chinesedreamer.ipm.service.biz.cpq.printorder.vo;
+package com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.report;
 
 import java.util.Comparator;
 

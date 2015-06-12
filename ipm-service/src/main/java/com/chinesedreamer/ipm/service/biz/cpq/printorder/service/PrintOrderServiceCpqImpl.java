@@ -55,6 +55,7 @@ import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.FileSelectVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.PdfVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.RptOrderSelectVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.SelectVo;
+import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.excel.PutianmuExcelOrders;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.report.ManufactoryInfo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.report.TitleInfo;
 import com.chinesedreamer.ipm.tools.pdf.reader.constant.PdfReaderType;
@@ -366,9 +367,109 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	 */
 	private void readPutianmuExcel(Workbook workbook, CpqFile cpqFile){
 		Set<CpqManufacotryOrderItem> items = new HashSet<>();
+		IpmConfig putianmuConfig = this.configLogic.findByProperty(IpmConfigConstant.CPQ_EXCEL_PUTIANMU);
+		if (null == putianmuConfig) {
+			logger.info("Missing 普天姆 configuration.");
+		}else {
+			String[] putianmuConfigs = putianmuConfig.getPropertyValue().split(",");
+			Sheet[] putianmuSheets = new Sheet[putianmuConfigs.length];
+			for (int i = 0; i < putianmuConfigs.length; i++) {
+				putianmuSheets[i] = workbook.getSheet(putianmuConfigs[i]);
+			}
+			items.addAll(this.readJiananExcelSheet(cpqFile,putianmuSheets));
+		}
 		for (CpqManufacotryOrderItem item : items) {
 			this.cpqManufacotryOrderItemLogic.save(item);
 		}
+	}
+	
+	/**
+	 * 解析普天姆sheet
+	 * @param cpqFile
+	 * @param sheets
+	 * @return
+	 */
+	private Set<CpqManufacotryOrderItem> readPutianmuExcelSheet(CpqFile cpqFile, Sheet... sheets){
+		//1. 读取香港、荷兰表中的所有 order no。 和 style no。
+		Set<PutianmuExcelOrders> peos = this.getPutiamuSheetOrders(sheets);
+		//2. 解对应的style no。 sheet
+		Workbook wb = sheets[0].getWorkbook();
+		for (PutianmuExcelOrders peo : peos) {
+			String orderNo = peo.getOrderNo();
+			String styleNo = peo.getStyleNo();
+			String sheetName = this.getPutianmuSheetNameByStyleNo(styleNo);
+			Sheet sheet = wb.get
+		}
+		wb.getSheet("");
+		Set<CpqManufacotryOrderItem> items = new HashSet<>();
+		
+	}
+	
+	/**
+	 * 根据style no。获取excel sheet表名
+	 * @param styleNo
+	 * @return
+	 */
+	private String getPutianmuSheetNameByStyleNo(String styleNo) {
+		int index = styleNo.indexOf(".");
+		if (-1 == index) {
+			return styleNo ;
+		}
+		return styleNo.substring(index, styleNo.length());
+	}
+	
+	/**
+	 * 读取普天姆sheet中的order no和style no列表
+	 * @param sheets
+	 * @return
+	 */
+	private Set<PutianmuExcelOrders> getPutiamuSheetOrders(Sheet... sheets) {
+		Set<PutianmuExcelOrders> peos = new HashSet<PutianmuExcelOrders>();
+		Set<String> exsits = new HashSet<String>();
+		for (Sheet sheet : sheets) {
+			if (null != sheet) {
+				int rows = sheet.getPhysicalNumberOfRows();
+				int startRow = 0;
+				int endRow = rows;
+				for (int i = 0; i < rows;) {
+					Row row = sheet.getRow(i);
+					if (null == row) {
+						continue;
+					}
+					Cell cell = row.getCell(0);
+					if (null == cell) {
+						continue;
+					}
+					String cellValue = ExcelUtil.getCellStringValue(cell);
+					if (StringUtils.isNotEmpty(cellValue) && cellValue.equals("ORDER NR")) {
+						startRow = i + 1;
+						break;
+					}
+				}
+				//开始解读order no。和style no。
+				for (int i = startRow; i < endRow; i++) {
+					Row row = sheet.getRow(i);
+					if (null == row) {
+						continue;
+					}
+					Cell orderCell = row.getCell(0);
+					Cell styleCell = row.getCell(1);
+					if (null == orderCell || null == styleCell) {
+						continue;
+					}
+					String orderNo = ExcelUtil.getCellStringValue(orderCell);
+					String styleNo = ExcelUtil.getCellStringValue(styleCell);
+					if (StringUtils.isEmpty(orderNo) || StringUtils.isEmpty(styleNo) || orderNo.contains("要求")) {
+						continue;
+					}
+					if (!exsits.contains(orderNo + "@@@@@@@@@@" + styleNo)) {
+						peos.add(new PutianmuExcelOrders(orderNo, styleNo));
+						exsits.add(orderNo + "@@@@@@@@@@" + styleNo);
+					}
+				}
+			}
+		}
+		return peos;
 	}
 	
 	/**

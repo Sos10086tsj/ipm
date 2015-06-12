@@ -21,8 +21,8 @@ import org.springframework.stereotype.Service;
 
 import com.chinesedreamer.ipm.common.utils.format.MathUtil;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.manufacotry.model.CpqManufacotryOrderItem;
-import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.ColorSizeVo;
-import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.ColorSizeVoComparator;
+import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.report.ColorSizeVo;
+import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.report.ColorSizeVoComparator;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.report.ManufactoryInfo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.report.TitleInfo;
 

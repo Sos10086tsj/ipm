@@ -59,3 +59,5 @@ CHANGE COLUMN `to_no` `to_no` INT NULL DEFAULT NULL ;
 
 ALTER TABLE `ipm`.`ipm_biz_cpq_file` 
 ADD COLUMN `excel_id` BIGINT NULL AFTER `deleted`;
+
+INSERT INTO `ipm`.`ipm_sys_config` (`property`, `property_value`) VALUES ('CPQ_EXCEL_PUTIANMU', '荷兰,香港');
