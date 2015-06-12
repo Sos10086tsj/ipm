@@ -39,24 +39,24 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 	
 	private HSSFCellStyle commonStyle;
 	private void initCommonStyle(HSSFWorkbook workbook){
-		if (null == this.commonStyle) {
-			commonStyle = workbook.createCellStyle();
-			commonStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-			commonStyle.setLeftBorderColor(HSSFCellStyle.BORDER_THIN);
-			commonStyle.setTopBorderColor(HSSFCellStyle.BORDER_THIN);
-			commonStyle.setRightBorderColor(HSSFCellStyle.BORDER_THIN);
-			commonStyle.setBottomBorderColor(HSSFCellStyle.BORDER_THIN);
-			HSSFFont font = workbook.createFont();
-			font.setFontName("Arial");
-			font.setFontHeightInPoints((short)10);
-			commonStyle.setFont(font);
-		}
+		commonStyle = workbook.createCellStyle();
+		commonStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		commonStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+		commonStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+		commonStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);
+		commonStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);
+		commonStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		HSSFFont font = workbook.createFont();
+		font.setFontName("Arial");
+		font.setFontHeightInPoints((short)10);
+		commonStyle.setFont(font);
 	}
 
 	@Override
 	public void printManufactory(HSSFWorkbook workbook,HSSFSheet sheet, ManufactoryInfo info) {
 		//第一行：工厂名
 		HSSFRow row1 = sheet.createRow(0); 
+		row1.setHeightInPoints(20.25f);
 		HSSFCell cell1_1 = row1.createCell(0);
 		HSSFCellStyle cellStyle1_1 = workbook.createCellStyle();
 		cellStyle1_1.setAlignment(HSSFCellStyle.ALIGN_CENTER);
@@ -80,6 +80,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		cellStyle2_x.setFont(font2_x);
 		
 		HSSFRow row2 = sheet.createRow(1);
+		row2.setHeightInPoints(15);
 		HSSFCell cell2_1 = row2.createCell(0);
 		cell2_1.setCellStyle(cellStyle2_x);
 		cell2_1.setCellType(Cell.CELL_TYPE_STRING);
@@ -89,6 +90,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		
 		//第三行：工厂地址二
 		HSSFRow row3 = sheet.createRow(2);
+		row3.setHeightInPoints(15);
 		HSSFCell cell3_1 = row3.createCell(0);
 		cell3_1.setCellStyle(cellStyle2_x);
 		cell3_1.setCellType(Cell.CELL_TYPE_STRING);
@@ -106,34 +108,35 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		font.setFontHeightInPoints((short)10);
 		
 		HSSFCellStyle left_Top_Border = workbook.createCellStyle();
-		left_Top_Border.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		left_Top_Border.setLeftBorderColor(HSSFCellStyle.BORDER_THIN);
-		left_Top_Border.setTopBorderColor(HSSFCellStyle.BORDER_THIN);
+		left_Top_Border.setAlignment(HSSFCellStyle.ALIGN_LEFT);
+		left_Top_Border.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+		left_Top_Border.setBorderTop(HSSFCellStyle.BORDER_THIN);
 		left_Top_Border.setFont(font);
 		
 		HSSFCellStyle top_Border = workbook.createCellStyle();
-		top_Border.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		top_Border.setTopBorderColor(HSSFCellStyle.BORDER_THIN);
+		top_Border.setAlignment(HSSFCellStyle.ALIGN_LEFT);
+		top_Border.setBorderTop(HSSFCellStyle.BORDER_THIN);
 		top_Border.setFont(font);
 		
 		HSSFCellStyle right_Top_Border = workbook.createCellStyle();
-		right_Top_Border.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		right_Top_Border.setRightBorderColor(HSSFCellStyle.BORDER_THIN);
-		right_Top_Border.setTopBorderColor(HSSFCellStyle.BORDER_THIN);
+		right_Top_Border.setAlignment(HSSFCellStyle.ALIGN_LEFT);
+		right_Top_Border.setBorderRight(HSSFCellStyle.BORDER_THIN);
+		right_Top_Border.setBorderTop(HSSFCellStyle.BORDER_THIN);
 		right_Top_Border.setFont(font);
 		
 		HSSFCellStyle left_Border = workbook.createCellStyle();
-		left_Border.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		left_Border.setLeftBorderColor(HSSFCellStyle.BORDER_THIN);
+		left_Border.setAlignment(HSSFCellStyle.ALIGN_LEFT);
+		left_Border.setBorderLeft(HSSFCellStyle.BORDER_THIN);
 		left_Border.setFont(font);
 		
 		HSSFCellStyle right_Border = workbook.createCellStyle();
-		right_Border.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		right_Border.setRightBorderColor(HSSFCellStyle.BORDER_THIN);
+		right_Border.setAlignment(HSSFCellStyle.ALIGN_LEFT);
+		right_Border.setBorderRight(HSSFCellStyle.BORDER_THIN);
 		right_Border.setFont(font);
 		
 		//5.	csutomer name
 		HSSFRow row5 = sheet.createRow(4);
+		row5.setHeightInPoints(16.5f);;
 		HSSFCell cell5_1 = row5.createCell(3);
 		cell5_1.setCellStyle(left_Top_Border);
 		cell5_1.setCellType(Cell.CELL_TYPE_STRING);
@@ -147,7 +150,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 				row5.createCell(i).setCellStyle(top_Border);
 			}
 		}
-		row5.createCell(10).setCellStyle(right_Top_Border);
+		row5.createCell(9).setCellStyle(right_Top_Border);
 		
 		//6~8	address
 		this.printTitleNormalRow(5, "Address:", info.getAddress1(), sheet, left_Border, right_Border);
@@ -172,6 +175,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 	 */
 	private void printTitleNormalRow(int rowNum, String label, String value, HSSFSheet sheet, HSSFCellStyle labelStyle, HSSFCellStyle endlStyle){
 		HSSFRow row = sheet.createRow(rowNum);
+		row.setHeightInPoints(16.5f);
 		HSSFCell cell_1 = row.createCell(3);
 		cell_1.setCellStyle(labelStyle);
 		cell_1.setCellType(Cell.CELL_TYPE_STRING);
@@ -181,7 +185,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		cell_2.setCellType(Cell.CELL_TYPE_STRING);
 		cell_2.setCellValue(value);
 		
-		row.createCell(10).setCellStyle(endlStyle);
+		row.createCell(9).setCellStyle(endlStyle);
 		
 	}
 
@@ -190,6 +194,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 	@Override
 	public void printTableTitle(HSSFWorkbook workbook, HSSFSheet sheet,Boolean hasCountry,List<String> sizes) {
 		HSSFRow row16 = sheet.createRow(15);
+		row16.setHeightInPoints(22);
 		this.initCommonStyle(workbook);
 		this.printNormalCell(row16, 0, "Box Number", commonStyle);
 		row16.createCell(1).setCellStyle(commonStyle);
@@ -212,6 +217,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		this.printNormalCell(row16, 7 + countryIndex + sizes.size(), "Remark", commonStyle);
 		
 		HSSFRow row17 = sheet.createRow(16);
+		row17.setHeightInPoints(22);
 		this.printNormalCell(row17, 0, "From", commonStyle);
 		this.printNormalCell(row17, 1, "To", commonStyle);
 		this.printNormalCell(row17, 2, "Number", commonStyle);
@@ -221,7 +227,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		this.printNormalCell(row17, 3 + countryIndex, "name", commonStyle);
 		for (int i = 0; i < sizes.size(); i++) {
 			String sizeX = sizes.get(i);
-			String sizeXValue = sizeX.substring("Size".length() + 1, sizeX.length()).toUpperCase();
+			String sizeXValue = sizeX.substring("Size".length(), sizeX.length()).toUpperCase();
 			this.printNormalCell(row17, 4 + countryIndex + i, sizeXValue, commonStyle);
 		}
 		this.printNormalCell(row17, 4 + countryIndex + sizes.size(), "per box", commonStyle);
@@ -229,8 +235,11 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		this.printNormalCell(row17, 5 + countryIndex + sizes.size(), "Qty", commonStyle);
 		//17.8
 		this.printNormalCell(row17, 6 + countryIndex + sizes.size(), "Qty", commonStyle);
-		row17.createCell(7 + countryIndex + sizes.size() + sizes.size()).setCellStyle(commonStyle);
+		row17.createCell(7 + countryIndex + sizes.size()).setCellStyle(commonStyle);
 		sheet.addMergedRegion(new CellRangeAddress(15, 16, 7 + countryIndex + sizes.size(), 7 + countryIndex + sizes.size()));
+
+//		row16.getCell(7 + countryIndex + sizes.size()).setCellStyle(commonStyle);
+//		row17.getCell(7 + countryIndex + sizes.size()).setCellStyle(commonStyle);
 	}
 	
 	/**
@@ -267,6 +276,9 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		}
 		int totalBox = 0;
 		int totalQty = 0;
+		float totalGrossWeight = 0;
+		float totalNetWeight = 0;
+		float totalVolume = 0;
 		for (int i = 0; i < items.size(); i++) {
 			if (-1 != mergeRowStart && -1 != mergeRowEnd) {//已经知道合并行数
 				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 0, 0));
@@ -280,6 +292,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 			CpqManufacotryOrderItem item = items.get(i);
 			
 			HSSFRow itemRow = sheet.createRow(17 + i);
+			itemRow.setHeightInPoints(16.5f);
 			this.printNormalCell(itemRow, 0, item.getFromNo() , commonStyle);
 			this.printNormalCell(itemRow, 1, item.getToNo() , commonStyle);
 			this.printNormalCell(itemRow, 2, item.getStyleNo() , commonStyle);
@@ -287,6 +300,11 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 				this.printNormalCell(itemRow, 2 + countryIndex, item.getCountry() , commonStyle);
 			}
 			this.printNormalCell(itemRow, 3 + countryIndex, item.getColor() , commonStyle);
+			if (!colorSizeMap.keySet().contains(item.getColor())) {
+				ColorSizeVo vo = new ColorSizeVo();
+				vo.setColor(item.getColor());
+				colorSizeMap.put(item.getColor(), vo);
+			}
 			//打印size 部分
 			for (int j = 0; j < sizes.size(); j++) {
 				String size = sizes.get(j);
@@ -295,10 +313,6 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 					Integer value = (Integer)getMethod.invoke(item);
 					if (null != value) {
 						ColorSizeVo vo = colorSizeMap.get(item.getColor());
-						if (null == vo) {
-							vo = new ColorSizeVo();
-							vo.setColor(item.getColor());
-						}
 						Method mapGetMethod = ColorSizeVo.class.getDeclaredMethod("get"+size);
 						Method mapSetMethod = ColorSizeVo.class.getDeclaredMethod("set"+size, Integer.class);
 						Method mapShippedSetMethod = ColorSizeVo.class.getDeclaredMethod("setActual"+size, Integer.class);
@@ -320,6 +334,9 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 			this.printNormalCell(itemRow, 6 + countryIndex + sizes.size(), item.getPcsPerBox() * item.getBoxQty() , commonStyle);
 			totalQty += item.getPcsPerBox() * item.getBoxQty();
 			this.printNormalCell(itemRow, 7 + countryIndex + sizes.size(), item.getRemark() , commonStyle);
+			totalGrossWeight += item.getGrossWeightPerBox();
+			totalNetWeight += item.getNetWeightPerBox();
+			totalVolume += item.getVolumePerBox();
 			
 			if (i < items.size() - 1) {
 				CpqManufacotryOrderItem nextItem = items.get(i+1);
@@ -328,16 +345,23 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 						mergeRowStart = 17 + i;
 					}
 				}else {
-					if (mergeRowStart != - 1 && mergeRowEnd != -1) {
+					if (mergeRowStart != - 1) {
 						mergeRowEnd = 17 + i;
 					}
 				}
+			}else if (i == items.size() - 1 && mergeRowStart != -1) {
+				mergeRowEnd = 17 + i;
+				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 0, 0));
+				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 1, 1));
+				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 4 + countryIndex + sizes.size(), 4  + countryIndex + sizes.size()));
+				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 5 + countryIndex + sizes.size(), 5  + countryIndex + sizes.size()));
 			}
 		}
 		//打印5行空白格子，第3行补充 total
 		for (int j = 17 + items.size(); j <= 21 + items.size(); j++) {
 			HSSFRow blankRow = sheet.createRow(j);
-			for (int k = 0; k < 7 + countryIndex + sizes.size(); k++) {
+			blankRow.setHeightInPoints(16.5f);
+			for (int k = 0; k <= 7 + countryIndex + sizes.size(); k++) {
 				blankRow.createCell(k).setCellStyle(commonStyle);
 			}
 		}
@@ -347,6 +371,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		
 		//COLOUR  BREAKDOWN
 		HSSFRow colorRow = sheet.createRow(22 + items.size());
+		colorRow.setHeightInPoints(16.5f);
 		for (int j = 0; j <= 1; j++) {
 			colorRow.createCell(j).setCellStyle(commonStyle);
 		}
@@ -356,9 +381,13 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		}
 		for (int j = 0; j < sizes.size(); j++) {
 			String size = sizes.get(j);
-			String sizeXValue = size.substring("Size".length() + 1, size.length()).toUpperCase();
+			String sizeXValue = size.substring("Size".length(), size.length()).toUpperCase();
 			this.printNormalCell(colorRow, 4 + countryIndex + j, sizeXValue, commonStyle);
 		}
+		for (int j = 4 + countryIndex + sizes.size(); j <= 7 + countryIndex + sizes.size(); j++) {
+			colorRow.createCell(j).setCellStyle(commonStyle);
+		}
+		
 		//打印color部分
 		int colorOrderedTotal = 0;
 		int colorShippedTotal = 0;
@@ -368,15 +397,20 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 			int tmpOrderedTotal = 0;
 			int tmpShippedTotal = 0;
 			
-			HSSFRow blankRow = sheet.createRow(23 + i * 4 + items.size());
+			HSSFRow blankRow = sheet.createRow(23 + i * 5 + items.size());
+			blankRow.setHeightInPoints(16.5f);
 			for (int k = 0; k <= 7 + countryIndex + sizes.size(); k++) {
 				blankRow.createCell(k).setCellStyle(commonStyle);
 			}
-			HSSFRow colorOrderRow = sheet.createRow(24 + i * 4 + items.size());
-			HSSFRow shippedOrderRow = sheet.createRow(25 + i * 4 + items.size());
-			HSSFRow discrepancyOrderRow = sheet.createRow(26 + i * 4 + items.size());
-			HSSFRow percentOrderRow = sheet.createRow(27 + i * 4 + items.size());
 			
+			HSSFRow colorOrderRow = sheet.createRow(24 + i * 5 + items.size());
+			colorOrderRow.setHeightInPoints(16.5f);
+			HSSFRow shippedOrderRow = sheet.createRow(25 + i * 5 + items.size());
+			shippedOrderRow.setHeightInPoints(16.5f);
+			HSSFRow discrepancyOrderRow = sheet.createRow(26 + i * 5 + items.size());
+			discrepancyOrderRow.setHeightInPoints(16.5f);
+			HSSFRow percentOrderRow = sheet.createRow(27 + i * 5 + items.size());
+			percentOrderRow.setHeightInPoints(16.5f);
 			colorOrderRow.createCell(0).setCellStyle(commonStyle);
 			colorOrderRow.createCell(1).setCellStyle(commonStyle);
 			shippedOrderRow.createCell(0).setCellStyle(commonStyle);
@@ -404,7 +438,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 			percentOrderRow.createCell(3 + countryIndex).setCellStyle(commonStyle);
 			
 			for (int j = 0; j < sizes.size(); j++) {
-				String size = sizes.get(i);
+				String size = sizes.get(j);
 				try {
 					Method orderedMethod = ColorSizeVo.class.getDeclaredMethod("get"+size);
 					Integer orderedValue = (Integer)orderedMethod.invoke(vo);
@@ -438,24 +472,52 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 			colorShippedTotal += tmpShippedTotal;
 		}
 		//空4行
-		for (int j = 23 + vos.size() + items.size(); j < 31 + vos.size() + items.size(); j++) {
+		for (int j = 23 + vos.size() * 5 + items.size(); j < 31 + vos.size() * 5 + items.size(); j++) {
 			HSSFRow blankRow = sheet.createRow(j);
-			for (int k = 0; k < 7 + countryIndex + sizes.size(); k++) {
+			for (int k = 0; k <= 7 + countryIndex + sizes.size(); k++) {
 				blankRow.createCell(k).setCellStyle(commonStyle);
 			}
 		}
-		HSSFRow totalOrderdRow = sheet.getRow(27 + vos.size() + items.size());
+		HSSFRow totalOrderdRow = sheet.getRow(27 + vos.size() * 5 + items.size());
 		totalOrderdRow.getCell(2).setCellValue("TOTAL ORDER QTY");
 		totalOrderdRow.getCell(4 + countryIndex + sizes.size()).setCellValue(colorOrderedTotal);
-		HSSFRow totalShippedRow = sheet.getRow(28 + vos.size() + items.size());
+		HSSFRow totalShippedRow = sheet.getRow(28 + vos.size() * 5 + items.size());
 		totalShippedRow.getCell(2).setCellValue("TOTAL SHIPPED QTY");
 		totalShippedRow.getCell(4 + countryIndex + sizes.size()).setCellValue(colorShippedTotal);
-		HSSFRow totalDiscrepancyRow = sheet.getRow(29 + vos.size() + items.size());
+		HSSFRow totalDiscrepancyRow = sheet.getRow(29 + vos.size() * 5 + items.size());
 		totalDiscrepancyRow.getCell(2).setCellValue("DISCREPANCY");
 		totalDiscrepancyRow.getCell(4 + countryIndex + sizes.size()).setCellValue(colorShippedTotal - colorOrderedTotal);
-		HSSFRow totalPercentRow = sheet.getRow(30 + vos.size() + items.size());
+		HSSFRow totalPercentRow = sheet.getRow(30 + vos.size() * 5 + items.size());
 		totalPercentRow.getCell(2).setCellValue("%");
 		totalPercentRow.getCell(4 + countryIndex + sizes.size()).setCellValue(MathUtil.percent(colorOrderedTotal, colorShippedTotal - colorOrderedTotal, null));
+		
+		//空一行
+		for (int i = 31 + vos.size() * 5 + items.size(); i <= 37 + vos.size() * 5 + items.size(); i++) {
+			HSSFRow blankRow = sheet.createRow(i);
+			for (int k = 0; k <= 7 + countryIndex + sizes.size(); k++) {
+				blankRow.createCell(k).setCellStyle(commonStyle);
+			}
+		}
+		//carton
+		sheet.getRow(32 + vos.size() * 5 + items.size()).getCell(0).setCellValue("Carton:");
+		sheet.getRow(32 + vos.size() * 5 + items.size()).getCell(1).setCellValue(totalBox);
+		sheet.getRow(32 + vos.size() * 5 + items.size()).getCell(2).setCellValue("CTNS");
+		//qty
+		sheet.getRow(33 + vos.size() * 5 + items.size()).getCell(0).setCellValue("Qty:");
+		sheet.getRow(33 + vos.size() * 5 + items.size()).getCell(1).setCellValue(totalQty);
+		sheet.getRow(33 + vos.size() * 5 + items.size()).getCell(2).setCellValue("PCS");
+		//grossweight
+		sheet.getRow(34 + vos.size() * 5 + items.size()).getCell(0).setCellValue("G.W:");
+		sheet.getRow(34 + vos.size() * 5 + items.size()).getCell(1).setCellValue(totalGrossWeight);
+		sheet.getRow(34 + vos.size() * 5 + items.size()).getCell(2).setCellValue("KGS");
+		//netweight
+		sheet.getRow(35 + vos.size() * 5 + items.size()).getCell(0).setCellValue("N.W:");
+		sheet.getRow(35 + vos.size() * 5 + items.size()).getCell(1).setCellValue(totalNetWeight);
+		sheet.getRow(35 + vos.size() * 5 + items.size()).getCell(2).setCellValue("KGS");
+		//Meas
+		sheet.getRow(36 + vos.size() * 5 + items.size()).getCell(0).setCellValue("Meas:");
+		sheet.getRow(35 + vos.size() * 5 + items.size()).getCell(1).setCellValue(totalVolume);
+		sheet.getRow(36 + vos.size() * 5 + items.size()).getCell(2).setCellValue("CBM");
 	}
 	
 	/**

@@ -44,4 +44,39 @@ public @Getter @Setter class ColorSizeVo {
 	private Integer actualSize12 = 0;
 	private Integer actualSize14 = 0;
 	private Integer actualSize16 = 0;
+	@Override
+	public String toString() {
+		return "ColorSizeVo [color=" + color + ", sizeS=" + sizeS + ", sizeM="
+				+ sizeM + ", sizeL=" + sizeL + ", sizeXl=" + sizeXl
+				+ ", sizeXxl=" + sizeXxl + ", getColor()=" + getColor()
+				+ ", getSizeS()=" + getSizeS() + ", getSizeM()=" + getSizeM()
+				+ ", getSizeL()=" + getSizeL() + ", getSizeXl()=" + getSizeXl()
+				+ ", getSizeXxl()=" + getSizeXxl() + ", getSizeP()="
+				+ getSizeP() + ", getSize1()=" + getSize1() + ", getSize2()="
+				+ getSize2() + ", getSize3()=" + getSize3() + ", getSize4()="
+				+ getSize4() + ", getSize6()=" + getSize6() + ", getSize8()="
+				+ getSize8() + ", getSize10()=" + getSize10()
+				+ ", getSize12()=" + getSize12() + ", getSize14()="
+				+ getSize14() + ", getSize16()=" + getSize16()
+				+ ", getActualSizeS()=" + getActualSizeS()
+				+ ", getActualSizeM()=" + getActualSizeM()
+				+ ", getActualSizeL()=" + getActualSizeL()
+				+ ", getActualSizeXl()=" + getActualSizeXl()
+				+ ", getActualSizeXxl()=" + getActualSizeXxl()
+				+ ", getActualSizeP()=" + getActualSizeP()
+				+ ", getActualSize1()=" + getActualSize1()
+				+ ", getActualSize2()=" + getActualSize2()
+				+ ", getActualSize3()=" + getActualSize3()
+				+ ", getActualSize4()=" + getActualSize4()
+				+ ", getActualSize6()=" + getActualSize6()
+				+ ", getActualSize8()=" + getActualSize8()
+				+ ", getActualSize10()=" + getActualSize10()
+				+ ", getActualSize12()=" + getActualSize12()
+				+ ", getActualSize14()=" + getActualSize14()
+				+ ", getActualSize16()=" + getActualSize16() + ", getClass()="
+				+ getClass() + ", hashCode()=" + hashCode() + ", toString()="
+				+ super.toString() + "]";
+	}
+	
+	
 }

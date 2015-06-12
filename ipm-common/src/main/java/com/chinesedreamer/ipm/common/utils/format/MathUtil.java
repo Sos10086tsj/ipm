@@ -34,6 +34,9 @@ public class MathUtil {
 	}
 	
 	public static String percent(Integer x, Integer y, String format){
+		if (null == x || null == y || x == 0) {
+			return "0.00%";
+		}
 		String percent = "";
 		double p = (y * 1.0) / (x * 1.0);
 		DecimalFormat df;

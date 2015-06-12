@@ -741,6 +741,11 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			TitleInfo titleInfo = new TitleInfo();
 			titleInfo.setStyleNo(items.get(0).getStyleNo());
 			titleInfo.setOrderNo(order);
+			titleInfo.setCustomerName("SCOTCH & SODA B.V.");
+			titleInfo.setAddress1("JACOBUS SPIJKERDREEF 20-24");
+			titleInfo.setAddress2("2132 PZ HOOFDDORP");
+			titleInfo.setAddress3("THE NETHERLANDS.");
+			titleInfo.setDescription("Girl's 100% Cotton Woven Jacket");
 			this.cpqExcelPrintService.printTitle(workbook, sheet, titleInfo);
 			//4. 打印表头
 			boolean hasCountry = false;
@@ -752,6 +757,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 //			for (int i = 0; i < 14; i++) {
 //				sheet.autoSizeColumn(i, true);
 //			}
+			sheet.autoSizeColumn(2, true);
 		}
 		//2. 打印
 		FileOutputStream out = null;
