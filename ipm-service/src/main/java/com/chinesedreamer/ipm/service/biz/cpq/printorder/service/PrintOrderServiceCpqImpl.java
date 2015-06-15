@@ -376,7 +376,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			for (int i = 0; i < putianmuConfigs.length; i++) {
 				putianmuSheets[i] = workbook.getSheet(putianmuConfigs[i]);
 			}
-			items.addAll(this.readJiananExcelSheet(cpqFile,putianmuSheets));
+			items.addAll(this.readPutianmuExcelSheet(cpqFile, putianmuSheets));
 		}
 		for (CpqManufacotryOrderItem item : items) {
 			this.cpqManufacotryOrderItemLogic.save(item);
@@ -390,6 +390,8 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	 * @return
 	 */
 	private Set<CpqManufacotryOrderItem> readPutianmuExcelSheet(CpqFile cpqFile, Sheet... sheets){
+		Set<CpqManufacotryOrderItem> items = new HashSet<>();
+		Map<String, CpqManufacotryOrderItem> tempMap = new HashMap<String, CpqManufacotryOrderItem>();
 		//1. 读取香港、荷兰表中的所有 order no。 和 style no。
 		Set<PutianmuExcelOrders> peos = this.getPutiamuSheetOrders(sheets);
 		//2. 解对应的style no。 sheet
@@ -398,11 +400,166 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			String orderNo = peo.getOrderNo();
 			String styleNo = peo.getStyleNo();
 			String sheetName = this.getPutianmuSheetNameByStyleNo(styleNo);
-			Sheet sheet = wb.get
+			Sheet sheet = wb.getSheet(sheetName);
+			//2.1	获取对应style no，箱数、每箱件数、体积、毛重、净重
+			int rows = sheet.getPhysicalNumberOfRows();
+			int startRow = 0;
+			int endRow = rows;
+			for (int i = 0; i < endRow; i++) {
+				Row row = sheet.getRow(i);
+				if (null == row) {
+					startRow = i;
+					break;
+				}
+				Cell orderNoCell = row.getCell(0);
+				if (null == orderNoCell) {
+					startRow = i;
+					break;
+				}
+				String orderNoCellValue = ExcelUtil.getCellStringValue(orderNoCell);
+				//当空row或者空cell出现后，停止
+				if (orderNoCellValue.startsWith(orderNo)) {
+					CpqManufacotryOrderItem item = new CpqManufacotryOrderItem();
+					item.setOrderNo(orderNoCellValue);
+					item.setStyleNo(styleNo);
+					item.setExcelId(cpqFile.getId());
+					item.setOwner(cpqFile.getOwner());
+					item.setBoxQty(ExcelUtil.getCellIntegerValue(row.getCell(5)));
+					item.setPcsPerBox(ExcelUtil.getCellIntegerValue(row.getCell(6)));
+					item.setVolumePerBox(
+							ExcelUtil.getCellFloatValue(row.getCell(7))
+							* ExcelUtil.getCellFloatValue(row.getCell(8))
+							* ExcelUtil.getCellFloatValue(row.getCell(9))
+							);
+					item.setGrossWeightPerBox(ExcelUtil.getCellFloatValue(row.getCell(12)));
+					item.setNetWeightPerBox(ExcelUtil.getCellFloatValue(row.getCell(11)));
+					tempMap.put(orderNoCellValue, item);
+				}
+			}
+			//2.2	根据style no获取不同color的值
+			//2.2.1	获取不同order的开始row
+			List<Integer> rowNums = this.getPutianmuSheetOrderNoRows(sheet, orderNo, startRow, endRow);
+			for (int i = 0; i < rowNums.size(); i++) {
+				int orderStartRow = rowNums.get(i);
+				int orderEndRow = 0;
+				if (i +1 <= rowNums.size()) {
+					orderStartRow = rowNums.get(i+1);
+				}else {
+					orderStartRow = endRow;
+				}
+				Row row = sheet.getRow(orderStartRow);
+				if (null == row) {
+					continue;
+				}
+				Cell orderNoCell = row.getCell(0);
+				if (null == orderNoCell) {
+					continue;
+				}
+				String orderNoCellValue = ExcelUtil.getCellStringValue(orderNoCell);
+				//国家cell
+				Cell countryCell = sheet.getRow(orderStartRow - 1).getCell(0);
+				String countryCellValue = ExcelUtil.getCellStringValue(countryCell);
+				List<Integer> colorRowNums = this.getPutianmuSheetOrderNoColorRows(sheet, orderStartRow, orderEndRow);
+				for (int j = 0; j < colorRowNums.size() - 1; ) {
+					int colorStartRow = colorRowNums.get(j);
+					int colorEndRow = colorRowNums.get(j+1);
+					Cell colorCell = sheet.getRow(colorStartRow).getCell(0);
+					String colorCellValue = ExcelUtil.getCellStringValue(colorCell);
+					for (int k = colorStartRow; k < colorEndRow; k++) {
+						Row colorItemRow = sheet.getRow(colorStartRow);
+						Integer fromNo = ExcelUtil.getCellIntegerValue(colorItemRow.getCell(1));
+						Integer toNo = ExcelUtil.getCellIntegerValue(colorItemRow.getCell(2));
+						CpqManufacotryOrderItem saveItem = 
+								this.cpqManufacotryOrderItemLogic
+								.findByOrderNoAndStyleNoAndColorAndFromNoAndToNoAndOwner(orderNoCellValue, styleNo, colorCellValue, fromNo, toNo, cpqFile.getOwner());
+						if (null == saveItem) {
+							saveItem = tempMap.get(orderNoCellValue);
+						}
+						saveItem.setCountry(countryCellValue);
+						saveItem.setFromNo(fromNo);
+						saveItem.setToNo(toNo);
+						saveItem.setColor(colorCellValue);
+						List<String> sizes = this.getClothingTypeSizes(cpqFile.getClothingType().toString());
+						for (int l = 0; l < sizes.size(); l++) {//4 到  3+ sizes.size
+							Cell sizeCell = colorItemRow.getCell(4 + l);
+							Integer sizeCellValue = ExcelUtil.getCellIntegerValue(sizeCell);
+							if (null != sizeCellValue) {
+								try {
+									Method setMethod = CpqManufacotryOrderItem.class.getDeclaredMethod("set" + sizes.get(i), Integer.class);
+									setMethod.invoke(saveItem, sizeCellValue);
+								} catch (Exception e) {
+									this.logger.error("{}",e);
+								}
+							}
+						}
+						items.add(saveItem);
+					}
+					j+=2;
+				}
+			}
 		}
-		wb.getSheet("");
-		Set<CpqManufacotryOrderItem> items = new HashSet<>();
 		
+		return items;
+	}
+	
+	/**
+	 * 获得普天姆一个order no中，每个color所在的行数。两个一对
+	 * @param sheet
+	 * @param startRow
+	 * @param endRow
+	 * @return
+	 */
+	private List<Integer> getPutianmuSheetOrderNoColorRows(Sheet sheet,int startRow, int endRow){
+		List<Integer> colorRowNums = new ArrayList<Integer>();
+		for (int i = startRow; i < endRow; i++) {
+			Row row = sheet.getRow(i);
+			if (null == row) {
+				continue;
+			}
+			Cell colorCell = row.getCell(0);
+			if (null != colorCell) {
+				String colorCellValue = ExcelUtil.getCellStringValue(colorCell);
+				List<CpqDictionary> color = this.cpqDictionaryLogic.findByTypeAndProperty(CpqDictionaryType.COLOR, colorCellValue);
+				if (null != color && color.size() > 0) {//是配置的color值
+					colorRowNums.add(i);
+				}
+			}
+			Cell ttlCell = row.getCell(1);
+			if (null != ttlCell) {
+				String ttlCellValue = ExcelUtil.getCellStringValue(ttlCell);
+				if (ttlCellValue.equals("TTL")) {//一种color结束
+					colorRowNums.add(i);
+				}
+			}
+		}
+		return colorRowNums;
+	}
+	
+	/**
+	 * 获取普天姆style表中，每行order的起始行
+	 * @param sheet
+	 * @param orderNo
+	 * @param startRow
+	 * @param endRow
+	 * @return
+	 */
+	private List<Integer> getPutianmuSheetOrderNoRows(Sheet sheet, String orderNo, int startRow, int endRow){
+		List<Integer> rowNums = new ArrayList<Integer>();
+		for (int i = startRow; i < endRow; i++) {
+			Row row = sheet.getRow(i);
+			if (null == row) {
+				continue;
+			}
+			Cell orderNoCell = row.getCell(0);
+			if (null == orderNoCell) {
+				continue;
+			}
+			String orderNoCellValue = ExcelUtil.getCellStringValue(orderNoCell);
+			if (orderNoCellValue.startsWith(orderNo)) {
+				rowNums.add(i);
+			}
+		}
+		return rowNums;
 	}
 	
 	/**
