@@ -76,7 +76,14 @@ public interface PrintOrderService {
 	public List<ExcelVo> getExcelItems(Long excelId, String excelType);
 	
 	/*********** 报表打印 **************/
-	public List<RptOrderSelectVo> getOrders(String key);
+	public List<RptOrderSelectVo> getOrders(String key,String orderType);
 	
 	public File printExcelReport(String orderNos,String manufactory);
+	
+	/**
+	 * 读取指定的color列表
+	 * @param colorType
+	 * @return
+	 */
+	public List<String> getOrderTypes(String colorType);
 }

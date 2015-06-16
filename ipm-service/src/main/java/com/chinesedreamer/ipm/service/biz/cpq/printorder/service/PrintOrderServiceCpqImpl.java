@@ -221,6 +221,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		}
 		order.setPdfId(cpqFile.getId());
 		order.setOrderNo(datasource.get("orderNo"));
+		order.setOrderNoType(this.getOrderType(datasource.get("orderNo")));
 		order.setStyleNo(datasource.get("styleNo"));
 		order.setMaker(datasource.get("maker"));
 		order.setCustomer(datasource.get("customer"));
@@ -421,6 +422,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 				if (orderNoCellValue.startsWith(orderNo)) {
 					CpqManufacotryOrderItem item = new CpqManufacotryOrderItem();
 					item.setOrderNo(orderNoCellValue);
+					item.setOrderNoType(this.getOrderType(orderNoCellValue));
 					item.setStyleNo(styleNo);
 					item.setExcelId(cpqFile.getId());
 					item.setOwner(cpqFile.getOwner());
@@ -725,6 +727,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 							item = new CpqManufacotryOrderItem();
 						}	
 						item.setOrderNo(orderNo);
+						item.setOrderNoType(this.getOrderType(orderNo));
 						item.setStyleNo(styleNo);
 						item.setCountry(country);
 						item.setRemark(remark);
@@ -780,6 +783,19 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			}
 		}
 		return items;
+	}
+	
+	/**
+	 * 获取order 尾号
+	 * @param orderNo
+	 * @return
+	 */
+	private String getOrderType(String orderNo) {
+		int index = orderNo.indexOf("/");
+		if (index == -1) {
+			return orderNo;
+		}
+		return orderNo.substring(index + 1, orderNo.length());
 	}
 	
 	/**
@@ -954,18 +970,27 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 
 	/************* 打印 ********************/
 	@Override
-	public List<RptOrderSelectVo> getOrders(String key) {
+	public List<RptOrderSelectVo> getOrders(String key,String orderType) {
 		List<String> orders = null;
 		if (StringUtils.isEmpty(key)) {
-			orders = this.cpqOrderLogic.findOrders();
+			orders = this.cpqOrderLogic.findOrders(this.getOrderTypes(orderType));
 		}else {
-			orders = this.cpqOrderLogic.findOrdersByOrderNoLike("%" + key.trim() + "%");
+			orders = this.cpqOrderLogic.findOrdersByOrderNoLike("%" + key.trim() + "%",this.getOrderTypes(orderType));
 		}
 		List<RptOrderSelectVo> vos = new ArrayList<RptOrderSelectVo>();
 		for (String order : orders) {
 			vos.add(new RptOrderSelectVo(order));
 		}
 		return vos;
+	}
+	
+	public List<String> getOrderTypes(String orderType) {
+		List<String> orderTypes = new ArrayList<String>();
+		IpmConfig config = configLogic.findByProperty(orderType);
+		for (String orderTypeNo : config.getPropertyValue().split(",")) {
+			orderTypes.add(orderTypeNo);
+		}
+		return orderTypes;
 	}
 
 	@Override
@@ -1006,6 +1031,9 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			this.cpqExcelPrintService.printTitle(workbook, sheet, titleInfo);
 			//4. 打印表头
 			boolean hasCountry = false;
+//			TODO if (colorType.equals(IpmConfigConstant.CPQ_COLOR_HK)) {
+//				hasCountry = true;
+//			}
 			this.cpqExcelPrintService.printTableTitle(workbook, sheet, hasCountry, sizes);
 			
 			//18.	 逐行打印数据

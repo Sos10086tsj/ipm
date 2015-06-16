@@ -38,6 +38,9 @@ public @Getter @Setter class CpqOrder extends IpmVersionEntity<Long>{
 	@Column(name = "order_no")
 	private String orderNo;
 	
+	@Column(name = "order_no_type")
+	private String orderNoType;//尾号
+	
 	/**
 	 * 款号
 	 */

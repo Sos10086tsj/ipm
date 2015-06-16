@@ -11,7 +11,7 @@ ipm.cpq = {
 		            width: 160
 		        	}],
 		       	renderTo: 'js_report_export',
-		        width: 500,
+		        width: 650,
 		        height: 600,
 		        title: 'Report Order Range',
 		        frame: true,
@@ -36,6 +36,20 @@ ipm.cpq = {
 		        	},
 		        	"->",
 		        	{
+		        		id:'js_order_type',
+        				xtype: 'combobox',
+        				name: 'orderType',//荷兰还是香港
+        				fieldLabel: '香港/荷兰',
+        				width:150,
+        				labelWidth:60,
+    					store: ipm.cpq.rpt.store.getOrderTypeStore(),
+    					queryMode: 'local',
+    					displayField: 'label',
+    					region:'east',
+    					valueField: 'value'
+		        	},
+		        	"->",
+		        	{
 		        		id:'js_order_no',
 		        		xtype: 'textfield',
 		        		name: 'orderNo',
@@ -48,7 +62,12 @@ ipm.cpq = {
 		        		itemId: 'orders',
 		            	text: '选取order',
 		            	handler: function() {
-		                	ipm.cpq.rpt.reloadGrid();
+		            		var orderType = Ext.getCmp('js_order_type').getValue();
+		            		if(!orderType || orderType.length <= 0){
+		                		ipm.extjs.warningResult('提示','请选择报表类型');
+		                	}else{
+		                		ipm.cpq.rpt.reloadGrid(orderType);
+		                	}
 		            	},
 		            	width:60
 		        	},
@@ -61,7 +80,7 @@ ipm.cpq = {
 		                	var manufactory = Ext.getCmp('js_manufactory').getValue();
 		                	var selectRows = ipm.cpq.rpt.grid.getSelectionModel().getSelection();
 		                	if(selectRows.length <= 0){
-		                		ipm.extjs.warningResult('提示','请选择需要打印的订单号');
+		                		ipm.extjs.warningResult('提示','请选择订单号');
 		                	}else{
 		                		var orderNos = "";
 		                		for(var i =0; i < selectRows.length; i ++){
@@ -71,7 +90,7 @@ ipm.cpq = {
 		                				orderNos += ",";
 		                			}
 		                		}
-		                		window.location.href = ctx + '/cpq/print?manufactory=' + manufactory + "&orderNos=" + orderNos;
+		                		window.location.href = ctx + '/cpq/print?manufactory=' + manufactory + "&orderNos=" + orderNos ;
 		                		//window.location.href = "javascript:$.post(ctx + '/cpq/print',{manufactory:" + manufactory + ",orderNos:" + orderNos + "})";
 		                	}
 		            	},
@@ -82,11 +101,15 @@ ipm.cpq = {
 			});
 		},
 		
-		reloadGrid : function(){
+		reloadGrid : function(orderType){
 			var store = ipm.cpq.rpt.grid.store;
 			var orderNo = Ext.getCmp('js_order_no').getValue();
-			store.proxy.url = ctx + '/cpq/getRptOrders?orderNo=' + orderNo;
-			store.reload();
+			if(!orderNo || orderNo.length <= 0){
+		    	ipm.extjs.warningResult('提示','请选择订单号');
+		    }else{
+		    	store.proxy.url = ctx + '/cpq/getRptOrders?orderNo=' + orderNo + "&orderType=" + orderType;
+				store.reload();
+		    }
 		}
 	}
 };

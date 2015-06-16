@@ -14,9 +14,9 @@ public interface CpqOrderRepository extends IpmRepository<CpqOrder, Long>{
 	
 	public List<CpqOrder> findByPdfId(Long pdfId, Sort sort);
 	
-	@Query("SELECT distinct co.orderNo FROM CpqOrder co WHERE 1 = 1 ORDER BY co.orderNo ASC ")
-	public List<String> findAllOrderByOrderNoAsc();
+	@Query("SELECT distinct co.orderNo FROM CpqOrder co WHERE 1 = 1 AND co.orderNoType in :orderTypes ORDER BY co.orderNo ASC ")
+	public List<String> findByOrderNoTypeInOrderByOrderNoAsc(@Param("orderTypes")List<String> orderTypes);
 	
-	@Query("SELECT distinct co.orderNo FROM CpqOrder co WHERE co.orderNo like :orderNo ORDER BY co.orderNo ASC ")
-	public List<String> findOrdersByOrderNoLike(@Param("orderNo")String orderNo);
+	@Query("SELECT distinct co.orderNo FROM CpqOrder co WHERE co.orderNo like :orderNo AND co.orderNoType in :orderTypes ORDER BY co.orderNo ASC ")
+	public List<String> findByOrderNoLikeAndOrderNoTypeInOrderByOrderNoAsc(@Param("orderNo")String orderNo,@Param("orderTypes")List<String> orderTypes);
 }

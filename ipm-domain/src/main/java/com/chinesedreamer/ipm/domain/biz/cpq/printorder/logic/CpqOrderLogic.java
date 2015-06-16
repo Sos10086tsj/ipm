@@ -8,6 +8,6 @@ import com.chinesedreamer.ipm.domain.biz.cpq.printorder.model.CpqOrder;
 public interface CpqOrderLogic extends IpmLogic<CpqOrder, Long>{
 	public CpqOrder findByOrderNoAndStyleNo(String orderNo, String styleNo);
 	public List<CpqOrder> findByPdfId(Long pdfId);
-	public List<String> findOrders();
-	public List<String> findOrdersByOrderNoLike(String orderNo);
+	public List<String> findOrders(List<String> orderTypes);
+	public List<String> findOrdersByOrderNoLike(String orderNo,List<String> orderTypes);
 }

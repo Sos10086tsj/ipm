@@ -25,12 +25,12 @@ public class CpqOrderLogicImpl extends IpmLogicImpl<CpqOrder, Long> implements C
 		return this.repository.findByPdfId(pdfId, sort);
 	}
 	@Override
-	public List<String> findOrders() {
-		return this.repository.findAllOrderByOrderNoAsc();
+	public List<String> findOrders(List<String> orderTypes) {
+		return this.repository.findByOrderNoTypeInOrderByOrderNoAsc(orderTypes);
 	}
 	@Override
-	public List<String> findOrdersByOrderNoLike(String orderNo) {
-		return this.repository.findOrdersByOrderNoLike(orderNo);
+	public List<String> findOrdersByOrderNoLike(String orderNo,List<String> orderTypes) {
+		return this.repository.findByOrderNoLikeAndOrderNoTypeInOrderByOrderNoAsc(orderNo, orderTypes);
 	}
 
 

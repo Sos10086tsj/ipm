@@ -239,7 +239,8 @@ public class CpqController {
 	@RequestMapping(value = "getRptOrders",method = RequestMethod.GET)
 	public List<RptOrderSelectVo> getRptOrders(HttpServletRequest request){
 		String orderNoKey = request.getParameter("orderNo");
-		return this.facotry.getService(PrintOrderType.CPQ).getOrders(orderNoKey);
+		String orderType = request.getParameter("orderType");
+		return this.facotry.getService(PrintOrderType.CPQ).getOrders(orderNoKey,orderType);
 	}
 	
 	/**

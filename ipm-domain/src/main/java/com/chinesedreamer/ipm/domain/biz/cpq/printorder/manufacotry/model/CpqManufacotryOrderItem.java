@@ -27,6 +27,9 @@ public @Getter @Setter class CpqManufacotryOrderItem extends IpmVersionEntity<Lo
 	@Column(name = "order_no")
 	private String orderNo;//订单号
 	
+	@Column(name = "order_no_type")
+	private String orderNoType;//order no 尾号
+	
 	@Column(name = "style_no")
 	private String styleNo;//款号
 	

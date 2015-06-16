@@ -47,5 +47,17 @@ ipm.cpq.rpt.store = {
 			autoLoad : true
 		});
 		return manufactorySotre;
+	},
+	
+	//获取荷兰、香港store
+	getOrderTypeStore : function(){
+		var store = Ext.create('Ext.data.Store', {
+			fields: ['value', 'label'],
+			data : [
+				{"value":"CPQ_ORDER_TYPE_HK", "label":"香港"},
+        		{"value":"CPQ_ORDER_TYPE_NETHERLANDS", "label":"荷兰"}
+			]
+		});
+		return store;
 	}
 };
