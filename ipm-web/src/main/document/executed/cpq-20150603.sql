@@ -33,10 +33,10 @@ insert into ipm.ipm_biz_cpq_data_dictionary(type, property, value)
 select 2,'FEMALE','女装' from dual
 where not exists (select 1 from ipm.ipm_biz_cpq_data_dictionary t where t.type = 2 and t.property = 'FEMALE');
 insert into ipm.ipm_biz_cpq_data_dictionary(type, property, value)
-select 2,'BOY','男装' from dual
+select 2,'BOY','男童' from dual
 where not exists (select 1 from ipm.ipm_biz_cpq_data_dictionary t where t.type = 2 and t.property = 'BOY');
 insert into ipm.ipm_biz_cpq_data_dictionary(type, property, value)
-select 2,'GIRL','男装' from dual
+select 2,'GIRL','女童' from dual
 where not exists (select 1 from ipm.ipm_biz_cpq_data_dictionary t where t.type = 2 and t.property = 'GIRL');
 
 /*字典增加排序*/
@@ -138,9 +138,6 @@ ADD COLUMN `size_10` INT NULL AFTER `size_8`,
 ADD COLUMN `size_12` INT NULL AFTER `size_10`,
 ADD COLUMN `size_14` INT NULL AFTER `size_12`,
 ADD COLUMN `size_16` INT NULL AFTER `size_14`;
-
-UPDATE `ipm`.`ipm_biz_cpq_data_dictionary` SET `value`='男童' WHERE `type`='2' AND `property` = 'BOY';
-UPDATE `ipm`.`ipm_biz_cpq_data_dictionary` SET `value`='女童' WHERE `type`='2' AND `property` = 'GIRL';
 
 ALTER TABLE `ipm`.`ipm_biz_cpq_file` 
 ADD COLUMN `deleted` TINYINT(1) NULL AFTER `clothing_type`;
