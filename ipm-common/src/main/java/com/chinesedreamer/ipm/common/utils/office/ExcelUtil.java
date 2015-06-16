@@ -1,5 +1,6 @@
 package com.chinesedreamer.ipm.common.utils.office;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 
 /**
@@ -11,12 +12,17 @@ import org.apache.poi.ss.usermodel.Cell;
 public class ExcelUtil {
 	public static Integer getCellIntegerValue(Cell cell){
 		Integer value = null;
+		if (null == cell) {
+			return null;
+		}
 		switch (cell.getCellType()) {
 		case Cell.CELL_TYPE_NUMERIC:
 			value = (int)cell.getNumericCellValue();
 			break;
 		case Cell.CELL_TYPE_STRING:
-			value = Integer.valueOf(cell.getStringCellValue());
+			if (!StringUtils.isEmpty(cell.getStringCellValue())) {
+				value = Integer.valueOf(cell.getStringCellValue());
+			}
 			break;
 		case Cell.CELL_TYPE_FORMULA:
 			String valueStr = getFormulaValue(cell).toString();
@@ -39,7 +45,9 @@ public class ExcelUtil {
 			value = Double.valueOf(cell.getNumericCellValue());
 			break;
 		case Cell.CELL_TYPE_STRING:
-			value = Double.valueOf(cell.getStringCellValue());
+			if (!StringUtils.isEmpty(cell.getStringCellValue())) {
+				value = Double.valueOf(cell.getStringCellValue());
+			}
 			break;
 		case Cell.CELL_TYPE_FORMULA:
 			value = Double.valueOf(getFormulaValue(cell).toString());

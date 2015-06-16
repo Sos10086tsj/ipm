@@ -402,22 +402,30 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			String styleNo = peo.getStyleNo();
 			String sheetName = this.getPutianmuSheetNameByStyleNo(styleNo);
 			Sheet sheet = wb.getSheet(sheetName);
+			if (null == sheet) {
+				continue;
+			}
 			//2.1	获取对应style no，箱数、每箱件数、体积、毛重、净重
-			int rows = sheet.getPhysicalNumberOfRows();
+			int rows = sheet.getLastRowNum();
 			int startRow = 0;
 			int endRow = rows;
 			for (int i = 0; i < endRow; i++) {
 				Row row = sheet.getRow(i);
 				if (null == row) {
-					startRow = i;
+					startRow = i + 1;
 					break;
 				}
 				Cell orderNoCell = row.getCell(0);
 				if (null == orderNoCell) {
-					startRow = i;
+					startRow = i + 1;
 					break;
 				}
+				this.logger.info(" putianmu add item to tempMap. sheet:{}, row:{}",sheetName, i);
 				String orderNoCellValue = ExcelUtil.getCellStringValue(orderNoCell);
+				if (StringUtils.isEmpty(orderNoCellValue)) {
+					startRow = i + 1;
+					break;
+				}
 				//当空row或者空cell出现后，停止
 				if (orderNoCellValue.startsWith(orderNo)) {
 					CpqManufacotryOrderItem item = new CpqManufacotryOrderItem();
@@ -426,12 +434,13 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 					item.setStyleNo(styleNo);
 					item.setExcelId(cpqFile.getId());
 					item.setOwner(cpqFile.getOwner());
-					item.setBoxQty(ExcelUtil.getCellIntegerValue(row.getCell(5)));
-					item.setPcsPerBox(ExcelUtil.getCellIntegerValue(row.getCell(6)));
+					//item.setBoxQty(ExcelUtil.getCellIntegerValue(row.getCell(5)));
+					//item.setPcsPerBox(ExcelUtil.getCellIntegerValue(row.getCell(6)));
 					item.setVolumePerBox(
 							ExcelUtil.getCellFloatValue(row.getCell(7))
 							* ExcelUtil.getCellFloatValue(row.getCell(8))
 							* ExcelUtil.getCellFloatValue(row.getCell(9))
+							 / 1000000
 							);
 					item.setGrossWeightPerBox(ExcelUtil.getCellFloatValue(row.getCell(12)));
 					item.setNetWeightPerBox(ExcelUtil.getCellFloatValue(row.getCell(11)));
@@ -444,10 +453,10 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			for (int i = 0; i < rowNums.size(); i++) {
 				int orderStartRow = rowNums.get(i);
 				int orderEndRow = 0;
-				if (i +1 <= rowNums.size()) {
-					orderStartRow = rowNums.get(i+1);
+				if(i < rowNums.size() - 1){
+					orderEndRow = rowNums.get(i+1);
 				}else {
-					orderStartRow = endRow;
+					orderEndRow = endRow;
 				}
 				Row row = sheet.getRow(orderStartRow);
 				if (null == row) {
@@ -459,41 +468,86 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 				}
 				String orderNoCellValue = ExcelUtil.getCellStringValue(orderNoCell);
 				//国家cell
-				Cell countryCell = sheet.getRow(orderStartRow - 1).getCell(0);
-				String countryCellValue = ExcelUtil.getCellStringValue(countryCell);
-				List<Integer> colorRowNums = this.getPutianmuSheetOrderNoColorRows(sheet, orderStartRow, orderEndRow);
+				//Cell countryCell = sheet.getRow(orderStartRow - 1).getCell(0);
+				String countryCellValue = "";
+						//国家有配置生成ExcelUtil.getCellStringValue(countryCell);
+				List<Integer> colorRowNums = this.getPutianmuSheetOrderNoColorRows(sheet, orderStartRow, orderEndRow);	
 				for (int j = 0; j < colorRowNums.size() - 1; ) {
 					int colorStartRow = colorRowNums.get(j);
 					int colorEndRow = colorRowNums.get(j+1);
-					Cell colorCell = sheet.getRow(colorStartRow).getCell(0);
-					String colorCellValue = ExcelUtil.getCellStringValue(colorCell);
+
+					//tmp 值保存上个value，处理合并单元格问题
+					Integer tmpFromNo = 0;
+					Integer tmpToNo = 0;
+					Integer tmpBoxQty = 0;
+					Integer tmPcs = 0;
+					String tmpColor = "";
+					
 					for (int k = colorStartRow; k < colorEndRow; k++) {
-						Row colorItemRow = sheet.getRow(colorStartRow);
-						Integer fromNo = ExcelUtil.getCellIntegerValue(colorItemRow.getCell(1));
-						Integer toNo = ExcelUtil.getCellIntegerValue(colorItemRow.getCell(2));
+						this.logger.info("read putianmu excel sheet:{}, row:{}",sheetName, k);
+						Row colorItemRow = sheet.getRow(k);
+						
+						Cell colorCell = colorItemRow.getCell(0);
+						if (null != colorCell) {
+							String colorCellValue = ExcelUtil.getCellStringValue(colorCell);
+							if (StringUtils.isNotEmpty(colorCellValue)) {
+//								if (!"".equals(tmpColor)) {
+//									//拼箱
+//								}
+								tmpColor = this.formatColorString(colorCellValue);
+							}
+						}
+
+						Float fromNo = ExcelUtil.getCellFloatValue(colorItemRow.getCell(1));
+						if (null != fromNo) {
+							tmpFromNo = fromNo.intValue();
+						}
+						Float toNo = ExcelUtil.getCellFloatValue(colorItemRow.getCell(2));
+						if (null != toNo) {
+							tmpToNo = toNo.intValue();
+						}
 						CpqManufacotryOrderItem saveItem = 
 								this.cpqManufacotryOrderItemLogic
-								.findByOrderNoAndStyleNoAndColorAndFromNoAndToNoAndOwner(orderNoCellValue, styleNo, colorCellValue, fromNo, toNo, cpqFile.getOwner());
+								.findByOrderNoAndStyleNoAndColorAndFromNoAndToNoAndOwner(orderNoCellValue, styleNo, tmpColor, tmpFromNo, tmpToNo, cpqFile.getOwner());
 						if (null == saveItem) {
-							saveItem = tempMap.get(orderNoCellValue);
+							CpqManufacotryOrderItem tempItem = tempMap.get(orderNoCellValue);
+							saveItem = new CpqManufacotryOrderItem();
+							saveItem.setOrderNo(tempItem.getOrderNo());
+							saveItem.setOrderNoType(this.getOrderType(tempItem.getOrderNo()));
+							saveItem.setStyleNo(tempItem.getStyleNo());
+							saveItem.setExcelId(tempItem.getExcelId());
+							saveItem.setOwner(tempItem.getOwner());
+							saveItem.setVolumePerBox(tempItem.getVolumePerBox());
+							saveItem.setGrossWeightPerBox(tempItem.getGrossWeightPerBox());
+							saveItem.setNetWeightPerBox(tempItem.getNetWeightPerBox());
 						}
 						saveItem.setCountry(countryCellValue);
-						saveItem.setFromNo(fromNo);
-						saveItem.setToNo(toNo);
-						saveItem.setColor(colorCellValue);
+						saveItem.setFromNo(tmpFromNo);
+						saveItem.setToNo(tmpToNo);
+						saveItem.setColor(tmpColor);
+						Float boxQty = ExcelUtil.getCellFloatValue(colorItemRow.getCell(3));
+						if (null != boxQty) {
+							tmpBoxQty = boxQty.intValue();
+						}
+						saveItem.setBoxQty(tmpBoxQty);
 						List<String> sizes = this.getClothingTypeSizes(cpqFile.getClothingType().toString());
 						for (int l = 0; l < sizes.size(); l++) {//4 到  3+ sizes.size
 							Cell sizeCell = colorItemRow.getCell(4 + l);
 							Integer sizeCellValue = ExcelUtil.getCellIntegerValue(sizeCell);
 							if (null != sizeCellValue) {
 								try {
-									Method setMethod = CpqManufacotryOrderItem.class.getDeclaredMethod("set" + sizes.get(i), Integer.class);
+									Method setMethod = CpqManufacotryOrderItem.class.getDeclaredMethod("set" + sizes.get(l), Integer.class);
 									setMethod.invoke(saveItem, sizeCellValue);
 								} catch (Exception e) {
 									this.logger.error("{}",e);
 								}
 							}
 						}
+						Float pcs = ExcelUtil.getCellFloatValue(colorItemRow.getCell(4 + sizes.size()));
+						if (null != pcs) {
+							tmPcs = pcs.intValue();
+						}
+						saveItem.setPcsPerBox(tmPcs);
 						items.add(saveItem);
 					}
 					j+=2;
@@ -513,28 +567,50 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	 */
 	private List<Integer> getPutianmuSheetOrderNoColorRows(Sheet sheet,int startRow, int endRow){
 		List<Integer> colorRowNums = new ArrayList<Integer>();
+		Integer model = 0; //0:等待color，1：等待ttl
 		for (int i = startRow; i < endRow; i++) {
 			Row row = sheet.getRow(i);
 			if (null == row) {
 				continue;
 			}
 			Cell colorCell = row.getCell(0);
-			if (null != colorCell) {
+			if (null != colorCell && model == 0) {
 				String colorCellValue = ExcelUtil.getCellStringValue(colorCell);
-				List<CpqDictionary> color = this.cpqDictionaryLogic.findByTypeAndProperty(CpqDictionaryType.COLOR, colorCellValue);
-				if (null != color && color.size() > 0) {//是配置的color值
-					colorRowNums.add(i);
+				if (StringUtils.isNotEmpty(colorCellValue)) {
+					colorCellValue = this.formatColorString(colorCellValue);
+					List<CpqDictionary> color = this.cpqDictionaryLogic.findByTypeAndProperty(CpqDictionaryType.COLOR, colorCellValue);
+					if (null != color && color.size() > 0) {//是配置的color值
+						colorRowNums.add(i);
+						model = 1;
+					}
 				}
 			}
 			Cell ttlCell = row.getCell(1);
-			if (null != ttlCell) {
+			if (null != ttlCell && model == 1) {
 				String ttlCellValue = ExcelUtil.getCellStringValue(ttlCell);
-				if (ttlCellValue.equals("TTL")) {//一种color结束
+				if (StringUtils.isNotEmpty(ttlCellValue) && ttlCellValue.equals("TTL")) {//一种color结束
 					colorRowNums.add(i);
+					model = 0;
 				}
 			}
 		}
 		return colorRowNums;
+	}
+	
+	/**
+	 * 如果 color是类似 970.0 这种形式，返回 970
+	 * @param color
+	 * @return
+	 */
+	private String formatColorString(String color) {
+		if (StringUtils.isEmpty(color)) {
+			return color;
+		}
+		int index = color.indexOf(".");
+		if (index == -1) {
+			return color;
+		}
+		return color.substring(0,index);
 	}
 	
 	/**
@@ -557,7 +633,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 				continue;
 			}
 			String orderNoCellValue = ExcelUtil.getCellStringValue(orderNoCell);
-			if (orderNoCellValue.startsWith(orderNo)) {
+			if (StringUtils.isNotEmpty(orderNoCellValue) && orderNoCellValue.startsWith(orderNo)) {
 				rowNums.add(i);
 			}
 		}
@@ -574,7 +650,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		if (-1 == index) {
 			return styleNo ;
 		}
-		return styleNo.substring(index, styleNo.length());
+		return styleNo.substring(index + 1, styleNo.length());
 	}
 	
 	/**
@@ -587,10 +663,10 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		Set<String> exsits = new HashSet<String>();
 		for (Sheet sheet : sheets) {
 			if (null != sheet) {
-				int rows = sheet.getPhysicalNumberOfRows();
+				int rows = sheet.getLastRowNum();
 				int startRow = 0;
 				int endRow = rows;
-				for (int i = 0; i < rows;) {
+				for (int i = 0; i < rows; i++) {
 					Row row = sheet.getRow(i);
 					if (null == row) {
 						continue;
@@ -643,7 +719,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		String endSymble = "合计";
 		for (Sheet sheet : sheets) {
 			if (null != sheet) {
-				int rows = sheet.getPhysicalNumberOfRows();
+				int rows = sheet.getLastRowNum();
 				if (rows < 1) {
 					this.logger.info("sheet:{} is empty.",sheet.getSheetName());
 				}
@@ -685,7 +761,8 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 					//第二行：国家、备注号
 					startRow++;
 					Row row2 = sheet.getRow(startRow);
-					String country = ExcelUtil.getCellStringValue(row2.getCell(5));//国家
+					String country = "";
+							//国家有配置生成 ExcelUtil.getCellStringValue(row2.getCell(5));//国家
 					String remark = ExcelUtil.getCellStringValue(row2.getCell(12));//备注
 					startRow += 3;
 					

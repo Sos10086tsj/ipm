@@ -19,3 +19,7 @@ UPDATE `ipm`.`ipm_sys_config` SET `property`='CPQ_ORDER_TYPE_NETHERLANDS' WHERE 
 ALTER TABLE `ipm`.`ipm_biz_cpq_print_order` 
 ADD COLUMN `order_no_type` VARCHAR(45) NULL AFTER `order_no`;
 
+
+ALTER TABLE `ipm`.`ipm_biz_cpq_data_dictionary` 
+CHANGE COLUMN `property` `property` VARCHAR(45) CHARACTER SET 'utf8' NULL DEFAULT NULL ;
+
