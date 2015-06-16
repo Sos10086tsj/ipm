@@ -90,7 +90,8 @@ ipm.cpq = {
 		                				orderNos += ",";
 		                			}
 		                		}
-		                		window.location.href = ctx + '/cpq/print?manufactory=' + manufactory + "&orderNos=" + orderNos ;
+		                		var orderType = Ext.getCmp('js_order_type').getValue();
+		                		window.location.href = ctx + '/cpq/print?manufactory=' + manufactory + "&orderNos=" + orderNos + "&orderType=" + orderTyp;
 		                		//window.location.href = "javascript:$.post(ctx + '/cpq/print',{manufactory:" + manufactory + ",orderNos:" + orderNos + "})";
 		                	}
 		            	},

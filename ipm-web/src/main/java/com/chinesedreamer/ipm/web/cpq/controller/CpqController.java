@@ -251,7 +251,8 @@ public class CpqController {
 	public void print(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		String orderNos = request.getParameter("orderNos");
 		String manufactory = request.getParameter("manufactory");
-		File report = this.facotry.getService(PrintOrderType.CPQ).printExcelReport(orderNos,manufactory);
+		String orderType = request.getParameter("orderType");
+		File report = this.facotry.getService(PrintOrderType.CPQ).printExcelReport(orderNos,manufactory,orderType);
 		DownloadComponent downloadComponent = new DefaultDownloadComponent();
 		downloadComponent.download(request, response, report.getPath());
 		FileUtils.deleteQuietly(report);

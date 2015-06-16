@@ -11,5 +11,5 @@ package com.chinesedreamer.ipm.domain.biz.cpq.printorder.datadictionary.constant
  * @version 1.0
  */
 public enum CpqDictionaryType {
-	DEFAULT,COLOR,CLOTHING_CATEGORY,CLOTHING_CATEGORY_SIZE;
+	DEFAULT,COLOR,CLOTHING_CATEGORY,CLOTHING_CATEGORY_SIZE,ORDER_COUNTRY;
 }

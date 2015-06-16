@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -20,6 +22,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.chinesedreamer.ipm.common.utils.format.MathUtil;
+import com.chinesedreamer.ipm.domain.biz.cpq.printorder.datadictionary.constant.CpqDictionaryType;
+import com.chinesedreamer.ipm.domain.biz.cpq.printorder.datadictionary.logic.CpqDictionaryLogic;
+import com.chinesedreamer.ipm.domain.biz.cpq.printorder.datadictionary.model.CpqDictionary;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.manufacotry.model.CpqManufacotryOrderItem;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.report.ColorSizeVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.report.ColorSizeVoComparator;
@@ -36,6 +41,9 @@ import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.report.TitleInfo;
 public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 	
 	private Logger logger = LoggerFactory.getLogger(CpqExcelPrintServiceImpl.class);
+	
+	@Resource
+	private CpqDictionaryLogic cpqDictionaryLogic;
 	
 	private HSSFCellStyle commonStyle;
 	private void initCommonStyle(HSSFWorkbook workbook){
@@ -297,7 +305,12 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 			this.printNormalCell(itemRow, 1, item.getToNo() , commonStyle);
 			this.printNormalCell(itemRow, 2, item.getStyleNo() , commonStyle);
 			if (hasCountry) {
-				this.printNormalCell(itemRow, 2 + countryIndex, item.getCountry() , commonStyle);
+				List<CpqDictionary> countries = this.cpqDictionaryLogic.findByTypeAndProperty(CpqDictionaryType.ORDER_COUNTRY, item.getOrderNo());
+				String countryCellValue = "";
+				if (!countries.isEmpty()) {
+					countryCellValue = countries.get(0).getValue();
+				}
+				this.printNormalCell(itemRow, 2 + countryIndex, countryCellValue , commonStyle);
 			}
 			this.printNormalCell(itemRow, 3 + countryIndex, item.getColor() , commonStyle);
 			if (!colorSizeMap.keySet().contains(item.getColor())) {

@@ -1071,7 +1071,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	}
 
 	@Override
-	public File printExcelReport(String orderNos, String manufactory) {
+	public File printExcelReport(String orderNos, String manufactory,String orderType) {
 		// TODO Auto-generated method stub
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		String[] orders = orderNos.split(",");
@@ -1108,9 +1108,9 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			this.cpqExcelPrintService.printTitle(workbook, sheet, titleInfo);
 			//4. 打印表头
 			boolean hasCountry = false;
-//			TODO if (colorType.equals(IpmConfigConstant.CPQ_COLOR_HK)) {
-//				hasCountry = true;
-//			}
+			if (orderType.equals(IpmConfigConstant.CPQ_ORDER_TYPE_HK.toString())) {
+				hasCountry = true;
+			}
 			this.cpqExcelPrintService.printTableTitle(workbook, sheet, hasCountry, sizes);
 			
 			//18.	 逐行打印数据

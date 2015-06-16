@@ -78,7 +78,7 @@ public interface PrintOrderService {
 	/*********** 报表打印 **************/
 	public List<RptOrderSelectVo> getOrders(String key,String orderType);
 	
-	public File printExcelReport(String orderNos,String manufactory);
+	public File printExcelReport(String orderNos,String manufactory,String orderType);
 	
 	/**
 	 * 读取指定的color列表
