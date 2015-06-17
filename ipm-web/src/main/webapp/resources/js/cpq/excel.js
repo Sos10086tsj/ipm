@@ -478,6 +478,7 @@ ipm.cpq = {
 		        tbar: [{
 		            text: 'Add item',
 		            iconCls: 'employee-add',
+		            disabled: true,
 		            handler : function() {
 		                rowEditing.cancelEdit();
 
@@ -580,12 +581,13 @@ ipm.cpq = {
     				}
         		}
 		        ],
-		        plugins: [rowEditing],
-		        listeners: {
-		            'selectionchange': function(view, records) {
-		                grid.down('#removeExcelOrder').setDisabled(!records.length);
-		            }
-		        }
+		        plugins: [rowEditing]
+//		        ,
+//		        listeners: {
+//		            'selectionchange': function(view, records) {
+//		                grid.down('#removeExcelOrder').setDisabled(!records.length);
+//		            }
+//		        }
 		    });
 	},
 	

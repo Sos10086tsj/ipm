@@ -376,6 +376,7 @@ ipm.cpq = {
 		        tbar: [{
 		            text: 'Add Order',
 		            iconCls: 'employee-add',
+		            disabled: true,
 		            handler : function() {
 		                rowEditing.cancelEdit();
 
@@ -442,12 +443,13 @@ ipm.cpq = {
     				}
         		}
 		        ],
-		        plugins: [rowEditing],
-		        listeners: {
-		            'selectionchange': function(view, records) {
-		                grid.down('#removePdfOrder').setDisabled(!records.length);
-		            }
-		        }
+		        plugins: [rowEditing]
+		        //,
+//		        listeners: {
+//		            'selectionchange': function(view, records) {
+//		                grid.down('#removePdfOrder').setDisabled(!records.length);
+//		            }
+//		        }
 		    });
 		},
 		
