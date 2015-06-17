@@ -91,7 +91,7 @@ ipm.cpq = {
 		                			}
 		                		}
 		                		var orderType = Ext.getCmp('js_order_type').getValue();
-		                		window.location.href = ctx + '/cpq/print?manufactory=' + manufactory + "&orderNos=" + orderNos + "&orderType=" + orderTyp;
+		                		window.location.href = ctx + '/cpq/print?manufactory=' + manufactory + "&orderNos=" + orderNos + "&orderType=" + orderType;
 		                		//window.location.href = "javascript:$.post(ctx + '/cpq/print',{manufactory:" + manufactory + ",orderNos:" + orderNos + "})";
 		                	}
 		            	},
@@ -105,12 +105,8 @@ ipm.cpq = {
 		reloadGrid : function(orderType){
 			var store = ipm.cpq.rpt.grid.store;
 			var orderNo = Ext.getCmp('js_order_no').getValue();
-			if(!orderNo || orderNo.length <= 0){
-		    	ipm.extjs.warningResult('提示','请选择订单号');
-		    }else{
-		    	store.proxy.url = ctx + '/cpq/getRptOrders?orderNo=' + orderNo + "&orderType=" + orderType;
-				store.reload();
-		    }
+			store.proxy.url = ctx + '/cpq/getRptOrders?orderNo=' + orderNo + "&orderType=" + orderType;
+			store.reload();
 		}
 	}
 };
