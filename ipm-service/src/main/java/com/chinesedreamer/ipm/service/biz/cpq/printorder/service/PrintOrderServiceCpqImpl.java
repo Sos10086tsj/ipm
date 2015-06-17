@@ -1088,19 +1088,11 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			
 			HSSFSheet sheet = workbook.createSheet(order.replace("/", "-"));//excel表明不能有“/”符号
 			//2. 打印抬头
-			this.cpqExcelPrintService.printManufactory(workbook, sheet, 
-					new ManufactoryInfo("NINGBO Z & H FOREIGN TRADE COMPANY LIMITED",
-							"12F,BUILDING 3 OF SHANGDONG NATIONS, N0.1926 CANGHAI ROAD，", 
-							"NINGBO, ZHEJIANG,CHINA"));
+			this.cpqExcelPrintService.printManufactory(workbook, sheet, ManufactoryInfo.getManufactoryInfo(manufactory));
 			//3. 打印头部信息
-			TitleInfo titleInfo = new TitleInfo();
+			TitleInfo titleInfo = TitleInfo.getTitleInfo(orderType);
 			titleInfo.setStyleNo(items.get(0).getStyleNo());
 			titleInfo.setOrderNo(order);
-			titleInfo.setCustomerName("SCOTCH & SODA B.V.");
-			titleInfo.setAddress1("JACOBUS SPIJKERDREEF 20-24");
-			titleInfo.setAddress2("2132 PZ HOOFDDORP");
-			titleInfo.setAddress3("THE NETHERLANDS.");
-			//titleInfo.setDescription("Girl's 100% Cotton Woven Jacket");
 			this.cpqExcelPrintService.printTitle(workbook, sheet, titleInfo);
 			//4. 打印表头
 			boolean hasCountry = false;

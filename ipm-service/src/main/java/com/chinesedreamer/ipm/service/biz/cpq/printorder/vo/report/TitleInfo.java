@@ -1,5 +1,7 @@
 package com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.report;
 
+import com.chinesedreamer.ipm.domain.system.config.constant.IpmConfigConstant;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,4 +23,20 @@ public @Getter @Setter class TitleInfo {
 	private String manufactorurer = "";
 	private String exporter = "";
 	private String lcNo = "";
+	
+	public static TitleInfo getTitleInfo(String orderType){
+		TitleInfo titleInfo = new TitleInfo();
+		if (orderType.equals(IpmConfigConstant.CPQ_ORDER_TYPE_HK.toString())) {
+			titleInfo.setCustomerName("SCOTCH & SODA B.V.");
+			titleInfo.setAddress1("JACOBUS SPIJKERDREEF 20-24");
+			titleInfo.setAddress2("2132 PZ HOOFDDORP");
+			titleInfo.setAddress3("THE NETHERLANDS.");
+		}else if (orderType.equals(IpmConfigConstant.CPQ_ORDER_TYPE_NETHERLANDS.toString())) {
+			titleInfo.setCustomerName("SCOTCH & SODA B.V.");
+			titleInfo.setAddress1("JACOBUS SPIJKERDREEF 20-24");
+			titleInfo.setAddress2("2132 PZ HOOFDDORP");
+			titleInfo.setAddress3("THE NETHERLANDS.");
+		}
+		return titleInfo;
+	}
 }
