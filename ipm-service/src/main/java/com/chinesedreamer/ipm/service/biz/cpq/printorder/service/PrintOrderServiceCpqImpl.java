@@ -490,11 +490,12 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 						Cell colorCell = colorItemRow.getCell(0);
 						if (null != colorCell) {
 							String colorCellValue = ExcelUtil.getCellStringValue(colorCell);
-							if (StringUtils.isNotEmpty(colorCellValue)) {
-//								if (!"".equals(tmpColor)) {
-//									//拼箱
-//								}
-								tmpColor = this.formatColorString(colorCellValue);
+							//修复color有中文汉字时，造成的错误
+							if (StringUtils.isNotEmpty(colorCellValue) ) {
+								colorCellValue = this.formatColorString(colorCellValue);
+								if(!this.cpqDictionaryLogic.findByTypeAndProperty(CpqDictionaryType.COLOR, colorCellValue).isEmpty()){
+									tmpColor = colorCellValue;
+								}
 							}
 						}
 
@@ -1104,7 +1105,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			titleInfo.setAddress1("JACOBUS SPIJKERDREEF 20-24");
 			titleInfo.setAddress2("2132 PZ HOOFDDORP");
 			titleInfo.setAddress3("THE NETHERLANDS.");
-			titleInfo.setDescription("Girl's 100% Cotton Woven Jacket");
+			//titleInfo.setDescription("Girl's 100% Cotton Woven Jacket");
 			this.cpqExcelPrintService.printTitle(workbook, sheet, titleInfo);
 			//4. 打印表头
 			boolean hasCountry = false;
