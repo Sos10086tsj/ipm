@@ -13,8 +13,6 @@ INSERT INTO `ipm`.`ipm_sys_config` (`property`, `property_value`) VALUES ('CPQ_O
 ALTER TABLE `ipm`.`ipm_biz_cpq_manufactory_order_item` 
 ADD COLUMN `order_no_type` VARCHAR(45) NULL AFTER `order_no`;
 
-UPDATE `ipm`.`ipm_sys_config` SET `property`='CPQ_ORDER_TYPE_HK' WHERE `id`='5';
-UPDATE `ipm`.`ipm_sys_config` SET `property`='CPQ_ORDER_TYPE_NETHERLANDS' WHERE `id`='6';
 
 ALTER TABLE `ipm`.`ipm_biz_cpq_print_order` 
 ADD COLUMN `order_no_type` VARCHAR(45) NULL AFTER `order_no`;
