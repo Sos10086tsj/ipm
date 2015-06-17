@@ -226,7 +226,6 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		order.setMaker(datasource.get("maker"));
 		order.setCustomer(datasource.get("customer"));
 		order.setPrice(datasource.get("price").replace(",", ""));
-		this.logger.debug("********* order:", order.toString());
 		order = this.cpqOrderLogic.save(order);
 		
 		for (Map<String, String> item : items) {
@@ -251,7 +250,6 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 					}
 				}
 			}
-			this.logger.debug("********* orderItem:", orderItem.toString());
 			orderItem.setOrderId(order.getId());
 			this.cpqOrderItemLogic.save(orderItem);
 		}
@@ -420,7 +418,6 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 					startRow = i + 1;
 					break;
 				}
-				this.logger.info(" putianmu add item to tempMap. sheet:{}, row:{}",sheetName, i);
 				String orderNoCellValue = ExcelUtil.getCellStringValue(orderNoCell);
 				if (StringUtils.isEmpty(orderNoCellValue)) {
 					startRow = i + 1;
@@ -484,7 +481,6 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 					String tmpColor = "";
 					
 					for (int k = colorStartRow; k < colorEndRow; k++) {
-						this.logger.info("read putianmu excel sheet:{}, row:{}",sheetName, k);
 						Row colorItemRow = sheet.getRow(k);
 						
 						Cell colorCell = colorItemRow.getCell(0);
@@ -751,7 +747,6 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 						i++;
 						continue;
 					}
-					this.logger.info("start row number:{}", startRow);
 					//第一行：订单号、款号
 					Row row1 = sheet.getRow(startRow);
 					String orderNo = ExcelUtil.getCellStringValue(row1.getCell(2));//订单号
