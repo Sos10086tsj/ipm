@@ -226,7 +226,6 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		order.setMaker(datasource.get("maker"));
 		order.setCustomer(datasource.get("customer"));
 		order.setPrice(datasource.get("price").replace(",", ""));
-		this.logger.debug("********* order:", order.toString());
 		order = this.cpqOrderLogic.save(order);
 		
 		for (Map<String, String> item : items) {
@@ -251,7 +250,6 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 					}
 				}
 			}
-			this.logger.debug("********* orderItem:", orderItem.toString());
 			orderItem.setOrderId(order.getId());
 			this.cpqOrderItemLogic.save(orderItem);
 		}
@@ -420,7 +418,6 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 					startRow = i + 1;
 					break;
 				}
-				this.logger.info(" putianmu add item to tempMap. sheet:{}, row:{}",sheetName, i);
 				String orderNoCellValue = ExcelUtil.getCellStringValue(orderNoCell);
 				if (StringUtils.isEmpty(orderNoCellValue)) {
 					startRow = i + 1;
@@ -484,17 +481,17 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 					String tmpColor = "";
 					
 					for (int k = colorStartRow; k < colorEndRow; k++) {
-						this.logger.info("read putianmu excel sheet:{}, row:{}",sheetName, k);
 						Row colorItemRow = sheet.getRow(k);
 						
 						Cell colorCell = colorItemRow.getCell(0);
 						if (null != colorCell) {
 							String colorCellValue = ExcelUtil.getCellStringValue(colorCell);
-							if (StringUtils.isNotEmpty(colorCellValue)) {
-//								if (!"".equals(tmpColor)) {
-//									//拼箱
-//								}
-								tmpColor = this.formatColorString(colorCellValue);
+							//修复color有中文汉字时，造成的错误
+							if (StringUtils.isNotEmpty(colorCellValue) ) {
+								colorCellValue = this.formatColorString(colorCellValue);
+								if(!this.cpqDictionaryLogic.findByTypeAndProperty(CpqDictionaryType.COLOR, colorCellValue).isEmpty()){
+									tmpColor = colorCellValue;
+								}
 							}
 						}
 
@@ -750,7 +747,6 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 						i++;
 						continue;
 					}
-					this.logger.info("start row number:{}", startRow);
 					//第一行：订单号、款号
 					Row row1 = sheet.getRow(startRow);
 					String orderNo = ExcelUtil.getCellStringValue(row1.getCell(2));//订单号
@@ -1092,19 +1088,11 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			
 			HSSFSheet sheet = workbook.createSheet(order.replace("/", "-"));//excel表明不能有“/”符号
 			//2. 打印抬头
-			this.cpqExcelPrintService.printManufactory(workbook, sheet, 
-					new ManufactoryInfo("NINGBO Z & H FOREIGN TRADE COMPANY LIMITED",
-							"12F,BUILDING 3 OF SHANGDONG NATIONS, N0.1926 CANGHAI ROAD，", 
-							"NINGBO, ZHEJIANG,CHINA"));
+			this.cpqExcelPrintService.printManufactory(workbook, sheet, ManufactoryInfo.getManufactoryInfo(manufactory));
 			//3. 打印头部信息
-			TitleInfo titleInfo = new TitleInfo();
+			TitleInfo titleInfo = TitleInfo.getTitleInfo(orderType);
 			titleInfo.setStyleNo(items.get(0).getStyleNo());
 			titleInfo.setOrderNo(order);
-			titleInfo.setCustomerName("SCOTCH & SODA B.V.");
-			titleInfo.setAddress1("JACOBUS SPIJKERDREEF 20-24");
-			titleInfo.setAddress2("2132 PZ HOOFDDORP");
-			titleInfo.setAddress3("THE NETHERLANDS.");
-			titleInfo.setDescription("Girl's 100% Cotton Woven Jacket");
 			this.cpqExcelPrintService.printTitle(workbook, sheet, titleInfo);
 			//4. 打印表头
 			boolean hasCountry = false;

@@ -25,7 +25,11 @@ import com.chinesedreamer.ipm.common.utils.format.MathUtil;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.datadictionary.constant.CpqDictionaryType;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.datadictionary.logic.CpqDictionaryLogic;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.datadictionary.model.CpqDictionary;
+import com.chinesedreamer.ipm.domain.biz.cpq.printorder.item.logic.CpqOrderItemLogic;
+import com.chinesedreamer.ipm.domain.biz.cpq.printorder.item.model.CpqOrderItem;
+import com.chinesedreamer.ipm.domain.biz.cpq.printorder.logic.CpqOrderLogic;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.manufacotry.model.CpqManufacotryOrderItem;
+import com.chinesedreamer.ipm.domain.biz.cpq.printorder.model.CpqOrder;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.report.ColorSizeVo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.report.ColorSizeVoComparator;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.report.ManufactoryInfo;
@@ -44,6 +48,10 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 	
 	@Resource
 	private CpqDictionaryLogic cpqDictionaryLogic;
+	@Resource
+	private CpqOrderItemLogic cpqOrderItemLogic;
+	@Resource
+	private CpqOrderLogic cpqOrderLogic;
 	
 	private HSSFCellStyle commonStyle;
 	private void initCommonStyle(HSSFWorkbook workbook){
@@ -325,17 +333,36 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 					Method getMethod = CpqManufacotryOrderItem.class.getDeclaredMethod("get"+size);
 					Integer value = (Integer)getMethod.invoke(item);
 					if (null != value) {
-						ColorSizeVo vo = colorSizeMap.get(item.getColor());
-						Method mapGetMethod = ColorSizeVo.class.getDeclaredMethod("get"+size);
-						Method mapSetMethod = ColorSizeVo.class.getDeclaredMethod("set"+size, Integer.class);
-						Method mapShippedSetMethod = ColorSizeVo.class.getDeclaredMethod("setActual"+size, Integer.class);
-						Integer mapValue = value + (Integer)mapGetMethod.invoke(vo);
-						mapSetMethod.invoke(vo, mapValue);
-						mapShippedSetMethod.invoke(vo, mapValue);
-						colorSizeMap.put(item.getColor(), vo);
+//						ColorSizeVo vo = colorSizeMap.get(item.getColor());
+//						Method mapGetMethod = ColorSizeVo.class.getDeclaredMethod("get"+size);
+//						Method mapSetMethod = ColorSizeVo.class.getDeclaredMethod("set"+size, Integer.class);
+//						Method mapShippedSetMethod = ColorSizeVo.class.getDeclaredMethod("setActual"+size, Integer.class);
+//						Integer mapValue = value + (Integer)mapGetMethod.invoke(vo);
+//						mapSetMethod.invoke(vo, mapValue);
+//						mapShippedSetMethod.invoke(vo, mapValue);
+//						colorSizeMap.put(item.getColor(), vo);
 						this.printNormalCell(itemRow, 4 + countryIndex + j, value , commonStyle);
 					}else{
 						itemRow.createCell(4 + countryIndex + j).setCellStyle(commonStyle);
+					}
+					//颜色order qty、shipped qty都从po里读取
+					CpqOrder poOrder = this.cpqOrderLogic.findByOrderNoAndStyleNo(item.getOrderNo(), item.getStyleNo());
+					if(null != poOrder){
+						CpqOrderItem poItem = this.cpqOrderItemLogic.findByOrderIdAndColor(poOrder.getId(), item.getColor());
+						if (null != poItem) {
+							Method poGtMethod = CpqOrderItem.class.getDeclaredMethod("get"+size);
+							Integer poValue = (Integer)poGtMethod.invoke(poItem);
+							if(null != poValue){
+								ColorSizeVo vo = colorSizeMap.get(item.getColor());
+								Method mapGetMethod = ColorSizeVo.class.getDeclaredMethod("get"+size);
+								Method mapSetMethod = ColorSizeVo.class.getDeclaredMethod("set"+size, Integer.class);
+								Method mapShippedSetMethod = ColorSizeVo.class.getDeclaredMethod("setActual"+size, Integer.class);
+								Integer mapValue = poValue + (Integer)mapGetMethod.invoke(vo);
+								mapSetMethod.invoke(vo, mapValue);
+								mapShippedSetMethod.invoke(vo, mapValue);
+								colorSizeMap.put(item.getColor(), vo);
+							}
+						}
 					}
 				}catch (Exception e) {
 					this.logger.error("{}",e);
@@ -346,10 +373,11 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 			totalBox += item.getBoxQty();
 			this.printNormalCell(itemRow, 6 + countryIndex + sizes.size(), item.getPcsPerBox() * item.getBoxQty() , commonStyle);
 			totalQty += item.getPcsPerBox() * item.getBoxQty();
-			this.printNormalCell(itemRow, 7 + countryIndex + sizes.size(), item.getRemark() , commonStyle);
-			totalGrossWeight += item.getGrossWeightPerBox();
-			totalNetWeight += item.getNetWeightPerBox();
-			totalVolume += item.getVolumePerBox();
+			//remark 是order的结尾
+			this.printNormalCell(itemRow, 7 + countryIndex + sizes.size(), "/" + item.getOrderNoType() , commonStyle);
+			totalGrossWeight += item.getGrossWeightPerBox() * item.getBoxQty();
+			totalNetWeight += item.getNetWeightPerBox() * item.getBoxQty();
+			totalVolume += item.getVolumePerBox() * item.getBoxQty();
 			
 			if (i < items.size() - 1) {
 				CpqManufacotryOrderItem nextItem = items.get(i+1);
