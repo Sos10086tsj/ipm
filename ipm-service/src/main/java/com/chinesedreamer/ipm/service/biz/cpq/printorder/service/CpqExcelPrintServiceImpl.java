@@ -301,6 +301,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 1, 1));
 				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 4 + countryIndex + sizes.size(), 4  + countryIndex + sizes.size()));
 				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 5 + countryIndex + sizes.size(), 5  + countryIndex + sizes.size()));
+				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 6 + countryIndex + sizes.size(), 6  + countryIndex + sizes.size()));
 				mergeRowStart = -1;
 				mergeRowEnd = -1;
 			}
@@ -396,6 +397,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 1, 1));
 				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 4 + countryIndex + sizes.size(), 4  + countryIndex + sizes.size()));
 				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 5 + countryIndex + sizes.size(), 5  + countryIndex + sizes.size()));
+				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 6 + countryIndex + sizes.size(), 6  + countryIndex + sizes.size()));
 			}
 		}
 		//打印5行空白格子，第3行补充 total
