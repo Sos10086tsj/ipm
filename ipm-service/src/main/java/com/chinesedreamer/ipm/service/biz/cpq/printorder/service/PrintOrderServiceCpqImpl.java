@@ -151,12 +151,13 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 					}else if(itemBegin){
 						if(str.endsWith("TOTAL PIECES")){
 							String[] colors = str.split(" ");
+							logger.info("解析颜色：order:{}. color str:{}",datasource.get("orderNo"),str);
 							for (String color : colors) {
 								if (StringUtils.isNotEmpty(color)) {
 									int index = color.indexOf("-");
 									if (index != -1) {
 										Map<String, String> item = new HashMap<String, String>();
-										item.put("color", color.trim().toLowerCase().substring(0, index));
+										item.put("color", color.trim().toUpperCase().substring(0, index));
 										items.add(item);
 									}
 								}
