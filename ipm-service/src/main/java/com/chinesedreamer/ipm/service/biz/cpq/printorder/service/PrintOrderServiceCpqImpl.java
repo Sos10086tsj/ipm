@@ -1108,6 +1108,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 //				sheet.autoSizeColumn(i, true);
 //			}
 			sheet.autoSizeColumn(2, true);
+			workbook.setForceFormulaRecalculation(true);
 		}
 		//2. 打印
 		FileOutputStream out = null;

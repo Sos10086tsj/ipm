@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.chinesedreamer.ipm.common.utils.format.MathUtil;
+import com.chinesedreamer.ipm.common.utils.office.ExcelUtil;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.datadictionary.constant.CpqDictionaryType;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.datadictionary.logic.CpqDictionaryLogic;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.datadictionary.model.CpqDictionary;
@@ -276,6 +277,60 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 			cell.setCellValue((String)value);
 		}
 	}
+	
+	/**
+	 * 生成加法公式
+	 * @param items
+	 * @return
+	 */
+	private String generatePlusFormula(List<String> items) {
+		StringBuffer buffer = new StringBuffer();
+		for (String item : items) {
+			buffer.append(item)
+			.append("+");
+		}
+		String rst = buffer.toString();
+		if (rst.endsWith("+")) {
+			rst = rst.substring(0, rst.length() -1 );
+		}
+		return rst ;
+	}
+	
+	/**
+	 * 生成求和公式
+	 * @param items
+	 * @return
+	 */
+	private String generateSumFormula(List<String> items) {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("SUM(");
+		for (String item : items) {
+			buffer.append(item)
+			.append(":");
+		}
+		String rst = buffer.toString();
+		if (rst.endsWith(":")) {
+			rst = rst.substring(0, rst.length() -1 );
+		}
+		return rst + ")";
+	}
+	
+	/**
+	 * 打印公式
+	 * @param row
+	 * @param columnNum
+	 * @param formula
+	 * @param cellStyle
+	 */
+	private void printFormulaCell(HSSFRow row, int columnNum, String formula, HSSFCellStyle cellStyle){
+		HSSFCell cell = row.getCell(columnNum);
+		if (null == cell) {
+			cell = row.createCell(columnNum, Cell.CELL_TYPE_FORMULA);
+		}
+		cell.setCellStyle(cellStyle);
+		cell.setCellType(Cell.CELL_TYPE_FORMULA);
+		cell.setCellFormula(formula);
+	}
 
 	@Override
 	public void printDataRow(HSSFWorkbook workbook,
@@ -290,8 +345,10 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		if (hasCountry) {
 			countryIndex = 1;
 		}
-		int totalBox = 0;
-		int totalQty = 0;
+
+		List<String> totalBoxFormula = new ArrayList<String>();//总和公式
+
+		List<String> totalQtyFormula = new ArrayList<String>();
 		float totalGrossWeight = 0;
 		float totalNetWeight = 0;
 		float totalVolume = 0;
@@ -314,7 +371,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 			this.printNormalCell(itemRow, 1, item.getToNo() , commonStyle);
 			this.printNormalCell(itemRow, 2, item.getStyleNo() , commonStyle);
 			if (hasCountry) {
-				List<CpqDictionary> countries = this.cpqDictionaryLogic.findByTypeAndProperty(CpqDictionaryType.ORDER_COUNTRY, item.getOrderNo());
+				List<CpqDictionary> countries = this.cpqDictionaryLogic.findByTypeAndProperty(CpqDictionaryType.ORDER_COUNTRY, item.getOrderNoType());
 				String countryCellValue = "";
 				if (!countries.isEmpty()) {
 					countryCellValue = countries.get(0).getValue();
@@ -369,11 +426,17 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 					this.logger.error("{}",e);
 				}
 			}
-			this.printNormalCell(itemRow, 4 + countryIndex + sizes.size(), item.getPcsPerBox() , commonStyle);
-			this.printNormalCell(itemRow, 5 + countryIndex + sizes.size(), item.getBoxQty() , commonStyle);
-			totalBox += item.getBoxQty();
-			this.printNormalCell(itemRow, 6 + countryIndex + sizes.size(), item.getPcsPerBox() * item.getBoxQty() , commonStyle);
-			totalQty += item.getPcsPerBox() * item.getBoxQty();
+			if(mergeRowStart == -1){//只有非合并的单元格才赋值，否则会影响sum总数
+				this.printNormalCell(itemRow, 4 + countryIndex + sizes.size(), item.getPcsPerBox() , commonStyle);
+				this.printNormalCell(itemRow, 5 + countryIndex + sizes.size(), item.getBoxQty() , commonStyle);
+				this.printNormalCell(itemRow, 6 + countryIndex + sizes.size(), item.getPcsPerBox() * item.getBoxQty() , commonStyle);
+			}else {
+				itemRow.createCell(4 + countryIndex + sizes.size()).setCellStyle(commonStyle);
+				itemRow.createCell(5 + countryIndex + sizes.size()).setCellStyle(commonStyle);
+				itemRow.createCell(6 + countryIndex + sizes.size()).setCellStyle(commonStyle);
+			}
+			totalBoxFormula.add(ExcelUtil.getColumnCharacter(5 + countryIndex + sizes.size()) + (18 + i));
+			totalQtyFormula.add(ExcelUtil.getColumnCharacter(6 + countryIndex + sizes.size()) + (18 + i));
 			//remark 是order的结尾
 			this.printNormalCell(itemRow, 7 + countryIndex + sizes.size(), "/" + item.getOrderNoType() , commonStyle);
 			totalGrossWeight += item.getGrossWeightPerBox() * item.getBoxQty();
@@ -398,6 +461,8 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 4 + countryIndex + sizes.size(), 4  + countryIndex + sizes.size()));
 				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 5 + countryIndex + sizes.size(), 5  + countryIndex + sizes.size()));
 				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 6 + countryIndex + sizes.size(), 6  + countryIndex + sizes.size()));
+				mergeRowStart = -1;
+				mergeRowEnd = -1;
 			}
 		}
 		//打印5行空白格子，第3行补充 total
@@ -409,8 +474,10 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 			}
 		}
 		sheet.getRow(19 + items.size()).getCell(4 + countryIndex + sizes.size()).setCellValue("TOTAL");
-		sheet.getRow(19 + items.size()).getCell(5 + countryIndex + sizes.size()).setCellValue(totalBox);
-		sheet.getRow(19 + items.size()).getCell(6 + countryIndex + sizes.size()).setCellValue(totalQty);
+		//sheet.getRow(19 + items.size()).getCell(5 + countryIndex + sizes.size()).setCellValue(totalBox);
+		//sheet.getRow(19 + items.size()).getCell(6 + countryIndex + sizes.size()).setCellValue(totalQty);
+		this.printFormulaCell(sheet.getRow(19 + items.size()), 5 + countryIndex + sizes.size(), this.generateSumFormula(totalBoxFormula), commonStyle);
+		this.printFormulaCell(sheet.getRow(19 + items.size()), 6 + countryIndex + sizes.size(), this.generateSumFormula(totalQtyFormula), commonStyle);
 		
 		//COLOUR  BREAKDOWN
 		HSSFRow colorRow = sheet.createRow(22 + items.size());
@@ -432,13 +499,14 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		}
 		
 		//打印color部分
-		int colorOrderedTotal = 0;
-		int colorShippedTotal = 0;
+		List<String> colorOrderedTotalFormual = new ArrayList<String>();
+		List<String> colorShippedTotalFormual = new ArrayList<String>();
+		List<String> colorDiscrepancyTotalFormual = new ArrayList<String>();
 		List<ColorSizeVo> vos = this.getColorSizes(colorSizeMap);
 		for (int i = 0; i < vos.size(); i++) {
 			ColorSizeVo vo = vos.get(i);
-			int tmpOrderedTotal = 0;
-			int tmpShippedTotal = 0;
+			List<String> tmpOrderedTotalFormual = new ArrayList<String>();
+			List<String> tmpShippedTotalFormual = new ArrayList<String>();
 			
 			HSSFRow blankRow = sheet.createRow(23 + i * 5 + items.size());
 			blankRow.setHeightInPoints(16.5f);
@@ -485,10 +553,8 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 				try {
 					Method orderedMethod = ColorSizeVo.class.getDeclaredMethod("get"+size);
 					Integer orderedValue = (Integer)orderedMethod.invoke(vo);
-					tmpOrderedTotal += orderedValue;
 					Method actualMethod = ColorSizeVo.class.getDeclaredMethod("getActual"+size);
 					Integer actualValue = (Integer)actualMethod.invoke(vo);
-					tmpShippedTotal += actualValue;
 					this.printNormalCell(colorOrderRow, 4 + countryIndex + j, orderedValue , commonStyle);
 					this.printNormalCell(shippedOrderRow, 4 + countryIndex + j, actualValue , commonStyle);
 					this.printNormalCell(discrepancyOrderRow, 4 + countryIndex + j, actualValue - orderedValue , commonStyle);
@@ -496,13 +562,21 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 				}catch (Exception e) {
 					this.logger.error("{}",e);
 				}
+				tmpOrderedTotalFormual.add(ExcelUtil.getColumnCharacter(4 + countryIndex + j) + (25 + i * 5 + items.size()));
+				tmpShippedTotalFormual.add(ExcelUtil.getColumnCharacter(4 + countryIndex + j) + (26 + i * 5 + items.size()));
 			}
 			
-			this.printNormalCell(colorOrderRow, 4 + countryIndex + sizes.size(), tmpOrderedTotal , commonStyle);
-			this.printNormalCell(shippedOrderRow, 4 + countryIndex + sizes.size(), tmpShippedTotal , commonStyle);
-			this.printNormalCell(discrepancyOrderRow, 4 + countryIndex + sizes.size(), tmpShippedTotal - tmpOrderedTotal , commonStyle);
-			this.printNormalCell(percentOrderRow, 4  + countryIndex + sizes.size(), MathUtil.percent(tmpOrderedTotal, tmpShippedTotal - tmpOrderedTotal, null) , commonStyle);
-			
+			this.printFormulaCell(colorOrderRow, 4 + countryIndex + sizes.size(), this.generateSumFormula(tmpOrderedTotalFormual), commonStyle);
+			this.printFormulaCell(shippedOrderRow, 4 + countryIndex + sizes.size(), this.generateSumFormula(tmpShippedTotalFormual), commonStyle);
+			this.printFormulaCell(discrepancyOrderRow, 4 + countryIndex + sizes.size(), 
+					 ExcelUtil.getColumnCharacter(4 + countryIndex + sizes.size()) + (26 + i * 5 + items.size()) + 
+					"-" + ExcelUtil.getColumnCharacter(4 + countryIndex + sizes.size()) + (25 + i * 5 + items.size()), 
+					commonStyle);
+			this.printFormulaCell(percentOrderRow, 4 + countryIndex + sizes.size(), 
+					 ExcelUtil.getColumnCharacter(4 + countryIndex + sizes.size()) + (27 + i * 5 + items.size()) + 
+					"/" + ExcelUtil.getColumnCharacter(4 + countryIndex + sizes.size()) + (25 + i * 5 + items.size()), 
+					commonStyle);
+
 			for (int j = 5  + countryIndex + sizes.size(); j <=  7 + countryIndex + sizes.size(); j++) {
 				colorRow.createCell(j).setCellStyle(commonStyle);
 				colorOrderRow.createCell(j).setCellStyle(commonStyle);
@@ -511,8 +585,9 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 				percentOrderRow.createCell(j).setCellStyle(commonStyle);
 			}
 			
-			colorOrderedTotal += tmpOrderedTotal;
-			colorShippedTotal += tmpShippedTotal;
+			colorOrderedTotalFormual.add(ExcelUtil.getColumnCharacter(4 + countryIndex + sizes.size()) + (25 + i * 5 + items.size()));
+			colorShippedTotalFormual.add(ExcelUtil.getColumnCharacter(4 + countryIndex + sizes.size()) + (26 + i * 5 + items.size()));
+			colorDiscrepancyTotalFormual.add(ExcelUtil.getColumnCharacter(4 + countryIndex + sizes.size()) + (27 + i * 5 + items.size()));
 		}
 		//空4行
 		for (int j = 23 + vos.size() * 5 + items.size(); j < 31 + vos.size() * 5 + items.size(); j++) {
@@ -523,16 +598,19 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		}
 		HSSFRow totalOrderdRow = sheet.getRow(27 + vos.size() * 5 + items.size());
 		totalOrderdRow.getCell(2).setCellValue("TOTAL ORDER QTY");
-		totalOrderdRow.getCell(4 + countryIndex + sizes.size()).setCellValue(colorOrderedTotal);
+		this.printFormulaCell(totalOrderdRow, 4 + countryIndex + sizes.size(), this.generatePlusFormula(colorOrderedTotalFormual), commonStyle);
 		HSSFRow totalShippedRow = sheet.getRow(28 + vos.size() * 5 + items.size());
 		totalShippedRow.getCell(2).setCellValue("TOTAL SHIPPED QTY");
-		totalShippedRow.getCell(4 + countryIndex + sizes.size()).setCellValue(colorShippedTotal);
+		this.printFormulaCell(totalShippedRow, 4 + countryIndex + sizes.size(), this.generatePlusFormula(colorShippedTotalFormual), commonStyle);
 		HSSFRow totalDiscrepancyRow = sheet.getRow(29 + vos.size() * 5 + items.size());
 		totalDiscrepancyRow.getCell(2).setCellValue("DISCREPANCY");
-		totalDiscrepancyRow.getCell(4 + countryIndex + sizes.size()).setCellValue(colorShippedTotal - colorOrderedTotal);
+		this.printFormulaCell(totalDiscrepancyRow, 4 + countryIndex + sizes.size(), this.generatePlusFormula(colorDiscrepancyTotalFormual), commonStyle);
 		HSSFRow totalPercentRow = sheet.getRow(30 + vos.size() * 5 + items.size());
 		totalPercentRow.getCell(2).setCellValue("%");
-		totalPercentRow.getCell(4 + countryIndex + sizes.size()).setCellValue(MathUtil.percent(colorOrderedTotal, colorShippedTotal - colorOrderedTotal, null));
+		this.printFormulaCell(totalPercentRow, 4 + countryIndex + sizes.size(), 
+				 ExcelUtil.getColumnCharacter(4 + countryIndex + sizes.size()) + (30 + vos.size() * 5 + items.size()) + 
+				"/" + ExcelUtil.getColumnCharacter(4 + countryIndex + sizes.size()) + (28 + vos.size() * 5 + items.size()), 
+				commonStyle);
 		
 		//空一行
 		for (int i = 31 + vos.size() * 5 + items.size(); i <= 37 + vos.size() * 5 + items.size(); i++) {
@@ -543,11 +621,13 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		}
 		//carton
 		sheet.getRow(32 + vos.size() * 5 + items.size()).getCell(0).setCellValue("Carton:");
-		sheet.getRow(32 + vos.size() * 5 + items.size()).getCell(1).setCellValue(totalBox);
+		//sheet.getRow(32 + vos.size() * 5 + items.size()).getCell(1).setCellValue(totalBox);
+		this.printFormulaCell(sheet.getRow(32 + vos.size() * 5 + items.size()), 1,  ExcelUtil.getColumnCharacter(5 + countryIndex + sizes.size()) + (20 + items.size()), commonStyle);
 		sheet.getRow(32 + vos.size() * 5 + items.size()).getCell(2).setCellValue("CTNS");
 		//qty
 		sheet.getRow(33 + vos.size() * 5 + items.size()).getCell(0).setCellValue("Qty:");
-		sheet.getRow(33 + vos.size() * 5 + items.size()).getCell(1).setCellValue(totalQty);
+		//sheet.getRow(33 + vos.size() * 5 + items.size()).getCell(1).setCellValue(totalQty);
+		this.printFormulaCell(sheet.getRow(33 + vos.size() * 5 + items.size()), 1,  ExcelUtil.getColumnCharacter(6 + countryIndex + sizes.size()) + (20 + items.size()), commonStyle);
 		sheet.getRow(33 + vos.size() * 5 + items.size()).getCell(2).setCellValue("PCS");
 		//grossweight
 		sheet.getRow(34 + vos.size() * 5 + items.size()).getCell(0).setCellValue("G.W:");

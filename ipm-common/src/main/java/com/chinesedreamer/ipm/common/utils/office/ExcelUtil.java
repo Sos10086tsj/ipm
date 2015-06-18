@@ -10,6 +10,13 @@ import org.apache.poi.ss.usermodel.Cell;
  * @version beta
  */
 public class ExcelUtil {
+	
+	public static String[] columnCharacters = {
+		"A","B","C","D","E","F","G","H","I","J",
+		"K","L","M","N","O","P","Q","R","S","T",
+		"U","V","W","X","Y","Z"
+	};
+	
 	public static Integer getCellIntegerValue(Cell cell){
 		Integer value = null;
 		if (null == cell) {
@@ -92,5 +99,14 @@ public class ExcelUtil {
 			break;
 		}
 		return obj;
+	}
+	
+	public static String getColumnCharacter(int column){
+		if (column <= 25) {
+			return columnCharacters[column];
+		}
+		int prefix = (column + 1) / 26;
+		int subfix = (column + 1) - prefix * 26;
+		return columnCharacters[prefix - 1] + columnCharacters[subfix - 1];
 	}
 }
