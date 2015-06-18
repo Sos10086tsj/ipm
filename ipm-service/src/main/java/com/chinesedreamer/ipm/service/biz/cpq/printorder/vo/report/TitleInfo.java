@@ -27,10 +27,10 @@ public @Getter @Setter class TitleInfo {
 	public static TitleInfo getTitleInfo(String orderType){
 		TitleInfo titleInfo = new TitleInfo();
 		if (orderType.equals(IpmConfigConstant.CPQ_ORDER_TYPE_HK.toString())) {
-			titleInfo.setCustomerName("SCOTCH & SODA B.V.");
-			titleInfo.setAddress1("JACOBUS SPIJKERDREEF 20-24");
-			titleInfo.setAddress2("2132 PZ HOOFDDORP");
-			titleInfo.setAddress3("THE NETHERLANDS.");
+			titleInfo.setCustomerName("KENTEX TRADING (HONGKONG) LTD");
+			titleInfo.setAddress1("ROOM 1009, 10/F., TOWER 3, ENTERPRISE SQUARE 1,");
+			titleInfo.setAddress2("9 SHEUNG YUET ROAD, KOWLOON BAY");
+			titleInfo.setAddress3("HONG KONG");
 		}else if (orderType.equals(IpmConfigConstant.CPQ_ORDER_TYPE_NETHERLANDS.toString())) {
 			titleInfo.setCustomerName("SCOTCH & SODA B.V.");
 			titleInfo.setAddress1("JACOBUS SPIJKERDREEF 20-24");

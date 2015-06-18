@@ -21,18 +21,8 @@ public @Getter @Setter class ManufactoryInfo {
 	}
 	
 	public static ManufactoryInfo getManufactoryInfo(String manufactory){
-		if (manufactory.equals("JIANAN")) {
-			return new ManufactoryInfo("NINGBO Z & H FOREIGN TRADE COMPANY LIMITED",
-					"12F,BUILDING 3 OF SHANGDONG NATIONS, N0.1926 CANGHAI ROAD，", 
-					"NINGBO, ZHEJIANG,CHINA");
-		}
-		if (manufactory.equals("PUTIANMU")) {
-			return new ManufactoryInfo("NINGBO Z & H FOREIGN TRADE COMPANY LIMITED",
-					"12F,BUILDING 3 OF SHANGDONG NATIONS, N0.1926 CANGHAI ROAD，", 
-					"NINGBO, ZHEJIANG,CHINA");
-		}
-		return new ManufactoryInfo("",
-				"", 
-				"");
+		return new ManufactoryInfo("NINGBO Z & H FOREIGN TRADE COMPANY LIMITED",
+				"12F,BUILDING 3 OF SHANGDONG NATIONS, N0.1926 CANGHAI ROAD，", 
+				"NINGBO, ZHEJIANG,CHINA");
 	}
 }
