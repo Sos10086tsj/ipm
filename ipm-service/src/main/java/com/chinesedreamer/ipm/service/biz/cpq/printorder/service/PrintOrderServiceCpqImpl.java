@@ -151,7 +151,6 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 					}else if(itemBegin){
 						if(str.endsWith("TOTAL PIECES")){
 							String[] colors = str.split(" ");
-							logger.info("解析颜色：order:{}. color str:{}",datasource.get("orderNo"),str);
 							for (String color : colors) {
 								if (StringUtils.isNotEmpty(color)) {
 									int index = color.indexOf("-");
