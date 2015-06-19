@@ -7,12 +7,15 @@
 <title>报表打印</title>
 </head>
 <body>
+	<div id="js_menu">
+	</div>
 	<div>
 		<h1>选择导出条件</h1>
 		<div id="js_report_export"></div>
 	</div>
 </body>
 <%@include file="/WEB-INF/view/base/baselib.jspf" %>
+<script type="text/javascript" src="${ctx}/resources/js/cpq/cpq.js"></script>
 <script type="text/javascript" src="${ctx}/resources/js/cpq/report.js"></script>
 <script type="text/javascript" src="${ctx}/resources/js/cpq/reportStore.js"></script>
 <script>
