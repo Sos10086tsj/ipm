@@ -89,6 +89,8 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	private CpqManufacotryOrderItemLogic cpqManufacotryOrderItemLogic;
 	@Resource
 	private CpqExcelPrintService cpqExcelPrintService;
+	@Resource
+	private CpqExcelReadService cpqExcelReadService;
 	
 	private Map<String, String> errorMap = new HashMap<String, String>();
 	
@@ -351,8 +353,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			for (int i = 0; i < jiananConfigs.length; i++) {
 				jiananSheets[i] = workbook.getSheet(jiananConfigs[i]);
 			}
-			//TODO 01有隐藏行
-			//items.addAll(this.readJiananExcelSheet(cpqFile,jiananSheets));
+			items.addAll(this.cpqExcelReadService.readJianan01ExcelSheet(cpqFile, jiananSheets));
 		}
 		for (CpqManufacotryOrderItem item : items) {
 			this.cpqManufacotryOrderItemLogic.save(item);
