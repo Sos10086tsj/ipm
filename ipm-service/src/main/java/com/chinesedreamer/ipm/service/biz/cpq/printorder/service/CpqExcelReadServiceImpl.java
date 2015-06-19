@@ -66,7 +66,6 @@ public class CpqExcelReadServiceImpl implements CpqExcelReadService{
 				for (int i = 0; i < availableRows.size() -1; i = i +2) {
 					startRow = availableRows.get(i);
 					endRow = availableRows.get(i+1);
-					
 					int currentRow = startRow;//第一行：合约号
 					//第一行：订单号、款号
 					Row orderRow = sheet.getRow(currentRow);
@@ -82,14 +81,17 @@ public class CpqExcelReadServiceImpl implements CpqExcelReadService{
 						break;
 					}
 					
-					currentRow ++;//第一个from-to的行
+					currentRow += 2;//第一个from-to的行
 					for (int j = currentRow; j < endRow; j++) {
 						Row itemRow = sheet.getRow(j);
-						if (null == itemRow) {//有部分隐藏的行
+						if (null == itemRow || itemRow.getZeroHeight()) {//有部分隐藏的行
 							continue;
 						}
 						//读取from和to
 						String from = ExcelUtil.getCellStringValue(itemRow.getCell(0));
+						if (StringUtils.isEmpty(from)) {
+							continue;//from 为空
+						}
 						if (StringUtils.isNotEmpty(from)) {
 							int index = from.indexOf("-");
 							if (index == -1) {

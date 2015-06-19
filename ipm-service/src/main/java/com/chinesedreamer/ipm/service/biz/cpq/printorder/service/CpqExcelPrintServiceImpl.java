@@ -408,7 +408,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 						itemRow.createCell(4 + countryIndex + j).setCellStyle(commonStyle);
 					}
 					//颜色order qty、shipped qty都从po里读取
-					if (!poReadedColors.contains( item.getColor() + "@" + size)) {
+					if (!item.getOrderNoType().equals("01") && !poReadedColors.contains( item.getColor() + "@" + size)) {//01时不统计
 						CpqOrder poOrder = this.cpqOrderLogic.findByOrderNoAndStyleNo(item.getOrderNo(), item.getStyleNo());
 						if(null != poOrder){
 							CpqOrderItem poItem = this.cpqOrderItemLogic.findByOrderIdAndColor(poOrder.getId(), item.getColor());
