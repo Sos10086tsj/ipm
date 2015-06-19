@@ -343,6 +343,8 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		
 		int mergeRowStart = -1;
 		int mergeRowEnd = -1;
+
+		
 		int countryIndex = 0;
 		if (hasCountry) {
 			countryIndex = 1;
@@ -360,9 +362,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 			if (-1 != mergeRowStart && -1 != mergeRowEnd) {//已经知道合并行数
 				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 0, 0));
 				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 1, 1));
-				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 4 + countryIndex + sizes.size(), 4  + countryIndex + sizes.size()));
 				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 5 + countryIndex + sizes.size(), 5  + countryIndex + sizes.size()));
-				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 6 + countryIndex + sizes.size(), 6  + countryIndex + sizes.size()));
 				mergeRowStart = -1;
 				mergeRowEnd = -1;
 			}
@@ -433,15 +433,15 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 					this.logger.error("{}",e);
 				}
 			}
+			
+			this.printNormalCell(itemRow, 4 + countryIndex + sizes.size(), item.getPcsPerBox() , commonStyle);
 			if(mergeRowStart == -1){//只有非合并的单元格才赋值，否则会影响sum总数
-				this.printNormalCell(itemRow, 4 + countryIndex + sizes.size(), item.getPcsPerBox() , commonStyle);
 				this.printNormalCell(itemRow, 5 + countryIndex + sizes.size(), item.getBoxQty() , commonStyle);
-				this.printNormalCell(itemRow, 6 + countryIndex + sizes.size(), item.getPcsPerBox() * item.getBoxQty() , commonStyle);
 			}else {
-				itemRow.createCell(4 + countryIndex + sizes.size()).setCellStyle(commonStyle);
 				itemRow.createCell(5 + countryIndex + sizes.size()).setCellStyle(commonStyle);
-				itemRow.createCell(6 + countryIndex + sizes.size()).setCellStyle(commonStyle);
 			}
+			this.printNormalCell(itemRow, 6 + countryIndex + sizes.size(), item.getPcsPerBox() * item.getBoxQty() , commonStyle);
+			
 			totalBoxFormula.add(ExcelUtil.getColumnCharacter(5 + countryIndex + sizes.size()) + (18 + i));
 			totalQtyFormula.add(ExcelUtil.getColumnCharacter(6 + countryIndex + sizes.size()) + (18 + i));
 			//remark 是order的结尾
@@ -465,9 +465,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 				mergeRowEnd = 17 + i;
 				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 0, 0));
 				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 1, 1));
-				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 4 + countryIndex + sizes.size(), 4  + countryIndex + sizes.size()));
 				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 5 + countryIndex + sizes.size(), 5  + countryIndex + sizes.size()));
-				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 6 + countryIndex + sizes.size(), 6  + countryIndex + sizes.size()));
 				mergeRowStart = -1;
 				mergeRowEnd = -1;
 			}
