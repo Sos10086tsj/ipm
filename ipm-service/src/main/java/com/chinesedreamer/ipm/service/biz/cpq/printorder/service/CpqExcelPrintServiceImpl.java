@@ -354,11 +354,9 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		float totalGrossWeight = 0;
 		float totalNetWeight = 0;
 		float totalVolume = 0;
+		Set<String> poReadedColors = new HashSet<String>();
 		
 		for (int i = 0; i < items.size(); i++) {
-			
-			Set<String> poReadedColors = new HashSet<String>();
-			
 			if (-1 != mergeRowStart && -1 != mergeRowEnd) {//已经知道合并行数
 				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 0, 0));
 				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 1, 1));
@@ -410,7 +408,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 						itemRow.createCell(4 + countryIndex + j).setCellStyle(commonStyle);
 					}
 					//颜色order qty、shipped qty都从po里读取
-					if (!poReadedColors.contains(item.getColor())) {
+					if (!poReadedColors.contains( item.getColor() + "@" + size)) {
 						CpqOrder poOrder = this.cpqOrderLogic.findByOrderNoAndStyleNo(item.getOrderNo(), item.getStyleNo());
 						if(null != poOrder){
 							CpqOrderItem poItem = this.cpqOrderItemLogic.findByOrderIdAndColor(poOrder.getId(), item.getColor());
@@ -419,15 +417,17 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 								Integer poValue = (Integer)poGtMethod.invoke(poItem);
 								if(null != poValue){
 									ColorSizeVo vo = colorSizeMap.get(item.getColor());
+									Method mapGetMethod = ColorSizeVo.class.getDeclaredMethod("get"+size);
 									Method mapSetMethod = ColorSizeVo.class.getDeclaredMethod("set"+size, Integer.class);
 									Method mapShippedSetMethod = ColorSizeVo.class.getDeclaredMethod("setActual"+size, Integer.class);
-									mapSetMethod.invoke(vo, poValue);
-									mapShippedSetMethod.invoke(vo, poValue);
+									Integer mapValue = poValue + (Integer)mapGetMethod.invoke(vo);
+									mapSetMethod.invoke(vo, mapValue);
+									mapShippedSetMethod.invoke(vo, mapValue);
 									colorSizeMap.put(item.getColor(), vo);
-									poReadedColors.add(item.getColor());
 								}
 							}
 						}
+						poReadedColors.add(item.getColor() + "@" + size);
 					}
 				}catch (Exception e) {
 					this.logger.error("{}",e);
