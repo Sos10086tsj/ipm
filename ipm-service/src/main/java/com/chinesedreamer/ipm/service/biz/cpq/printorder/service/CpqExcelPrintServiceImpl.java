@@ -4,8 +4,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -352,7 +354,11 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		float totalGrossWeight = 0;
 		float totalNetWeight = 0;
 		float totalVolume = 0;
+		
 		for (int i = 0; i < items.size(); i++) {
+			
+			Set<String> poReadedColors = new HashSet<String>();
+			
 			if (-1 != mergeRowStart && -1 != mergeRowEnd) {//已经知道合并行数
 				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 0, 0));
 				sheet.addMergedRegion(new CellRangeAddress(mergeRowStart, mergeRowEnd, 1, 1));
@@ -404,21 +410,22 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 						itemRow.createCell(4 + countryIndex + j).setCellStyle(commonStyle);
 					}
 					//颜色order qty、shipped qty都从po里读取
-					CpqOrder poOrder = this.cpqOrderLogic.findByOrderNoAndStyleNo(item.getOrderNo(), item.getStyleNo());
-					if(null != poOrder){
-						CpqOrderItem poItem = this.cpqOrderItemLogic.findByOrderIdAndColor(poOrder.getId(), item.getColor());
-						if (null != poItem) {
-							Method poGtMethod = CpqOrderItem.class.getDeclaredMethod("get"+size);
-							Integer poValue = (Integer)poGtMethod.invoke(poItem);
-							if(null != poValue){
-								ColorSizeVo vo = colorSizeMap.get(item.getColor());
-								Method mapGetMethod = ColorSizeVo.class.getDeclaredMethod("get"+size);
-								Method mapSetMethod = ColorSizeVo.class.getDeclaredMethod("set"+size, Integer.class);
-								Method mapShippedSetMethod = ColorSizeVo.class.getDeclaredMethod("setActual"+size, Integer.class);
-								Integer mapValue = poValue + (Integer)mapGetMethod.invoke(vo);
-								mapSetMethod.invoke(vo, mapValue);
-								mapShippedSetMethod.invoke(vo, mapValue);
-								colorSizeMap.put(item.getColor(), vo);
+					if (!poReadedColors.contains(item.getColor())) {
+						CpqOrder poOrder = this.cpqOrderLogic.findByOrderNoAndStyleNo(item.getOrderNo(), item.getStyleNo());
+						if(null != poOrder){
+							CpqOrderItem poItem = this.cpqOrderItemLogic.findByOrderIdAndColor(poOrder.getId(), item.getColor());
+							if (null != poItem) {
+								Method poGtMethod = CpqOrderItem.class.getDeclaredMethod("get"+size);
+								Integer poValue = (Integer)poGtMethod.invoke(poItem);
+								if(null != poValue){
+									ColorSizeVo vo = colorSizeMap.get(item.getColor());
+									Method mapSetMethod = ColorSizeVo.class.getDeclaredMethod("set"+size, Integer.class);
+									Method mapShippedSetMethod = ColorSizeVo.class.getDeclaredMethod("setActual"+size, Integer.class);
+									mapSetMethod.invoke(vo, poValue);
+									mapShippedSetMethod.invoke(vo, poValue);
+									colorSizeMap.put(item.getColor(), vo);
+									poReadedColors.add(item.getColor());
+								}
 							}
 						}
 					}
