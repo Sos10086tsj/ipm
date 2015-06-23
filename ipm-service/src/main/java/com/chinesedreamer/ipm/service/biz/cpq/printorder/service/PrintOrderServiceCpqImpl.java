@@ -1088,18 +1088,24 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			List<String> sizes = this.getClothingTypeSizes(this.cpqFileLogic.findOne(items.get(0).getExcelId()).getClothingType().toString());
 			
 			HSSFSheet sheet = workbook.createSheet(order.replace("/", "-"));//excel表明不能有“/”符号
+			
+			boolean hasCountry = false;
+			if (orderType.equals(IpmConfigConstant.CPQ_ORDER_TYPE_HK.toString())) {
+				hasCountry = true;
+			}
+			
 			//2. 打印抬头
 			this.cpqExcelPrintService.printManufactory(workbook, sheet, ManufactoryInfo.getManufactoryInfo(manufactory));
 			//3. 打印头部信息
 			TitleInfo titleInfo = TitleInfo.getTitleInfo(orderType);
 			titleInfo.setStyleNo(items.get(0).getStyleNo());
 			titleInfo.setOrderNo(order);
+			titleInfo.setManufactorurer("NINGBO Z & H FOREIGN TRADE CO., LTD.");
+			titleInfo.setExporter("NINGBO Z & H FOREIGN TRADE CO., LTD.");
+			titleInfo.setLcNo(hasCountry ? "T/T" : "D/P");
 			this.cpqExcelPrintService.printTitle(workbook, sheet, titleInfo);
 			//4. 打印表头
-			boolean hasCountry = false;
-			if (orderType.equals(IpmConfigConstant.CPQ_ORDER_TYPE_HK.toString())) {
-				hasCountry = true;
-			}
+			
 			this.cpqExcelPrintService.printTableTitle(workbook, sheet, hasCountry, sizes);
 			
 			//18.	 逐行打印数据
