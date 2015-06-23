@@ -351,8 +351,9 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		}
 
 		List<String> totalBoxFormula = new ArrayList<String>();//总和公式
-
 		List<String> totalQtyFormula = new ArrayList<String>();
+		
+		
 		float totalGrossWeight = 0;
 		float totalNetWeight = 0;
 		float totalVolume = 0;
@@ -395,14 +396,6 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 					Method getMethod = CpqManufacotryOrderItem.class.getDeclaredMethod("get"+size);
 					Integer value = (Integer)getMethod.invoke(item);
 					if (null != value) {
-//						ColorSizeVo vo = colorSizeMap.get(item.getColor());
-//						Method mapGetMethod = ColorSizeVo.class.getDeclaredMethod("get"+size);
-//						Method mapSetMethod = ColorSizeVo.class.getDeclaredMethod("set"+size, Integer.class);
-//						Method mapShippedSetMethod = ColorSizeVo.class.getDeclaredMethod("setActual"+size, Integer.class);
-//						Integer mapValue = value + (Integer)mapGetMethod.invoke(vo);
-//						mapSetMethod.invoke(vo, mapValue);
-//						mapShippedSetMethod.invoke(vo, mapValue);
-//						colorSizeMap.put(item.getColor(), vo);
 						this.printNormalCell(itemRow, 4 + countryIndex + j, value , commonStyle);
 					}else{
 						itemRow.createCell(4 + countryIndex + j).setCellStyle(commonStyle);
@@ -434,13 +427,35 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 				}
 			}
 			
-			this.printNormalCell(itemRow, 4 + countryIndex + sizes.size(), item.getPcsPerBox() , commonStyle);
-			if(mergeRowStart == -1){//只有非合并的单元格才赋值，否则会影响sum总数
-				this.printNormalCell(itemRow, 5 + countryIndex + sizes.size(), item.getBoxQty() , commonStyle);
+			//单行公式
+			String perBoxFormula = "SUM("
+					+ ExcelUtil.getColumnCharacter(4 + countryIndex)
+					+ (18 + i)
+					+":"
+					+ ExcelUtil.getColumnCharacter(3 + countryIndex + sizes.size())
+					+ (18 + i)
+					+")";
+			String boxFormula = "B" + (18 + i) + "-A" + (18 + i) + "+1";
+			String qtyFormula = ExcelUtil.getColumnCharacter(4 + countryIndex + sizes.size())
+					+ (18 + i)
+					+ "*"
+					+ ExcelUtil.getColumnCharacter(5 + countryIndex + sizes.size())
+					+ (18 + i);
+			//2015-06-23 改用公式
+			this.printFormulaCell(itemRow, 4 + countryIndex + sizes.size(), perBoxFormula, commonStyle);
+			if(mergeRowStart == -1){
+				this.printFormulaCell(itemRow, 5 + countryIndex + sizes.size(), boxFormula, commonStyle);
 			}else {
 				itemRow.createCell(5 + countryIndex + sizes.size()).setCellStyle(commonStyle);
 			}
-			this.printNormalCell(itemRow, 6 + countryIndex + sizes.size(), item.getPcsPerBox() * item.getBoxQty() , commonStyle);
+			this.printFormulaCell(itemRow, 6 + countryIndex + sizes.size(), qtyFormula, commonStyle);
+//			this.printNormalCell(itemRow, 4 + countryIndex + sizes.size(), item.getPcsPerBox() , commonStyle);
+//			if(mergeRowStart == -1){//只有非合并的单元格才赋值，否则会影响sum总数
+//				this.printNormalCell(itemRow, 5 + countryIndex + sizes.size(), item.getBoxQty() , commonStyle);
+//			}else {
+//				itemRow.createCell(5 + countryIndex + sizes.size()).setCellStyle(commonStyle);
+//			}
+//			this.printNormalCell(itemRow, 6 + countryIndex + sizes.size(), item.getPcsPerBox() * item.getBoxQty() , commonStyle);
 			
 			totalBoxFormula.add(ExcelUtil.getColumnCharacter(5 + countryIndex + sizes.size()) + (18 + i));
 			totalQtyFormula.add(ExcelUtil.getColumnCharacter(6 + countryIndex + sizes.size()) + (18 + i));
