@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -23,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.chinesedreamer.ipm.common.utils.format.MathUtil;
 import com.chinesedreamer.ipm.common.utils.office.ExcelUtil;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.datadictionary.constant.CpqDictionaryType;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.datadictionary.logic.CpqDictionaryLogic;
@@ -449,13 +449,6 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 				itemRow.createCell(5 + countryIndex + sizes.size()).setCellStyle(commonStyle);
 			}
 			this.printFormulaCell(itemRow, 6 + countryIndex + sizes.size(), qtyFormula, commonStyle);
-//			this.printNormalCell(itemRow, 4 + countryIndex + sizes.size(), item.getPcsPerBox() , commonStyle);
-//			if(mergeRowStart == -1){//只有非合并的单元格才赋值，否则会影响sum总数
-//				this.printNormalCell(itemRow, 5 + countryIndex + sizes.size(), item.getBoxQty() , commonStyle);
-//			}else {
-//				itemRow.createCell(5 + countryIndex + sizes.size()).setCellStyle(commonStyle);
-//			}
-//			this.printNormalCell(itemRow, 6 + countryIndex + sizes.size(), item.getPcsPerBox() * item.getBoxQty() , commonStyle);
 			
 			totalBoxFormula.add(ExcelUtil.getColumnCharacter(5 + countryIndex + sizes.size()) + (18 + i));
 			totalQtyFormula.add(ExcelUtil.getColumnCharacter(6 + countryIndex + sizes.size()) + (18 + i));
@@ -494,8 +487,6 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 			}
 		}
 		sheet.getRow(19 + items.size()).getCell(4 + countryIndex + sizes.size()).setCellValue("TOTAL");
-		//sheet.getRow(19 + items.size()).getCell(5 + countryIndex + sizes.size()).setCellValue(totalBox);
-		//sheet.getRow(19 + items.size()).getCell(6 + countryIndex + sizes.size()).setCellValue(totalQty);
 		this.printFormulaCell(sheet.getRow(19 + items.size()), 5 + countryIndex + sizes.size(), this.generateSumFormula(totalBoxFormula), commonStyle);
 		this.printFormulaCell(sheet.getRow(19 + items.size()), 6 + countryIndex + sizes.size(), this.generateSumFormula(totalQtyFormula), commonStyle);
 		
@@ -519,6 +510,20 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		}
 		
 		//打印color部分
+		//百分比格式
+		HSSFCellStyle percentCellStyle = workbook.createCellStyle();
+		percentCellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.00%"));
+		percentCellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		percentCellStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+		percentCellStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+		percentCellStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);
+		percentCellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);
+		percentCellStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		HSSFFont font = workbook.createFont();
+		font.setFontName("Arial");
+		font.setFontHeightInPoints((short)10);
+		percentCellStyle.setFont(font);
+		
 		List<String> colorOrderedTotalFormual = new ArrayList<String>();
 		List<String> colorShippedTotalFormual = new ArrayList<String>();
 		List<String> colorDiscrepancyTotalFormual = new ArrayList<String>();
@@ -577,8 +582,25 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 					Integer actualValue = (Integer)actualMethod.invoke(vo);
 					this.printNormalCell(colorOrderRow, 4 + countryIndex + j, orderedValue , commonStyle);
 					this.printNormalCell(shippedOrderRow, 4 + countryIndex + j, actualValue , commonStyle);
-					this.printNormalCell(discrepancyOrderRow, 4 + countryIndex + j, actualValue - orderedValue , commonStyle);
-					this.printNormalCell(percentOrderRow, 4  + countryIndex + j, MathUtil.percent(orderedValue, actualValue - orderedValue, null) , commonStyle);
+					//20150632 每行的discrepancy都是计算出来的
+					String tmpCharacter = ExcelUtil.getColumnCharacter(4 + countryIndex + j);
+					String discrepancyFormula = tmpCharacter 
+							+ (shippedOrderRow.getRowNum() + 1)
+							+ "-"
+							+ tmpCharacter
+							+ (colorOrderRow.getRowNum() + 1);
+					this.printFormulaCell(discrepancyOrderRow, 4 + countryIndex + j, discrepancyFormula, commonStyle);
+					String percentFormula = "IF("
+							+ tmpCharacter
+							+ (colorOrderRow.getRowNum() + 1)
+							+ "=0,0,"
+							+ tmpCharacter
+							+ (discrepancyOrderRow.getRowNum() + 1)
+							+ "/"
+							+ tmpCharacter
+							+ (colorOrderRow.getRowNum() + 1)
+							+ ")";
+					this.printFormulaCell(percentOrderRow, 4  + countryIndex + j, percentFormula, percentCellStyle);
 				}catch (Exception e) {
 					this.logger.error("{}",e);
 				}
