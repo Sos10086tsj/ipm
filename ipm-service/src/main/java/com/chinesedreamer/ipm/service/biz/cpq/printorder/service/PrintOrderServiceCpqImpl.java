@@ -1,10 +1,12 @@
 package com.chinesedreamer.ipm.service.biz.cpq.printorder.service;
 
+import java.awt.Rectangle;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -18,6 +20,10 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.util.PDFTextStripperByArea;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -102,86 +108,138 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		PdfReader pdfReader = this.pdfFactory.getPdfReader(PdfReaderType.BOXPDF);
 		IpmPdf pdf = pdfReader.read(filePath);
 		String content = pdf.getContent();
-		if (StringUtils.isNotEmpty(content)) {
-			//初始化已经存在的colour列表
-			this.initSuppportedColurs();
-			
-			boolean continueRead = false;//连读模式，多行
-			boolean itemBegin = false;//开始读item信息
-			
-			Map<String, String> datasource = new HashMap<String, String>();//order 数组
-			List<Map<String, String>> items = new ArrayList<Map<String,String>>();//item 数组
-			
-			StringReader sr = new StringReader(content);
-			BufferedReader br = new BufferedReader(sr);
-			String str = null;
-			StringBuffer buffer = new StringBuffer();
-			
-			//获取不同类型的size列表
-			List<CpqDictionary> sizeDicts = this.cpqDictionaryLogic.findByTypeAndProperty(CpqDictionaryType.CLOTHING_CATEGORY_SIZE, cpqFile.getClothingType().toString());
-			try {
-				while ((str = br.readLine()) != null) {
-					if (str.startsWith("ORDERNR")) {//表示一个新订单开始
-						datasource.put("orderNo", StringUtil.subString(str, "ORDERNR", true));
-					}else if (str.startsWith("STYLENR")) {
-						datasource.put("styleNo", StringUtil.subString(str, "STYLENR", true));
-					}else if (str.startsWith("MAKER")) {
-						continueRead = true;
-					}else if (str.startsWith("CUSTOMER")) {
-						datasource.put("maker", buffer.toString());
-						buffer.setLength(0);
-						buffer.append(str)
-						.append(" ");
-					}else if (str.startsWith("DESCRIPTION")) {
-						datasource.put("customer", buffer.toString());
-						buffer.setLength(0);
-						continueRead = false;
-					}else if (str.startsWith("USD")) {
-						datasource.put("price", StringUtil.subString(str, "USD", true));
-					}else if (continueRead) {
-						buffer.append(str)
-						.append(" ");
-					}
-					//order 部分读取结束，开始读取item
-					else if(str.startsWith("PRODUCTION ORDER")){
-						itemBegin = true;
-					}else if(str.startsWith("Signed by")){
-						itemBegin = false;
-						this.saveOrder(datasource, items, cpqFile, sizeDicts);//保存信息
-						datasource.clear();
-						items.clear();
-					}else if(itemBegin){
-						if(str.endsWith("TOTAL PIECES")){
-							String[] colors = str.split(" ");
-							for (String color : colors) {
-								if (StringUtils.isNotEmpty(color)) {
-									int index = color.indexOf("-");
-									if (index != -1) {
-										Map<String, String> item = new HashMap<String, String>();
-										item.put("color", color.trim().toUpperCase().substring(0, index));
-										items.add(item);
-									}
-								}
-							}
-						}else{
-							String sizeParam = this.getSizeParam(sizeDicts, str);
-							if(StringUtils.isNotEmpty(sizeParam)){
-								String[] sizeS = StringUtil.subString(str, sizeParam, true).split(" ");
-								for (int i = 0; i < this.getMinSize(items, sizeS); i++) {
-									String size = sizeS[i];
-									if (StringUtils.isNotEmpty(size)) {
-										Map<String, String> item = items.get(i);
-										item.put(this.formatSizeKey(sizeParam), size);
-									}
-								}
-							}
-						}
-					}
-				}
-			} catch (IOException e) {
-				this.logger.error("pdf parse exception.", e);
-			}
-		}
+		
+//		IpmPdf pdf = new IpmPdf();
+//
+//		PDDocument document = null;
+//		OutputStreamWriter out = null;
+//		try {
+//			document = PDDocument.load(filePath);
+//			out = new OutputStreamWriter(new FileOutputStream("I:\\test\\test.txt"),"UTF-8");
+//			
+//			List allPages = document.getDocumentCatalog().getAllPages();
+//			for (int i = 0; i < allPages.size(); i++) {
+//				PDPage page = (PDPage)allPages.get(i);
+//				PDRectangle pdr = page.findCropBox();
+//				Rectangle rec = new Rectangle();
+//				rec.setBounds(Math.round(pdr.getLowerLeftX()), 
+//						Math.round(pdr.getLowerLeftY()), 
+//						Math.round(pdr.getWidth()), 
+//						Math.round(pdr.getHeight()));
+//				System.out.println("Crobox:" + rec);
+//				PDFTextStripperByArea stripper = new PDFTextStripperByArea();
+//				stripper.addRegion("cropbox", rec);
+//				stripper.setSortByPosition(true);
+//				stripper.extractRegions(page);
+//				List regions = stripper.getRegions();
+//				for (int j = 0; j < regions.size(); j++) {
+//					String region = (String)regions.get(j);
+//					System.out.println("region:" + region);
+//					String text = stripper.getTextForRegion(region);
+//					System.out.println("text:" + text);
+//				}
+//			}
+//			
+//			return pdf;
+//		} catch (Exception e) {
+//			logger.error("pdf parse error", e);
+//			return pdf;
+//		} finally {
+//			if (null != out)
+//				try {
+//					out.close();
+//				} catch (IOException e) {
+//					logger.error("IOExeption:", e);
+//				}
+//			if (null != document)
+//				try {
+//					document.close();
+//				} catch (IOException e) {
+//					logger.error("IOExeption:", e);
+//				}
+//		}
+		
+		
+//		if (StringUtils.isNotEmpty(content)) {
+//			//初始化已经存在的colour列表
+//			this.initSuppportedColurs();
+//			
+//			boolean continueRead = false;//连读模式，多行
+//			boolean itemBegin = false;//开始读item信息
+//			
+//			Map<String, String> datasource = new HashMap<String, String>();//order 数组
+//			List<Map<String, String>> items = new ArrayList<Map<String,String>>();//item 数组
+//			
+//			StringReader sr = new StringReader(content);
+//			BufferedReader br = new BufferedReader(sr);
+//			String str = null;
+//			StringBuffer buffer = new StringBuffer();
+//			
+//			//获取不同类型的size列表
+//			List<CpqDictionary> sizeDicts = this.cpqDictionaryLogic.findByTypeAndProperty(CpqDictionaryType.CLOTHING_CATEGORY_SIZE, cpqFile.getClothingType().toString());
+//			try {
+//				while ((str = br.readLine()) != null) {
+//					if (str.startsWith("ORDERNR")) {//表示一个新订单开始
+//						datasource.put("orderNo", StringUtil.subString(str, "ORDERNR", true));
+//					}else if (str.startsWith("STYLENR")) {
+//						datasource.put("styleNo", StringUtil.subString(str, "STYLENR", true));
+//					}else if (str.startsWith("MAKER")) {
+//						continueRead = true;
+//					}else if (str.startsWith("CUSTOMER")) {
+//						datasource.put("maker", buffer.toString());
+//						buffer.setLength(0);
+//						buffer.append(str)
+//						.append(" ");
+//					}else if (str.startsWith("DESCRIPTION")) {
+//						datasource.put("customer", buffer.toString());
+//						buffer.setLength(0);
+//						continueRead = false;
+//					}else if (str.startsWith("USD")) {
+//						datasource.put("price", StringUtil.subString(str, "USD", true));
+//					}else if (continueRead) {
+//						buffer.append(str)
+//						.append(" ");
+//					}
+//					//order 部分读取结束，开始读取item
+//					else if(str.startsWith("PRODUCTION ORDER")){
+//						itemBegin = true;
+//					}else if(str.startsWith("Signed by")){
+//						itemBegin = false;
+//						this.saveOrder(datasource, items, cpqFile, sizeDicts);//保存信息
+//						datasource.clear();
+//						items.clear();
+//					}else if(itemBegin){
+//						if(str.endsWith("TOTAL PIECES")){
+//							String[] colors = str.split(" ");
+//							for (String color : colors) {
+//								if (StringUtils.isNotEmpty(color)) {
+//									int index = color.indexOf("-");
+//									if (index != -1) {
+//										Map<String, String> item = new HashMap<String, String>();
+//										item.put("color", color.trim().toUpperCase().substring(0, index));
+//										items.add(item);
+//									}
+//								}
+//							}
+//						}else{
+//							String sizeParam = this.getSizeParam(sizeDicts, str);
+//							if(StringUtils.isNotEmpty(sizeParam)){
+//								String[] sizeS = StringUtil.subString(str, sizeParam, true).split(" ");
+//								for (int i = 0; i < this.getMinSize(items, sizeS); i++) {
+//									String size = sizeS[i];
+//									if (StringUtils.isNotEmpty(size)) {
+//										Map<String, String> item = items.get(i);
+//										item.put(this.formatSizeKey(sizeParam), size);
+//									}
+//								}
+//							}
+//						}
+//					}
+//				}
+//			} catch (IOException e) {
+//				this.logger.error("pdf parse exception.", e);
+//			}
+//		}
 		this.logger.info("********** readPdf end ********");
 	}
 	
