@@ -2,7 +2,6 @@ package com.chinesedreamer.ipm.service.biz.cpq.printorder.service;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,7 +33,6 @@ import com.chinesedreamer.ipm.domain.biz.cpq.printorder.logic.CpqOrderLogic;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.manufacotry.model.CpqManufacotryOrderItem;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.model.CpqOrder;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.report.ColorSizeVo;
-import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.report.ColorSizeVoComparator;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.report.ManufactoryInfo;
 import com.chinesedreamer.ipm.service.biz.cpq.printorder.vo.report.TitleInfo;
 
@@ -527,7 +525,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		List<String> colorOrderedTotalFormual = new ArrayList<String>();
 		List<String> colorShippedTotalFormual = new ArrayList<String>();
 		List<String> colorDiscrepancyTotalFormual = new ArrayList<String>();
-		List<ColorSizeVo> vos = this.getColorSizes(colorSizeMap);
+		List<ColorSizeVo> vos = this.getColorSizes(colorSizeMap, items.get(0).getOrderNo(), items.get(0).getStyleNo());
 		for (int i = 0; i < vos.size(); i++) {
 			ColorSizeVo vo = vos.get(i);
 			List<String> tmpOrderedTotalFormual = new ArrayList<String>();
@@ -690,12 +688,18 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 	 * @param colorSizeMap
 	 * @return
 	 */
-	private List<ColorSizeVo> getColorSizes(Map<String, ColorSizeVo> colorSizeMap) {
+	private List<ColorSizeVo> getColorSizes(Map<String, ColorSizeVo> colorSizeMap, String orderNo, String styleNo) {
 		List<ColorSizeVo> vos = new ArrayList<ColorSizeVo>();
-		for (String key : colorSizeMap.keySet()) {
-			vos.add(colorSizeMap.get(key));
+		
+		CpqOrder order = this.cpqOrderLogic.findByOrderNoAndStyleNo(orderNo, styleNo);
+		if (null != order) {
+			List<CpqOrderItem> items = this.cpqOrderItemLogic.findByOrderId(order.getId());
+			for (CpqOrderItem item : items) {
+				if (colorSizeMap.keySet().contains(item.getColor())) {
+					vos.add(colorSizeMap.get(item.getColor()));
+				}
+			}
 		}
-		Collections.sort(vos, new ColorSizeVoComparator());
 		return vos;
 	}
 }
