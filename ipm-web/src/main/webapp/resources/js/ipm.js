@@ -1,21 +1,19 @@
 var ipm = {
-	extjs : {
-		progressBar : function(msg){
-			var progress = new Ext.LoadMask(Ext.getBody(),{
-				msg : msg,
-				removeMask : true
-			});
-			return progress;
-		},
+	progressBar : function(msg){
+		var progress = new Ext.LoadMask(Ext.getBody(),{
+			msg : msg,
+			removeMask : true
+		});
+		return progress;
+	},
 		
-		warningResult : function(title,msg){
-			Ext.Msg.show({
-				title : title,
-				msg : msg,
-				buttons : Ext.Msg.YES,
-				icon : Ext.Msg.WARNING
-			});
-		}
+	warningResult : function(title,msg){
+		Ext.Msg.show({
+			title : title,
+			msg : msg,
+			buttons : Ext.Msg.YES,
+			icon : Ext.Msg.WARNING
+		});
 	},
 	
 	init : function(){

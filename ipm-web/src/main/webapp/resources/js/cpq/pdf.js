@@ -52,16 +52,16 @@ ipm.cpq = {
                     					if(response.success){
                     						ipm.cpq.pdf.reloadStore(response.data.pdfId,response.data.clothingType);
                     					}else{
-                    						ipm.extjs.warningResult('提示','系统异常，请重试');
+                    						ipm.warningResult('提示','系统异常，请重试');
                     					}
                     				},
                     				failure : function(error){
-                    					ipm.extjs.warningResult('提示','系统异常，请重试');
+                    					ipm.warningResult('提示','系统异常，请重试');
                     				}
                 				});
             				}
         				}else{
-        					ipm.extjs.warningResult('提示','请先选择服装类型');
+        					ipm.warningResult('提示','请先选择服装类型');
         				}
         			}
         		}
@@ -75,7 +75,8 @@ ipm.cpq = {
             	clicksToEdit:2 ,
 		        listeners : {
 		        	edit : function( editor, context, eOpts){
-		        		var progress = ipm.extjs.progressBar('正在修改，请稍后...');
+		        		ipm.warningResult('操作提示','上传成功！');
+		        		var progress = ipm.progressBar('正在修改，请稍后...');
 		        		progress.show();
 		        		
 		        		var record = context.record;
@@ -89,8 +90,8 @@ ipm.cpq = {
 	            				sizeS:record.get('sizeS'),
 	            				sizeM:record.get('sizeM'),
 	            				sizeL:record.get('sizeL'),
-	            				sizeXL:record.get('sizeXl'),
-	            				sizeXXL:record.get('sizeXxl'),
+	            				sizeXl:record.get('sizeXl'),
+	            				sizeXxl:record.get('sizeXxl'),
 	            				sizeP:record.get('sizeP'),
 	            				size1:record.get('size1'),
 	            				size2:record.get('size2'),
@@ -101,22 +102,20 @@ ipm.cpq = {
 	            				size10:record.get('size10'),
 	            				size12:record.get('size12'),
 	            				size14:record.get('size14'),
-	            				size16:record.get('size16'),
-	            				tTL:record.get('ttl'),
-	            				totalAmount:record.get('totalAmount')
+	            				size16:record.get('size16')
 		        			},
 		        			success : function(response){
 		        				var result = Ext.decode(response.responseText);
 		        				progress.hide();
 		        				if(result.success){
-		        					ipm.extjs.warningResult('操作提示','保存成功！');
+		        					ipm.warningResult('操作提示','保存成功！');
 		        				}else{
-		        					ipm.extjs.warningResult('操作提示',result.errorMessage);
+		        					ipm.warningResult('操作提示',result.errorMessage);
 		        				}
 		        			},
 		        			failure : function(response, opts){
 		        				progress.hide();
-		        				ipm.extjs.warningResult('操作提示','网络异常，保存失败！');
+		        				ipm.warningResult('操作提示','网络异常，保存失败！');
 		        			}
 		        		});
 		        	}
@@ -128,26 +127,16 @@ ipm.cpq = {
 		        columns: [{
 		            header: 'order',
 		            dataIndex: 'order',
-		            width: 160,
-		            //flex: 1,
-		            editor: {
-		                // defaults to textfield if no xtype is supplied
-		                allowBlank: false
-		            }
+		            width: 160
+		            //flex: 1
 		        }, {
 		            header: 'style',
 		            dataIndex: 'style',
-		            width: 160,
-		            editor: {
-		                allowBlank: false
-		            }
+		            width: 160
 		        },  {
 		            header: 'colour',
 		            dataIndex: 'colour',
-		            width: 60,
-		            editor: {
-		                allowBlank: false
-		            }
+		            width: 60
 		        },{
 		            xtype: 'numbercolumn',
 		            header: 'Size S',
@@ -156,7 +145,7 @@ ipm.cpq = {
 		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
-		                allowBlank: false,
+		                allowBlank: true,
 		                minValue: 1,
 		                maxValue: 150000
 		            }
@@ -168,7 +157,7 @@ ipm.cpq = {
 		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
-		                allowBlank: false,
+		                allowBlank: true,
 		                minValue: 1,
 		                maxValue: 150000
 		            }
@@ -180,7 +169,7 @@ ipm.cpq = {
 		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
-		                allowBlank: false,
+		                allowBlank: true,
 		                minValue: 1,
 		                maxValue: 150000
 		            }
@@ -192,7 +181,7 @@ ipm.cpq = {
 		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
-		                allowBlank: false,
+		                allowBlank: true,
 		                minValue: 1,
 		                maxValue: 150000
 		            }
@@ -204,7 +193,7 @@ ipm.cpq = {
 		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
-		                allowBlank: false,
+		                allowBlank: true,
 		                minValue: 1,
 		                maxValue: 150000
 		            }
@@ -217,7 +206,7 @@ ipm.cpq = {
 		            width: 60,
 		            editor: {
 		                xtype: 'numberfield',
-		                allowBlank: false,
+		                allowBlank: true,
 		                minValue: 1,
 		                maxValue: 150000
 		            }
@@ -230,7 +219,7 @@ ipm.cpq = {
 		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
-		                allowBlank: false,
+		                allowBlank: true,
 		                minValue: 1,
 		                maxValue: 150000
 		            }
@@ -243,7 +232,7 @@ ipm.cpq = {
 		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
-		                allowBlank: false,
+		                allowBlank: true,
 		                minValue: 1,
 		                maxValue: 150000
 		            }
@@ -256,7 +245,7 @@ ipm.cpq = {
 		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
-		                allowBlank: false,
+		                allowBlank: true,
 		                minValue: 1,
 		                maxValue: 150000
 		            }
@@ -269,7 +258,7 @@ ipm.cpq = {
 		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
-		                allowBlank: false,
+		                allowBlank: true,
 		                minValue: 1,
 		                maxValue: 150000
 		            }
@@ -282,7 +271,7 @@ ipm.cpq = {
 		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
-		                allowBlank: false,
+		                allowBlank: true,
 		                minValue: 1,
 		                maxValue: 150000
 		            }
@@ -295,7 +284,7 @@ ipm.cpq = {
 		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
-		                allowBlank: false,
+		                allowBlank: true,
 		                minValue: 1,
 		                maxValue: 150000
 		            }
@@ -308,7 +297,7 @@ ipm.cpq = {
 		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
-		                allowBlank: false,
+		                allowBlank: true,
 		                minValue: 1,
 		                maxValue: 150000
 		            }
@@ -321,7 +310,7 @@ ipm.cpq = {
 		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
-		                allowBlank: false,
+		                allowBlank: true,
 		                minValue: 1,
 		                maxValue: 150000
 		            }
@@ -334,7 +323,7 @@ ipm.cpq = {
 		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
-		                allowBlank: false,
+		                allowBlank: true,
 		                minValue: 1,
 		                maxValue: 150000
 		            }
@@ -347,18 +336,18 @@ ipm.cpq = {
 		            width: 90,
 		            editor: {
 		                xtype: 'numberfield',
-		                allowBlank: false,
+		                allowBlank: true,
 		                minValue: 1,
 		                maxValue: 150000
 		            }
-		        },
-		        {
-		            xtype: 'numbercolumn',
-		            header: 'ttl',
-		            dataIndex: 'ttl',
-		            format:'0',
-		            width: 90
 		        }
+//		        {
+//		            xtype: 'numbercolumn',
+//		            header: 'ttl',
+//		            dataIndex: 'ttl',
+//		            format:'0',
+//		            width: 90
+//		        }
 //		        ,
 //		        {
 //		            xtype: 'numbercolumn',
@@ -400,9 +389,7 @@ ipm.cpq = {
 		                	'size10':'',
 		                	'size12':'',
 		                	'size14':'',
-		                	'size16':'',
-		                	'ttl':'',
-		                	'totalAmount':'0'
+		                	'size16':''
 		                });
 
 		                store.insert(0, r);
@@ -423,11 +410,39 @@ ipm.cpq = {
 		            disabled: true
 		        },
 		        "->",
+		        //增加一个修改指定order的按钮
+		        {
+		        	xtype: 'combo',
+		        	listConfig:{
+		        		emptyText:'未找到匹配值',  
+		        		loadingText: '正在查找...',
+             			maxHeight:180
+		        	},
+		        	minChars:3,
+             		queryDelay:200,
+             		name:'orderNo',
+             		fieldLabel:'订单号',
+             		displayField:'label',
+             		valueField:'value',
+             		queryMode:'remote',
+             		hideTrigger: true,
+             		typeAhead:true,
+             		forceSelection:true,
+             		store : ipm.cpq.pdf.store.pdfOrderStore(),
+             		listeners:{
+             			select:function(combo,record,opts) {
+             				var orderNo = record[0].get("value");
+             				var clothingType = record[0].get("clothingType");
+             				ipm.cpq.pdf.reloadStore(-1,clothingType,orderNo);
+             			}
+             		}
+		        },
+		        "->",
 		        {
         			xtype: 'combobox',
         			name: 'pdfId',
         			fieldLabel: '已经上传的pdf',
-        			width:550,
+        			width:350,
         			labelWidth:100,
     				store: ipm.cpq.pdf.store.uploadedPdf(),
     				queryMode: 'remote',
@@ -443,42 +458,52 @@ ipm.cpq = {
     				}
         		}
 		        ],
-		        plugins: [rowEditing]
-		        //,
-//		        listeners: {
+		        plugins: [rowEditing],
+		        listeners: {
 //		            'selectionchange': function(view, records) {
 //		                grid.down('#removePdfOrder').setDisabled(!records.length);
 //		            }
-//		        }
+		        	'beforeedit': function(editor, e) {
+       					if (e.colIdx === 0 && e.record.get('status') == 4){
+             				return false;
+         				}
+		        	}
+		        }
 		    });
 		},
 		
-		reloadStore : function(pdfId, clothingType){
+		reloadStore : function(pdfId, clothingType,orderNo){
 			var grid = ipm.cpq.pdf.grid;
 			var store = grid.store;
-			store.proxy.url = ctx + '/cpq/getPdfStore/' + pdfId;
+			var url = ctx + '/cpq/getPdfStore/' + pdfId;
+			var hasOrder = false;
+			if(orderNo && orderNo.length > 0){
+				url += '?orderNo=' + orderNo;
+				hasOrder = true;
+			}
+			store.proxy.url = url;
             //TODO 隐藏不需要的列 grid.columns[i].setVisible(false/true); grid.columns[i].hide()/show()
-			//1. 全部隐藏
-			for(var i = 3; i < 19 ; i++){
-				grid.columns[i].hide();
-			}
-			//2. 开发部分
-			if(clothingType == 'MALE'){//男 Size S,Size M,Size L,Size XL,Size XXL    3~7
-				for(var i = 3; i < 8 ; i++){
-					grid.columns[i].show();
+			if(!hasOrder){
+				//1. 全部隐藏
+				for(var i = 3; i < 19 ; i++){
+					grid.columns[i].hide();
 				}
-			}else if(clothingType == 'FEMALE'){//女 Size P.Size 1.Size 2.Size 3.Size 4
-				for(var i = 8; i < 13 ; i++){
-					grid.columns[i].show();
+				//2. 开发部分
+				if(clothingType == 'MALE'){//男 Size S,Size M,Size L,Size XL,Size XXL    3~7
+					for(var i = 3; i < 8 ; i++){
+						grid.columns[i].show();
+					}
+				}else if(clothingType == 'FEMALE'){//女 Size P.Size 1.Size 2.Size 3.Size 4
+					for(var i = 8; i < 13 ; i++){
+						grid.columns[i].show();
+					}
+				}else if(clothingType == 'BOY' || clothingType == 'GIRL'){//男童 Size 4,Size 6,Size 8,Size 10,Size 12,Size 14,Size 16
+					for(var i = 12; i < 19 ; i++){
+						grid.columns[i].show();
+					}
+					grid.columns[10].show();
 				}
-			}else if(clothingType == 'BOY' || clothingType == 'GIRL'){//男童 Size 4,Size 6,Size 8,Size 10,Size 12,Size 14,Size 16
-				for(var i = 12; i < 19 ; i++){
-					grid.columns[i].show();
-				}
-				grid.columns[10].show();
-			}else{
-				return;
-			}
+			}	
             store.reload();
 		}
 	}

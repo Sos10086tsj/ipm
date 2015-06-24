@@ -72,15 +72,15 @@ ipm.cpq = {
     									if(response.success){
                     						//ipm.cpq.excel.reloadStore(response.data.excelIds,response.data.clothingType);
     										uploadedExcelStore.reload();
-    										ipm.extjs.warningResult('操作提示','上传成功！');
+    										ipm.warningResult('操作提示','上传成功！');
                     					}else{
-                    						ipm.extjs.warningResult('提示','系统异常，请重试');
+                    						ipm.warningResult('提示','系统异常，请重试');
                     					}
     								}
     							});
     						}
     					}else{
-    						ipm.extjs.warningResult('提示','请先选择工厂和服装类型');
+    						ipm.warningResult('提示','请先选择工厂和服装类型');
     					}
     				}
     			}
@@ -94,7 +94,7 @@ ipm.cpq = {
             	clicksToEdit:2 ,
 		        listeners : {
 		        	edit : function( editor, context, eOpts){
-		        		var progress = ipm.extjs.progressBar('正在修改，请稍后...');
+		        		var progress = ipm.progressBar('正在修改，请稍后...');
 		        		progress.show();
 		        		
 		        		var record = context.record;
@@ -136,14 +136,14 @@ ipm.cpq = {
 		        				var response = Ext.decode(o.response.responseText);
 		        				if(result.success){
 		        					//ipm.cpq.pdf.reloadStore(response.data.excelIds,response.data.clothingType);
-		        					//ipm.extjs.warningResult('操作提示','上传成功！');
+		        					//ipm.warningResult('操作提示','上传成功！');
 		        				}else{
-		        					ipm.extjs.warningResult('操作提示',result.errorMessage);
+		        					ipm.warningResult('操作提示',result.errorMessage);
 		        				}
 		        			},
 		        			failure : function(response, opts){
 		        				progress.hide();
-		        				ipm.extjs.warningResult('操作提示','网络异常，保存失败！');
+		        				ipm.warningResult('操作提示','网络异常，保存失败！');
 		        			}
 		        		});
 		        	}
@@ -550,7 +550,7 @@ ipm.cpq = {
     							uploadedExcelStore.proxy.url = ctx + '/cpq/getUploadedExcelStore/?manufactory=' + manufactory;
     							uploadedExcelStore.reload();
     						}else{
-    							ipm.extjs.warningResult('提示','请先选择工厂');
+    							ipm.warningResult('提示','请先选择工厂');
     						}
    						}
     				}
@@ -575,7 +575,7 @@ ipm.cpq = {
     						if(manufactory && manufactory.length > 0){
     							ipm.cpq.excel.reloadStore(excelId,clothingType,manufactory);
     						}else{
-    							ipm.extjs.warningResult('提示','请先选择工厂');
+    							ipm.warningResult('提示','请先选择工厂');
     						}
    						}
     				}

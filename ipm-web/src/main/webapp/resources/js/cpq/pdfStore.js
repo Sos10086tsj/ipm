@@ -106,5 +106,32 @@ ipm.cpq.pdf.store = {
 			autoLoad : false
 		});
 		return pdfSelectStore;
+	},
+	
+	//order no store
+	pdfOrderStore : function(){
+		var model = Ext.define('pdfOrderModel', {
+	        extend: 'Ext.data.Model',
+	        fields: [
+	            'value',
+	            'label',
+	            'clothingType'
+	        ]
+		});
+		
+		var store = Ext.create('Ext.data.Store',{
+			model: model,
+			proxy : {
+				type: 'ajax',
+				url : ctx + '/cpq/getPdfOrders/',
+				method : 'get',
+				reader: {
+		             type: 'json',
+		             root : ''
+		         }
+			},
+			autoLoad : false
+		});
+		return store;
 	}
 };

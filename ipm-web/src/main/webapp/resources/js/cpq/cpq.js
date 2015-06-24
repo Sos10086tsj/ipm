@@ -1,4 +1,4 @@
-ipm = {
+ipm.cpqMenu = {
 	init : function(){
 		//初始化菜单
 		var menus = Ext.create('Ext.menu.Menu', {
@@ -9,19 +9,19 @@ ipm = {
         		{
         			text : '上传pdf',
         			handler : function(){  
-                    	ipm.menuBtnClick(ctx + '/cpq/pdf');
+                    	ipm.cpqMenu.menuBtnClick(ctx + '/cpq/pdf');
                 	} 
         		},
         		{
         			text : '上传excel',
         			handler : function(){  
-                    	ipm.menuBtnClick(ctx + '/cpq/excel');
+                    	ipm.cpqMenu.menuBtnClick(ctx + '/cpq/excel');
                 	} 
         		},
         		{
         			text : '打印报表',
         			handler : function(){  
-                    	ipm.menuBtnClick(ctx + '/cpq/report');
+                    	ipm.cpqMenu.menuBtnClick(ctx + '/cpq/report');
                 	} 
         		}
         	]
@@ -55,6 +55,6 @@ $(function(){
 	]);
 	Ext.onReady(function () {
 		Ext.QuickTips.init();
-		ipm.init();
+		ipm.cpqMenu.init();
 	});
 });

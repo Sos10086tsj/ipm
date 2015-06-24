@@ -64,7 +64,7 @@ ipm.cpq = {
 		            	handler: function() {
 		            		var orderType = Ext.getCmp('js_order_type').getValue();
 		            		if(!orderType || orderType.length <= 0){
-		                		ipm.extjs.warningResult('提示','请选择报表类型');
+		                		ipm.warningResult('提示','请选择报表类型');
 		                	}else{
 		                		ipm.cpq.rpt.reloadGrid(orderType);
 		                	}
@@ -80,7 +80,7 @@ ipm.cpq = {
 		                	var manufactory = Ext.getCmp('js_manufactory').getValue();
 		                	var selectRows = ipm.cpq.rpt.grid.getSelectionModel().getSelection();
 		                	if(selectRows.length <= 0){
-		                		ipm.extjs.warningResult('提示','请选择订单号');
+		                		ipm.warningResult('提示','请选择订单号');
 		                	}else{
 		                		var orderNos = "";
 		                		for(var i =0; i < selectRows.length; i ++){

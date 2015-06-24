@@ -19,4 +19,9 @@ public interface CpqOrderRepository extends IpmRepository<CpqOrder, Long>{
 	
 	@Query("SELECT distinct co.orderNo FROM CpqOrder co WHERE co.orderNo like :orderNo AND co.orderNoType in :orderTypes ORDER BY co.orderNo ASC ")
 	public List<String> findByOrderNoLikeAndOrderNoTypeInOrderByOrderNoAsc(@Param("orderNo")String orderNo,@Param("orderTypes")List<String> orderTypes);
+	
+	@Query("SELECT co FROM CpqOrder co WHERE co.orderNo like :orderNo ")
+	public List<CpqOrder> findByOrderNoLike(@Param("orderNo")String orderNo);
+	
+	public List<CpqOrder> findByOrderNo(String orderNo);
 }

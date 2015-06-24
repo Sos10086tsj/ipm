@@ -2,6 +2,7 @@ package com.chinesedreamer.ipm.web.cpq.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -69,8 +71,12 @@ public class CpqController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "getPdfStore/{pdfId}", method = RequestMethod.GET)
-	public List<PdfVo> getPdfStore(Model model,@PathVariable Long pdfId){
-		return this.facotry.getService(PrintOrderType.CPQ).getPdfItems(pdfId);
+	public List<PdfVo> getPdfStore(Model model,@PathVariable Long pdfId, HttpServletRequest request){
+		String orderNoParam = request.getParameter("orderNo");
+		if (StringUtils.isEmpty(orderNoParam)) {
+			return this.facotry.getService(PrintOrderType.CPQ).getPdfItems(pdfId);
+		}
+		return this.facotry.getService(PrintOrderType.CPQ).getPdfItems(orderNoParam.trim());
 	}
 	
 	/**
@@ -101,7 +107,27 @@ public class CpqController {
 	@ResponseBody
 	@RequestMapping(value = "updatePdfRow", method = RequestMethod.POST)
 	public ResponseVo updatePdfRow(HttpServletRequest request){
-		//TODO 
+		String order = request.getParameter("order");
+		String style = request.getParameter("style");
+		String colour = request.getParameter("colour");
+		String sizeS = request.getParameter("sizeS");
+		String sizeM = request.getParameter("sizeM");
+		String sizeL = request.getParameter("sizeL");
+		String sizeXl = request.getParameter("sizeXl");
+		String sizeXxl = request.getParameter("sizeXxl");
+		String sizeP = request.getParameter("sizeP");
+		String size1 = request.getParameter("size1");
+		String size2 = request.getParameter("size2");
+		String size3 = request.getParameter("size3");
+		String size4 = request.getParameter("size4");
+		String size6 = request.getParameter("size6");
+		String size8 = request.getParameter("size8");
+		String size10 = request.getParameter("size10");
+		String size12 = request.getParameter("size12");
+		String size14 = request.getParameter("size14");
+		String size16 = request.getParameter("size16");
+		this.facotry.getService(PrintOrderType.CPQ).updatePdfRow(order, style, colour, sizeS, sizeM, sizeL, sizeXl, sizeXxl, 
+				sizeP, size1, size2, size3, size4, size6, size8, size10, size12, size14, size16);
 		ResponseVo vo = new ResponseVo();
 		vo.setSuccess(Boolean.TRUE);
 		return vo;
@@ -133,6 +159,16 @@ public class CpqController {
 		rst.put("clothingType", cpqFile.getClothingType().toString());
 		vo.setData(rst);
 		return vo;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "getPdfOrders", method = RequestMethod.GET)
+	public List<FileSelectVo> getPdfOrders(HttpServletRequest request){
+		String orderNo = request.getParameter("query");
+		if (StringUtils.isEmpty(orderNo)) {
+			return new ArrayList<FileSelectVo>();
+		}
+		return this.facotry.getService(PrintOrderType.CPQ).getPdfOrders(orderNo.trim());
 	}
 	
 	/******************** excel 部分 *******************/

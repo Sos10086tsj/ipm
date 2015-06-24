@@ -32,6 +32,14 @@ public class CpqOrderLogicImpl extends IpmLogicImpl<CpqOrder, Long> implements C
 	public List<String> findOrdersByOrderNoLike(String orderNo,List<String> orderTypes) {
 		return this.repository.findByOrderNoLikeAndOrderNoTypeInOrderByOrderNoAsc(orderNo, orderTypes);
 	}
+	@Override
+	public List<CpqOrder> findByOrderNo(String orderNo) {
+		return this.repository.findByOrderNo(orderNo);
+	}
+	@Override
+	public List<CpqOrder> findByOrderNoLike(String orderNo) {
+		return this.repository.findByOrderNoLike("%" + orderNo + "%");
+	}
 
 
 }

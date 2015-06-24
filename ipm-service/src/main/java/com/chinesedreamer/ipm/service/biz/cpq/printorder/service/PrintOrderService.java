@@ -43,6 +43,13 @@ public interface PrintOrderService {
 	public List<PdfVo> getPdfItems(Long pdfId);
 	
 	/**
+	 * 获取指定order的item信息
+	 * @param orderNo
+	 * @return
+	 */
+	public List<PdfVo> getPdfItems(String orderNo);
+	
+	/**
 	 * 读取服装类型
 	 * @return
 	 */
@@ -86,4 +93,10 @@ public interface PrintOrderService {
 	 * @return
 	 */
 	public List<String> getOrderTypes(String colorType);
+	
+	public List<FileSelectVo> getPdfOrders(String orderNo);
+	
+	public void updatePdfRow(String order,String style,String colour,String sizeS,String sizeM,String sizeL,
+			String sizeXl,String sizeXxl,String sizeP,String size1,String size2,String size3,String size4,
+			String size6,String size8,String size10,String size12,String size14,String size16);
 }

@@ -1,13 +1,9 @@
 package com.chinesedreamer.ipm.service.biz.cpq.printorder.service;
 
-import java.awt.Rectangle;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,10 +16,6 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.util.PDFTextStripperByArea;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -35,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.chinesedreamer.ipm.common.constant.ConfigPropertiesConstant;
-import com.chinesedreamer.ipm.common.utils.format.StringUtil;
 import com.chinesedreamer.ipm.common.utils.io.PropertiesUtils;
 import com.chinesedreamer.ipm.common.utils.office.ExcelUtil;
 import com.chinesedreamer.ipm.domain.biz.cpq.file.constant.CpqFileClothingType;
@@ -984,6 +975,22 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		}
 		return vos;
 	}
+	
+	@Override
+	public List<PdfVo> getPdfItems(String orderNo){
+		List<PdfVo> vos = new ArrayList<PdfVo>();
+		
+		List<CpqOrder> orders = this.cpqOrderLogic.findByOrderNo(orderNo);
+		List<String> sizes = this.getClothingTypeSizes(this.cpqFileLogic.findOne(orders.get(0).getPdfId()).getClothingType().toString());
+		
+		for (CpqOrder order : orders) {
+			List<CpqOrderItem> orderItems = this.cpqOrderItemLogic.findByOrderId(order.getId());
+			for (CpqOrderItem orderItem : orderItems) {
+				vos.add(this.convert2PdfVo(order, orderItem,sizes));
+			}
+		}
+		return vos;
+	}
 
 	private PdfVo convert2PdfVo(CpqOrder order,CpqOrderItem orderItem,List<String> sizes) {
 		PdfVo vo = new PdfVo();
@@ -1198,5 +1205,45 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			}
 		}
 		return outputFile;
+	}
+
+	@Override
+	public List<FileSelectVo> getPdfOrders(String orderNo) {
+		List<FileSelectVo> vos = new ArrayList<FileSelectVo>();
+		Set<String> orderNos = new HashSet<String>();
+		List<CpqOrder> orders = this.cpqOrderLogic.findByOrderNoLike(orderNo);
+		for (CpqOrder order : orders) {
+			if (!orderNos.contains(order.getOrderNo())) {
+				vos.add(new FileSelectVo(order.getOrderNo(), order.getOrderNo(), this.cpqFileLogic.findOne(order.getPdfId()).getClothingType().toString()));
+			}
+		}
+		return vos;
+	}
+
+	@Override
+	public void updatePdfRow(String order, String style, String colour,
+			String sizeS, String sizeM, String sizeL, String sizeXl,
+			String sizeXxl, String sizeP, String size1, String size2,
+			String size3, String size4, String size6, String size8,
+			String size10, String size12, String size14, String size16) {
+		CpqOrder co = this.cpqOrderLogic.findByOrderNoAndStyleNo(order, style);
+		CpqOrderItem item = this.cpqOrderItemLogic.findByOrderIdAndColor(co.getId(), colour);
+		item.setSizeS(StringUtils.isEmpty(sizeS) ? null : Integer.parseInt(sizeS));
+		item.setSizeM(StringUtils.isEmpty(sizeM) ? null : Integer.parseInt(sizeM));
+		item.setSizeL(StringUtils.isEmpty(sizeL) ? null : Integer.parseInt(sizeL));
+		item.setSizeXl(StringUtils.isEmpty(sizeXl) ? null : Integer.parseInt(sizeXl));
+		item.setSizeXxl(StringUtils.isEmpty(sizeXxl) ? null : Integer.parseInt(sizeXxl));
+		item.setSizeP(StringUtils.isEmpty(sizeP) ? null : Integer.parseInt(sizeP));
+		item.setSize1(StringUtils.isEmpty(size1) ? null : Integer.parseInt(size1));
+		item.setSize2(StringUtils.isEmpty(size2) ? null : Integer.parseInt(size2));
+		item.setSize3(StringUtils.isEmpty(size3) ? null : Integer.parseInt(size3));
+		item.setSize4(StringUtils.isEmpty(size4) ? null : Integer.parseInt(size4));
+		item.setSize6(StringUtils.isEmpty(size6) ? null : Integer.parseInt(size6));
+		item.setSize8(StringUtils.isEmpty(size8) ? null : Integer.parseInt(size8));
+		item.setSize10(StringUtils.isEmpty(size10) ? null : Integer.parseInt(size10));
+		item.setSize12(StringUtils.isEmpty(size12) ? null : Integer.parseInt(size12));
+		item.setSize14(StringUtils.isEmpty(size14) ? null : Integer.parseInt(size14));
+		item.setSize16(StringUtils.isEmpty(size16) ? null : Integer.parseInt(size16));
+		this.cpqOrderItemLogic.save(item);
 	}
 }
