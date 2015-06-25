@@ -70,11 +70,13 @@ public class CpqExcelReadServiceImpl implements CpqExcelReadService{
 					//第一行：订单号、款号
 					Row orderRow = sheet.getRow(currentRow);
 					String orderNo = ExcelUtil.getCellStringValue(orderRow.getCell(2));//订单号
-					String styleNo = ExcelUtil.getCellStringValue(orderRow.getCell(12));//款号
+					
 					
 					//获取不同类型的size列表
 					List<CpqDictionary> sizeDicts = this.cpqDictionaryLogic.findByTypeAndProperty(CpqDictionaryType.CLOTHING_CATEGORY_SIZE, cpqFile.getClothingType().toString());
 					int sizes = sizeDicts.size();
+					
+					String styleNo = ExcelUtil.getCellStringValue(orderRow.getCell(2 + sizes + 5));//款号
 					
 					currentRow = this.getBoxTitleRow(sheet, currentRow);
 					if (-1 == currentRow) {//说明没有找到箱号的单元格
