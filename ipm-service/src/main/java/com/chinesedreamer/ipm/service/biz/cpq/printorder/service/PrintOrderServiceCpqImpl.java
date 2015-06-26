@@ -447,7 +447,17 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		//1. 读取香港、荷兰表中的所有 order no。 和 style no。
 		Set<PutianmuExcelOrders> peos = this.getPutiamuSheetOrders(sheets);
 		//2. 解对应的style no。 sheet
-		Workbook wb = sheets[0].getWorkbook();
+		if (peos.isEmpty()) {
+			logger.info("missing Putianmu config sheet, exit");
+			return items;
+		}
+		Workbook wb = null;
+		for (Sheet sheet : sheets) {
+			if (null != sheet) {
+				wb = sheet.getWorkbook();
+				break;
+			}
+		}
 		for (PutianmuExcelOrders peo : peos) {
 			String orderNo = peo.getOrderNo();
 			String styleNo = peo.getStyleNo();
