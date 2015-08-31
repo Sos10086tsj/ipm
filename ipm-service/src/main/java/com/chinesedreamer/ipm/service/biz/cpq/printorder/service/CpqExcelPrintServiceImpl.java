@@ -372,7 +372,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 			itemRow.setHeightInPoints(16.5f);
 			this.printNormalCell(itemRow, 0, item.getFromNo() , commonStyle);
 			this.printNormalCell(itemRow, 1, item.getToNo() , commonStyle);
-			this.printNormalCell(itemRow, 2, item.getStyleNo() , commonStyle);
+			this.printNormalCell(itemRow, 2, this.getFormatStyleNo(item) , commonStyle);
 			if (hasCountry) {
 				List<CpqDictionary> countries = this.cpqDictionaryLogic.findByTypeAndProperty(CpqDictionaryType.ORDER_COUNTRY, item.getOrderNoType());
 				String countryCellValue = "";
@@ -701,5 +701,19 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 			}
 		}
 		return vos;
+	}
+	
+	private String getFormatStyleNo(CpqManufacotryOrderItem item) {
+		String styleNo = item.getStyleNo();
+		int index = styleNo.indexOf("/");
+		if (index == -1) {//style 不包含order信息
+			String orderNo = item.getOrderNo();
+			int index2 = orderNo.indexOf("/");
+			if (index2 != -1){
+				orderNo = orderNo.substring(0, index2);
+			}
+			styleNo = styleNo + "/" + orderNo;
+		}
+		return styleNo;
 	}
 }
