@@ -27,6 +27,12 @@ public @Getter @Setter class ColorSizeVo {
 	private Integer size12 = 0;
 	private Integer size14 = 0;
 	private Integer size16 = 0;
+	private Integer sizeUNI1 = 0;
+	private Integer sizeUNI2 = 0;
+	private Integer sizeUNI3 = 0;
+	private Integer sizeUNI4 = 0;
+	private Integer sizeUNI5 = 0;
+	private Integer sizeUNI6 = 0;
 	
 	private Integer actualSizeS = 0;
 	private Integer actualSizeM = 0;
@@ -44,6 +50,12 @@ public @Getter @Setter class ColorSizeVo {
 	private Integer actualSize12 = 0;
 	private Integer actualSize14 = 0;
 	private Integer actualSize16 = 0;
+	private Integer actualSizeUNI1 = 0;
+	private Integer actualSizeUNI2 = 0;
+	private Integer actualSizeUNI3 = 0;
+	private Integer actualSizeUNI4 = 0;
+	private Integer actualSizeUNI5 = 0;
+	private Integer actualSizeUNI6 = 0;
 	@Override
 	public String toString() {
 		return "ColorSizeVo [color=" + color + ", sizeS=" + sizeS + ", sizeM="

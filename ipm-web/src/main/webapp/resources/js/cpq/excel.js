@@ -704,7 +704,7 @@ ipm.cpq = {
 					grid.columns[i].show();
 				}
 				grid.columns[12].show();
-			}else if(clothingType == 'FAMIY'){//亲子  Size UNI1, Size UNI2, Size UNI3,Size UNI4,Size UNI5,Size UNI6
+			}else if(clothingType == 'FAMILY'){//亲子  Size UNI1, Size UNI2, Size UNI3,Size UNI4,Size UNI5,Size UNI6
 				for(var i = 21; i < 21 + 6 ; i++){
 					grid.columns[i].show();
 				}

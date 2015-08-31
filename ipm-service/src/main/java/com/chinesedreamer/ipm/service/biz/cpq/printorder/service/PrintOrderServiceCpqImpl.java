@@ -177,6 +177,8 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 						datasource.put("orderNo", StringUtil.subString(str, "ORDERNR", true));
 					}else if (str.startsWith("STYLENR")) {
 						datasource.put("styleNo", StringUtil.subString(str, "STYLENR", true));
+					}else if (str.startsWith("NEW STYLE")) {//NEW STYLE  128601
+						datasource.put("styleNo", StringUtil.subString(str, "NEW STYLE", true));
 					}else if (str.startsWith("MAKER")) {
 						continueRead = true;
 					}else if (str.startsWith("CUSTOMER")) {
@@ -819,6 +821,9 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 					int sizes = sizeDicts.size();
 					
 					String styleNo = ExcelUtil.getCellStringValue(row1.getCell(2 + sizes + 5));//款号
+					if (styleNo.endsWith(".0")) {
+						styleNo = styleNo.substring(0, styleNo.length() - 2);
+					}
 					
 					//第二行：国家、备注号
 					startRow++;

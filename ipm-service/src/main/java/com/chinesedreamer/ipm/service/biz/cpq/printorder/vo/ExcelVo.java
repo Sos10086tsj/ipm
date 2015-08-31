@@ -31,6 +31,12 @@ public @Getter @Setter class ExcelVo {
 	private Integer size12;
 	private Integer size14;
 	private Integer size16;
+	private Integer sizeUNI1;
+	private Integer sizeUNI2;
+	private Integer sizeUNI3;
+	private Integer sizeUNI4;
+	private Integer sizeUNI5;
+	private Integer sizeUNI6;
 	private Integer boxQty;
 	private Integer pcs;
 	private String remark;
