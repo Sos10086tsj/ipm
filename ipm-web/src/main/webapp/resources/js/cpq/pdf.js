@@ -102,7 +102,13 @@ ipm.cpq = {
 	            				size10:record.get('size10'),
 	            				size12:record.get('size12'),
 	            				size14:record.get('size14'),
-	            				size16:record.get('size16')
+	            				size16:record.get('size16'),
+	            				size16:record.get('sizeUNI1'),
+	            				size16:record.get('sizeUNI2'),
+	            				size16:record.get('sizeUNI3'),
+	            				size16:record.get('sizeUNI4'),
+	            				size16:record.get('sizeUNI5'),
+	            				size16:record.get('sizeUNI6')
 		        			},
 		        			success : function(response){
 		        				var result = Ext.decode(response.responseText);
@@ -340,6 +346,84 @@ ipm.cpq = {
 		                minValue: 1,
 		                maxValue: 150000
 		            }
+		        },
+		        {
+		            xtype: 'numbercolumn',
+		            header: 'Size UNI1',
+		            dataIndex: 'sizeUNI1',
+		            format:'0',
+		            width: 90,
+		            editor: {
+		                xtype: 'numberfield',
+		                allowBlank: true,
+		                minValue: 1,
+		                maxValue: 150000
+		            }
+		        },
+		        {
+		            xtype: 'numbercolumn',
+		            header: 'Size UNI2',
+		            dataIndex: 'sizeUNI2',
+		            format:'0',
+		            width: 90,
+		            editor: {
+		                xtype: 'numberfield',
+		                allowBlank: true,
+		                minValue: 1,
+		                maxValue: 150000
+		            }
+		        },
+		        {
+		            xtype: 'numbercolumn',
+		            header: 'Size UNI3',
+		            dataIndex: 'sizeUNI3',
+		            format:'0',
+		            width: 90,
+		            editor: {
+		                xtype: 'numberfield',
+		                allowBlank: true,
+		                minValue: 1,
+		                maxValue: 150000
+		            }
+		        },
+		        {
+		            xtype: 'numbercolumn',
+		            header: 'Size UNI4',
+		            dataIndex: 'sizeUNI4',
+		            format:'0',
+		            width: 90,
+		            editor: {
+		                xtype: 'numberfield',
+		                allowBlank: true,
+		                minValue: 1,
+		                maxValue: 150000
+		            }
+		        },
+		        {
+		            xtype: 'numbercolumn',
+		            header: 'Size UNI5',
+		            dataIndex: 'sizeUNI5',
+		            format:'0',
+		            width: 90,
+		            editor: {
+		                xtype: 'numberfield',
+		                allowBlank: true,
+		                minValue: 1,
+		                maxValue: 150000
+		            }
+		        },
+		        {
+		            xtype: 'numbercolumn',
+		            header: 'Size UNI6',
+		            dataIndex: 'sizeUNI6',
+		            format:'0',
+		            width: 90,
+		            editor: {
+		                xtype: 'numberfield',
+		                allowBlank: true,
+		                minValue: 1,
+		                maxValue: 150000
+		            }
 		        }
 //		        {
 //		            xtype: 'numbercolumn',
@@ -389,7 +473,13 @@ ipm.cpq = {
 		                	'size10':'',
 		                	'size12':'',
 		                	'size14':'',
-		                	'size16':''
+		                	'size16':'',
+		                	'sizeUNI1':'',
+		                	'sizeUNI2':'',
+		                	'sizeUNI3':'',
+		                	'sizeUNI4':'',
+		                	'sizeUNI5':'',
+		                	'sizeUNI6':''
 		                });
 
 		                store.insert(0, r);
@@ -485,7 +575,7 @@ ipm.cpq = {
             //TODO 隐藏不需要的列 grid.columns[i].setVisible(false/true); grid.columns[i].hide()/show()
 			if(!hasOrder){
 				//1. 全部隐藏
-				for(var i = 3; i < 19 ; i++){
+				for(var i = 3; i < 19 + 6 ; i++){
 					grid.columns[i].hide();
 				}
 				//2. 开发部分
@@ -502,6 +592,10 @@ ipm.cpq = {
 						grid.columns[i].show();
 					}
 					grid.columns[10].show();
+				}else if(clothingType == 'FAMIY'){//亲子  Size UNI1, Size UNI2, Size UNI3,Size UNI4,Size UNI5,Size UNI6
+					for(var i = 19; i < 19 + 6 ; i++){
+						grid.columns[i].show();
+					}
 				}
 			}	
             store.reload();

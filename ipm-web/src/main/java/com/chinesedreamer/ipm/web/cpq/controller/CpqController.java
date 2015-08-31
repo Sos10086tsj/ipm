@@ -126,8 +126,15 @@ public class CpqController {
 		String size12 = request.getParameter("size12");
 		String size14 = request.getParameter("size14");
 		String size16 = request.getParameter("size16");
+		String sizeUNI1 = request.getParameter("sizeUNI1");
+		String sizeUNI2 = request.getParameter("sizeUNI2");
+		String sizeUNI3 = request.getParameter("sizeUNI3");
+		String sizeUNI4 = request.getParameter("sizeUNI4");
+		String sizeUNI5 = request.getParameter("sizeUNI5");
+		String sizeUNI6 = request.getParameter("sizeUNI6");
 		this.facotry.getService(PrintOrderType.CPQ).updatePdfRow(order, style, colour, sizeS, sizeM, sizeL, sizeXl, sizeXxl, 
-				sizeP, size1, size2, size3, size4, size6, size8, size10, size12, size14, size16);
+				sizeP, size1, size2, size3, size4, size6, size8, size10, size12, size14, size16,
+				sizeUNI1,sizeUNI2,sizeUNI3,sizeUNI4,sizeUNI5,sizeUNI6);
 		ResponseVo vo = new ResponseVo();
 		vo.setSuccess(Boolean.TRUE);
 		return vo;

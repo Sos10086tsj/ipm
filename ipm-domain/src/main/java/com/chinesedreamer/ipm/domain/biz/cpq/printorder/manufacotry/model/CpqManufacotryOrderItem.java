@@ -90,6 +90,24 @@ public @Getter @Setter class CpqManufacotryOrderItem extends IpmVersionEntity<Lo
 	@Column(name = "size_16")
 	private Integer size16;
 	
+	@Column(name = "size_uni_1")
+	private Integer sizeUNI1;
+	
+	@Column(name = "size_uni_2")
+	private Integer sizeUNI2;
+	
+	@Column(name = "size_uni_3")
+	private Integer sizeUNI3;
+	
+	@Column(name = "size_uni_4")
+	private Integer sizeUNI4;
+	
+	@Column(name = "size_uni_5")
+	private Integer sizeUNI5;
+	
+	@Column(name = "size_uni_6")
+	private Integer sizeUNI6;
+	
 	@Column(name = "box_qty")
 	private Integer boxQty;//箱数
 	

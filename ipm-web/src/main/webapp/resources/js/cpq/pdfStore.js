@@ -22,6 +22,12 @@ ipm.cpq.pdf.store = {
 	            'size12',
 	            'size14',
 	            'size16',
+	            'sizeUNI1',
+	            'sizeUNI2',
+	            'sizeUNI3',
+	            'sizeUNI4',
+	            'sizeUNI5',
+	            'sizeUNI6',
 	            'ttl',
 	            'totalAmount'
 	        ]

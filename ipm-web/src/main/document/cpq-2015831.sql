@@ -42,7 +42,7 @@ insert into ipm.ipm_biz_cpq_data_dictionary(property,value,type) select '050','0
 insert into ipm.ipm_biz_cpq_data_dictionary(property,value,type) select '11','11',1 from dual where not exists (select 1 from ipm.ipm_biz_cpq_data_dictionary where property = '11' and type = 1);
 insert into ipm.ipm_biz_cpq_data_dictionary(property,value,type) select '58','58',1 from dual where not exists (select 1 from ipm.ipm_biz_cpq_data_dictionary where property = '58' and type = 1);
 
---亲子装配置
+-- 亲子装配置
 insert into ipm.ipm_biz_cpq_data_dictionary(property,value,type) 
 select 'FAMILY','亲子装',2 from dual where not exists (
 select 1 from ipm.ipm_biz_cpq_data_dictionary where property = 'FAMILY' and type = 2);
@@ -77,3 +77,20 @@ insert into ipm.ipm_biz_cpq_data_dictionary(property,value,type,seq)
 select 'FAMILY','Size UNI-6',3,6 from dual where not exists (
 select 1 from ipm.ipm_biz_cpq_data_dictionary where property = 'FAMILY' 
 and type = 3 and value='Size UNI-6');
+
+-- 基础size增加
+ALTER TABLE `ipm`.`ipm_biz_cpq_print_order_item` 
+ADD COLUMN `size_uni_1` INT NULL AFTER `size_16`,
+ADD COLUMN `size_uni_2` INT NULL AFTER `size_uni_1`,
+ADD COLUMN `size_uni_3` INT NULL AFTER `size_uni_2`,
+ADD COLUMN `size_uni_4` INT NULL AFTER `size_uni_3`,
+ADD COLUMN `size_uni_5` INT NULL AFTER `size_uni_4`,
+ADD COLUMN `size_uni_6` INT NULL AFTER `size_uni_5`;
+
+ALTER TABLE `ipm`.`ipm_biz_cpq_manufactory_order_item` 
+ADD COLUMN `size_uni_1` INT NULL AFTER `size_16`,
+ADD COLUMN `size_uni_2` INT NULL AFTER `size_uni_1`,
+ADD COLUMN `size_uni_3` INT NULL AFTER `size_uni_2`,
+ADD COLUMN `size_uni_4` INT NULL AFTER `size_uni_3`,
+ADD COLUMN `size_uni_5` INT NULL AFTER `size_uni_4`,
+ADD COLUMN `size_uni_6` INT NULL AFTER `size_uni_5`;

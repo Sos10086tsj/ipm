@@ -253,7 +253,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 	}
 	
 	private String formatSizeKey(String sizeParam) {
-		sizeParam = sizeParam.replace(" ", "");//去空格
+		sizeParam = sizeParam.replace(" ", "").replace("-", "");//去空格
 		//Size XL, Size XXL 单独处理
 		if ("SizeXL".equals(sizeParam)) {
 			sizeParam = "SizeXl";
@@ -1241,7 +1241,8 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			String sizeS, String sizeM, String sizeL, String sizeXl,
 			String sizeXxl, String sizeP, String size1, String size2,
 			String size3, String size4, String size6, String size8,
-			String size10, String size12, String size14, String size16) {
+			String size10, String size12, String size14, String size16,
+			String sizeUNI1,String sizeUNI2,String sizeUNI3,String sizeUNI4,String sizeUNI5,String sizeUNI6) {
 		CpqOrder co = this.cpqOrderLogic.findByOrderNoAndStyleNo(order, style);
 		CpqOrderItem item = this.cpqOrderItemLogic.findByOrderIdAndColor(co.getId(), colour);
 		item.setSizeS(StringUtils.isEmpty(sizeS) ? null : Integer.parseInt(sizeS));
@@ -1260,6 +1261,12 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 		item.setSize12(StringUtils.isEmpty(size12) ? null : Integer.parseInt(size12));
 		item.setSize14(StringUtils.isEmpty(size14) ? null : Integer.parseInt(size14));
 		item.setSize16(StringUtils.isEmpty(size16) ? null : Integer.parseInt(size16));
+		item.setSizeUNI1(StringUtils.isEmpty(sizeUNI1) ? null : Integer.parseInt(sizeUNI1));
+		item.setSizeUNI2(StringUtils.isEmpty(sizeUNI2) ? null : Integer.parseInt(sizeUNI2));
+		item.setSizeUNI3(StringUtils.isEmpty(sizeUNI3) ? null : Integer.parseInt(sizeUNI3));
+		item.setSizeUNI4(StringUtils.isEmpty(sizeUNI4) ? null : Integer.parseInt(sizeUNI4));
+		item.setSizeUNI5(StringUtils.isEmpty(sizeUNI5) ? null : Integer.parseInt(sizeUNI5));
+		item.setSizeUNI6(StringUtils.isEmpty(sizeUNI6) ? null : Integer.parseInt(sizeUNI6));
 		this.cpqOrderItemLogic.save(item);
 	}
 }

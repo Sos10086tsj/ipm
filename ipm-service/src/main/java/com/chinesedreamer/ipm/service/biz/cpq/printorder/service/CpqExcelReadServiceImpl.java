@@ -272,7 +272,7 @@ public class CpqExcelReadServiceImpl implements CpqExcelReadService{
 	}
 	
 	private String formatSizeKey(String sizeParam) {
-		sizeParam = sizeParam.replace(" ", "");//去空格
+		sizeParam = sizeParam.replace(" ", "").replace("-", "");//去空格
 		//Size XL, Size XXL 单独处理
 		if ("SizeXL".equals(sizeParam)) {
 			sizeParam = "SizeXl";

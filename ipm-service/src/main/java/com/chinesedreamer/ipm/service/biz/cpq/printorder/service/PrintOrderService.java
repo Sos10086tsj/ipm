@@ -98,5 +98,6 @@ public interface PrintOrderService {
 	
 	public void updatePdfRow(String order,String style,String colour,String sizeS,String sizeM,String sizeL,
 			String sizeXl,String sizeXxl,String sizeP,String size1,String size2,String size3,String size4,
-			String size6,String size8,String size10,String size12,String size14,String size16);
+			String size6,String size8,String size10,String size12,String size14,String size16,
+			String sizeUNI1,String sizeUNI2,String sizeUNI3,String sizeUNI4,String sizeUNI5,String sizeUNI6);
 }
