@@ -756,6 +756,9 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 					}
 					String orderNo = ExcelUtil.getCellStringValue(orderCell);
 					String styleNo = ExcelUtil.getCellStringValue(styleCell);
+					if (styleNo.endsWith(".0")) {
+						styleNo = styleNo.substring(0, styleNo.length() - 2);
+					}
 					if (StringUtils.isEmpty(orderNo) || StringUtils.isEmpty(styleNo) || orderNo.contains("要求")) {
 						continue;
 					}

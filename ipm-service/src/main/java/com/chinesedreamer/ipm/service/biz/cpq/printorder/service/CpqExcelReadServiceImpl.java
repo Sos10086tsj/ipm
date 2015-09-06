@@ -77,6 +77,9 @@ public class CpqExcelReadServiceImpl implements CpqExcelReadService{
 					int sizes = sizeDicts.size();
 					
 					String styleNo = ExcelUtil.getCellStringValue(orderRow.getCell(2 + sizes + 5));//款号
+					if (styleNo.endsWith(".0")) {
+						styleNo = styleNo.substring(0, styleNo.length() - 2);
+					}
 					
 					currentRow = this.getBoxTitleRow(sheet, currentRow);
 					if (-1 == currentRow) {//说明没有找到箱号的单元格
