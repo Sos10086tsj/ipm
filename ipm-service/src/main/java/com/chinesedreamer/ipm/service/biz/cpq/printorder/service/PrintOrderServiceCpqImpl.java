@@ -576,6 +576,14 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 						if (null != toNo) {
 							tmpToNo = toNo.intValue();
 						}
+						logger.info(">>>>>>>>>>>>>>orderNoCellValue:" + orderNoCellValue
+								+ "styleNo:" +styleNo
+								+ "tmpColor:" +tmpColor
+								+ "tmpFromNo:" +tmpFromNo
+								+ "tmpToNo:" +tmpToNo
+								+ "cpqFile.getOwner():" +cpqFile.getOwner()
+								);
+						
 						CpqManufacotryOrderItem saveItem = 
 								this.cpqManufacotryOrderItemLogic
 								.findByOrderNoAndStyleNoAndColorAndFromNoAndToNoAndOwner(orderNoCellValue, styleNo, tmpColor, tmpFromNo, tmpToNo, cpqFile.getOwner());
