@@ -466,7 +466,15 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			String sheetName = this.getPutianmuSheetNameByStyleNo(styleNo);
 			Sheet sheet = wb.getSheet(sheetName);
 			if (null == sheet) {
-				continue;
+				//1605-12.51309/  读取.和/之间的数字
+				int index_1 = orderNo.indexOf(".");
+				int index_2 = orderNo.indexOf("/");
+				if (-1 != index_1 && -1 != index_2) {
+					sheet = wb.getSheet(orderNo.substring(index_1 + 1, index_2));
+				}
+				if (null == sheet) {
+					continue;
+				}
 			}
 			//2.1	获取对应style no，箱数、每箱件数、体积、毛重、净重
 			int rows = sheet.getLastRowNum();
@@ -756,11 +764,12 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 					}
 					String orderNo = ExcelUtil.getCellStringValue(orderCell);
 					String styleNo = ExcelUtil.getCellStringValue(styleCell);
-					if (styleNo.endsWith(".0")) {
-						styleNo = styleNo.substring(0, styleNo.length() - 2);
-					}
+					
 					if (StringUtils.isEmpty(orderNo) || StringUtils.isEmpty(styleNo) || orderNo.contains("要求")) {
 						continue;
+					}
+					if (styleNo.endsWith(".0")) {
+						styleNo = styleNo.substring(0, styleNo.length() - 2);
 					}
 					if (!exsits.contains(orderNo + "@@@@@@@@@@" + styleNo)) {
 						peos.add(new PutianmuExcelOrders(orderNo, styleNo));
