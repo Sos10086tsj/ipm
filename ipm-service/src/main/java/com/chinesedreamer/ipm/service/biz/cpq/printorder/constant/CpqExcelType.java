@@ -1,7 +1,5 @@
 package com.chinesedreamer.ipm.service.biz.cpq.printorder.constant;
 
-import lombok.Getter;
-
 /**
  * Description: 
  * @author Paris
@@ -11,9 +9,15 @@ import lombok.Getter;
 public enum CpqExcelType {
 	JIANAN("佳楠"),PUTIANMU("普天姆");
 	
-	private final @Getter String name;
+	private final String name;
 	
 	private CpqExcelType(String name){
 		this.name = name;
 	}
+
+	public String getName() {
+		return name;
+	}
+	
+	
 }

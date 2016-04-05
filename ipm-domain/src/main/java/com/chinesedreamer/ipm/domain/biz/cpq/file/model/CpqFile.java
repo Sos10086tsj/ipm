@@ -13,9 +13,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.chinesedreamer.ipm.domain.base.model.IpmEntity;
@@ -26,7 +23,7 @@ import com.chinesedreamer.ipm.domain.supp.attachment.model.Attachment;
 
 @Entity
 @Table(name = "ipm_biz_cpq_file")
-public @Getter @Setter class CpqFile extends IpmEntity<Long>{
+public class CpqFile extends IpmEntity<Long>{
 
 	/**
 	 * 
@@ -63,4 +60,78 @@ public @Getter @Setter class CpqFile extends IpmEntity<Long>{
 	
 	@OneToMany(fetch = FetchType.LAZY,mappedBy = "pdf")
 	private List<CpqOrder> orders;
+
+	public CpqFileType getType() {
+		return type;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public Long getAttachRefId() {
+		return attachRefId;
+	}
+
+	public Date getUploadDate() {
+		return uploadDate;
+	}
+
+	public CpqFileClothingType getClothingType() {
+		return clothingType;
+	}
+
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public Attachment getAttachment() {
+		return attachment;
+	}
+
+	public List<CpqOrder> getOrders() {
+		return orders;
+	}
+
+	public void setType(CpqFileType type) {
+		this.type = type;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public void setAttachRefId(Long attachRefId) {
+		this.attachRefId = attachRefId;
+	}
+
+	public void setUploadDate(Date uploadDate) {
+		this.uploadDate = uploadDate;
+	}
+
+	public void setClothingType(CpqFileClothingType clothingType) {
+		this.clothingType = clothingType;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+
+	public void setAttachment(Attachment attachment) {
+		this.attachment = attachment;
+	}
+
+	public void setOrders(List<CpqOrder> orders) {
+		this.orders = orders;
+	}
+	
+	
 }

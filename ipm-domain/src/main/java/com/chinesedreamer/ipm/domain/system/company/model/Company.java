@@ -10,9 +10,6 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.chinesedreamer.ipm.domain.base.model.IpmVersionEntity;
@@ -27,7 +24,7 @@ import com.chinesedreamer.ipm.domain.system.company.info.model.CompanyInfo;
  */
 @Entity
 @Table(name = "ipm_sys_customer")
-public @Getter @Setter class Company extends IpmVersionEntity<Long> {
+public class Company extends IpmVersionEntity<Long> {
 
 	/**
 	 * 
@@ -69,4 +66,55 @@ public @Getter @Setter class Company extends IpmVersionEntity<Long> {
 	/** 外键 **/
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "company")
 	private CompanyInfo companyInfo;
+
+	public String getCode() {
+		return code;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public CompanyStatus getStatus() {
+		return status;
+	}
+
+	public Integer getVip() {
+		return vip;
+	}
+
+	public Date getRegisterDate() {
+		return registerDate;
+	}
+
+	public CompanyInfo getCompanyInfo() {
+		return companyInfo;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setStatus(CompanyStatus status) {
+		this.status = status;
+	}
+
+	public void setVip(Integer vip) {
+		this.vip = vip;
+	}
+
+	public void setRegisterDate(Date registerDate) {
+		this.registerDate = registerDate;
+	}
+
+	public void setCompanyInfo(CompanyInfo companyInfo) {
+		this.companyInfo = companyInfo;
+	}
+	
+	
+	
 }

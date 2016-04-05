@@ -1,19 +1,44 @@
 package com.chinesedreamer.ipm.service.biz.cpq.printorder.service;
 
-import javax.annotation.Resource;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.Writer;
+import java.util.List;
+import java.util.Map;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.pdmodel.common.PDStream;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDFontDescriptor;
+import org.apache.pdfbox.pdmodel.font.PDFontDescriptorDictionary;
+import org.apache.pdfbox.util.PDFText2HTML;
 import org.junit.Test;
-import org.springframework.test.annotation.Rollback;
 
-import com.chinesedreamer.ipm.common.base.SpringTest;
+public class PrintOrderServiceCpqImplTest {
 
-public class PrintOrderServiceCpqImplTest extends SpringTest{
-	@Resource
-	private PrintOrderFacotry factory;
 	@Test
-	@Rollback(false)
 	public void testReadPdf() {
-		//this.factory.getService(PrintOrderType.CPQ).readPdf("F:/downloads/15年上半年大季箱单/出货计划总表�NGB 1504 PO.pdf");
+		File file = new File("C:/Users/Paris/Desktop/cpq201511/test.pdf");
+
+		try {
+			PDFText2HTML stripper = new PDFText2HTML("utf-8");
+			PDDocument pd = PDDocument.load(file);
+			int pageCount = pd.getDocumentCatalog().getAllPages().size();
+			for (int i = 0; i < pageCount; i++) {
+				//stripper.setForceParsing(forceParsingValue);
+				stripper.setStartPage(i);
+				stripper.setEndPage(i);
+				//FileOutputStream fos = new FileOutputStream(new File("C:/Users/Paris/Desktop/cpq201511/page_" + i + ".html"));
+				Writer writer = new FileWriter(new File("C:/Users/Paris/Desktop/cpq201511/page_" + i + ".html"));
+				stripper.writeText(pd, writer);
+				writer.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

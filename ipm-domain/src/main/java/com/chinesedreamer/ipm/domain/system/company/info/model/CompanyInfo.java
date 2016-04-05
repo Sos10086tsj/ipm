@@ -7,9 +7,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.chinesedreamer.ipm.domain.base.model.IpmVersionEntity;
 import com.chinesedreamer.ipm.domain.system.company.model.Company;
 
@@ -21,7 +18,7 @@ import com.chinesedreamer.ipm.domain.system.company.model.Company;
  */
 @Entity
 @Table(name = "ipm_sys_company_info")
-public @Getter @Setter class CompanyInfo extends IpmVersionEntity<Long>{
+public class CompanyInfo extends IpmVersionEntity<Long>{
 
 	/**
 	 * 
@@ -62,4 +59,54 @@ public @Getter @Setter class CompanyInfo extends IpmVersionEntity<Long>{
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "company_code", referencedColumnName = "code", insertable = false, updatable = false)
 	private Company company;
+
+	public Long getCompanyId() {
+		return companyId;
+	}
+
+	public Long getScale() {
+		return scale;
+	}
+
+	public Long getIndustry() {
+		return industry;
+	}
+
+	public String getContactEmail() {
+		return contactEmail;
+	}
+
+	public String getContactPhone() {
+		return contactPhone;
+	}
+
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompanyId(Long companyId) {
+		this.companyId = companyId;
+	}
+
+	public void setScale(Long scale) {
+		this.scale = scale;
+	}
+
+	public void setIndustry(Long industry) {
+		this.industry = industry;
+	}
+
+	public void setContactEmail(String contactEmail) {
+		this.contactEmail = contactEmail;
+	}
+
+	public void setContactPhone(String contactPhone) {
+		this.contactPhone = contactPhone;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
+	}
+	
+	
 }

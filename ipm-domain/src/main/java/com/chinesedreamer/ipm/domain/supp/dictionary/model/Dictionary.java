@@ -6,14 +6,11 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.chinesedreamer.ipm.domain.base.model.IpmVersionEntity;
 
 @Entity
 @Table(name = "ipm_sys_supp_dictionary")
-public @Getter @Setter class Dictionary extends IpmVersionEntity<Long>{
+public class Dictionary extends IpmVersionEntity<Long>{
 
 	/**
 	 * 
@@ -42,4 +39,38 @@ public @Getter @Setter class Dictionary extends IpmVersionEntity<Long>{
 	@Column(name = "status")
 	@Enumerated(EnumType.ORDINAL)
 	private DictionaryStatus status = DictionaryStatus.ACTIVE;
+
+	public DictionaryType getType() {
+		return type;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public DictionaryStatus getStatus() {
+		return status;
+	}
+
+	public void setType(DictionaryType type) {
+		this.type = type;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setStatus(DictionaryStatus status) {
+		this.status = status;
+	}
+	
+	
 }

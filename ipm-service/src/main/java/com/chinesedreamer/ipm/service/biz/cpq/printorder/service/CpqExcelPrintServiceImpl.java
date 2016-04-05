@@ -173,7 +173,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		this.printTitleNormalRow(5, "Address:", info.getAddress1(), sheet, left_Border, right_Border);
 		this.printTitleNormalRow(6, "", info.getAddress2(), sheet, left_Border, right_Border);
 		this.printTitleNormalRow(7, "", info.getAddress3(), sheet, left_Border, right_Border);
-		this.printTitleNormalRow(8, "Style No.:", info.getStyleNo(), sheet, left_Border, right_Border);
+		this.printTitleNormalRow(8, "STYLE REFERENCE:", info.getStyleNo(), sheet, left_Border, right_Border);
 		this.printTitleNormalRow(9, "Order No.:", info.getOrderNo(), sheet, left_Border, right_Border);
 		this.printTitleNormalRow(10, "Description:", info.getDescription(), sheet, left_Border, right_Border);
 		this.printTitleNormalRow(11, "Invoice ref.No:", info.getInvoceNo(), sheet, left_Border, right_Border);
@@ -216,7 +216,9 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		this.printNormalCell(row16, 0, "Box Number", commonStyle);
 		row16.createCell(1).setCellStyle(commonStyle);
 		sheet.addMergedRegion(new CellRangeAddress(15, 15, 0, 1));
-		this.printNormalCell(row16, 2, "Style", commonStyle);
+		this.printNormalCell(row16, 2, "STYLE /r/n REFERENCE", commonStyle);
+		sheet.addMergedRegion(new CellRangeAddress(15, 2, 16, 2));
+		
 		int countryIndex = 0;
 		if (hasCountry) {
 			countryIndex = 1;
@@ -231,7 +233,13 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		this.printNormalCell(row16, 4 + countryIndex + sizes.size(), "Artikel", commonStyle);
 		this.printNormalCell(row16, 5 + countryIndex + sizes.size(), "Box", commonStyle);
 		this.printNormalCell(row16, 6 + countryIndex + sizes.size(), "Tot Art.", commonStyle);
-		this.printNormalCell(row16, 7 + countryIndex + sizes.size(), "Remark", commonStyle);
+		if (hasCountry) {
+			this.printNormalCell(row16, 7 + countryIndex + sizes.size(), "Remark", commonStyle);
+		}else {
+			this.printNormalCell(row16, 7 + countryIndex + sizes.size(), "REGION /r/n CODE", commonStyle);
+			sheet.addMergedRegion(new CellRangeAddress(15, countryIndex + sizes.size(), 16, countryIndex + sizes.size()));
+		}
+		
 		
 		HSSFRow row17 = sheet.createRow(16);
 		row17.setHeightInPoints(22);
@@ -525,6 +533,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		List<String> colorOrderedTotalFormual = new ArrayList<String>();
 		List<String> colorShippedTotalFormual = new ArrayList<String>();
 		List<String> colorDiscrepancyTotalFormual = new ArrayList<String>();
+		logger.info("items.get(0):{}" , items.get(0));
 		List<ColorSizeVo> vos = this.getColorSizes(colorSizeMap, items.get(0).getOrderNo(), items.get(0).getStyleNo());
 		for (int i = 0; i < vos.size(); i++) {
 			ColorSizeVo vo = vos.get(i);

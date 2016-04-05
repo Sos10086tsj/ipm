@@ -11,9 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.chinesedreamer.ipm.domain.base.model.IpmVersionEntity;
@@ -27,7 +24,7 @@ import com.chinesedreamer.ipm.domain.system.company.model.Company;
  */
 @Entity
 @Table(name = "ipm_sys_user")
-public @Getter @Setter class User extends IpmVersionEntity<Long>{
+public class User extends IpmVersionEntity<Long>{
 
 	/**
 	 * 
@@ -67,4 +64,86 @@ public @Getter @Setter class User extends IpmVersionEntity<Long>{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "company_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Company company;
+
+	public String getUsername() {
+		return username;
+	}
+
+	public String getSalt() {
+		return salt;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getPinYin() {
+		return pinYin;
+	}
+
+	public String getPinYinFirstLetter() {
+		return pinYinFirstLetter;
+	}
+
+	public UserStatus getStatus() {
+		return status;
+	}
+
+	public Date getRegisterDate() {
+		return registerDate;
+	}
+
+	public Long getCompanyId() {
+		return companyId;
+	}
+
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setPinYin(String pinYin) {
+		this.pinYin = pinYin;
+	}
+
+	public void setPinYinFirstLetter(String pinYinFirstLetter) {
+		this.pinYinFirstLetter = pinYinFirstLetter;
+	}
+
+	public void setStatus(UserStatus status) {
+		this.status = status;
+	}
+
+	public void setRegisterDate(Date registerDate) {
+		this.registerDate = registerDate;
+	}
+
+	public void setCompanyId(Long companyId) {
+		this.companyId = companyId;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
+	}
+	
+	
 }

@@ -4,9 +4,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.chinesedreamer.ipm.domain.base.model.IpmEntity;
 
 /**
@@ -17,7 +14,7 @@ import com.chinesedreamer.ipm.domain.base.model.IpmEntity;
  */
 @Entity
 @Table(name = "ipm_sys_config")
-public @Getter @Setter class IpmConfig extends IpmEntity<Long>{
+public class IpmConfig extends IpmEntity<Long>{
 
 	/**
 	 * 
@@ -29,4 +26,22 @@ public @Getter @Setter class IpmConfig extends IpmEntity<Long>{
 	
 	@Column(name = "property_value")
 	private String propertyValue;
+
+	public String getProperty() {
+		return property;
+	}
+
+	public String getPropertyValue() {
+		return propertyValue;
+	}
+
+	public void setProperty(String property) {
+		this.property = property;
+	}
+
+	public void setPropertyValue(String propertyValue) {
+		this.propertyValue = propertyValue;
+	}
+	
+	
 }

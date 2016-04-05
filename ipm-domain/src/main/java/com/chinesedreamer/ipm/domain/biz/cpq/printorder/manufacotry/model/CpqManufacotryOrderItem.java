@@ -4,9 +4,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.chinesedreamer.ipm.domain.base.model.IpmVersionEntity;
 
 /**
@@ -17,7 +14,7 @@ import com.chinesedreamer.ipm.domain.base.model.IpmVersionEntity;
  */
 @Entity
 @Table(name = "ipm_biz_cpq_manufactory_order_item")
-public @Getter @Setter class CpqManufacotryOrderItem extends IpmVersionEntity<Long>{
+public class CpqManufacotryOrderItem extends IpmVersionEntity<Long>{
 
 	/**
 	 * 
@@ -138,21 +135,324 @@ public @Getter @Setter class CpqManufacotryOrderItem extends IpmVersionEntity<Lo
 	@Column
 	private String owner;
 
+	
+
 	@Override
 	public String toString() {
-		return "CpqManufacotryOrderItem [orderNo=" + orderNo + ", styleNo="
-				+ styleNo + ", fromNo=" + fromNo + ", toNo=" + toNo
-				+ ", color=" + color + ", sizeS=" + sizeS + ", sizeM=" + sizeM
-				+ ", sizeL=" + sizeL + ", sizeXl=" + sizeXl + ", sizeXxl="
-				+ sizeXxl + ", sizeP=" + sizeP + ", size1=" + size1
-				+ ", size2=" + size2 + ", size3=" + size3 + ", size4=" + size4
-				+ ", size6=" + size6 + ", size8=" + size8 + ", size10="
-				+ size10 + ", size12=" + size12 + ", size14=" + size14
-				+ ", size16=" + size16 + ", boxQty=" + boxQty + ", pcsPerBox="
-				+ pcsPerBox + ", remark=" + remark + ", country=" + country
-				+ ", grossWeightPerBox=" + grossWeightPerBox
-				+ ", netWeightPerBox=" + netWeightPerBox + ", volumePerBox="
-				+ volumePerBox + ", deleted=" + deleted + "]";
+		return "CpqManufacotryOrderItem [orderNo=" + orderNo + ", orderNoType=" + orderNoType + ", styleNo=" + styleNo
+				+ ", fromNo=" + fromNo + ", toNo=" + toNo + ", color=" + color + ", sizeS=" + sizeS + ", sizeM=" + sizeM
+				+ ", sizeL=" + sizeL + ", sizeXl=" + sizeXl + ", sizeXxl=" + sizeXxl + ", sizeP=" + sizeP + ", size1="
+				+ size1 + ", size2=" + size2 + ", size3=" + size3 + ", size4=" + size4 + ", size6=" + size6 + ", size8="
+				+ size8 + ", size10=" + size10 + ", size12=" + size12 + ", size14=" + size14 + ", size16=" + size16
+				+ ", sizeUNI1=" + sizeUNI1 + ", sizeUNI2=" + sizeUNI2 + ", sizeUNI3=" + sizeUNI3 + ", sizeUNI4="
+				+ sizeUNI4 + ", sizeUNI5=" + sizeUNI5 + ", sizeUNI6=" + sizeUNI6 + ", boxQty=" + boxQty + ", pcsPerBox="
+				+ pcsPerBox + ", remark=" + remark + ", country=" + country + ", grossWeightPerBox=" + grossWeightPerBox
+				+ ", netWeightPerBox=" + netWeightPerBox + ", volumePerBox=" + volumePerBox + ", deleted=" + deleted
+				+ ", excelId=" + excelId + ", owner=" + owner + "]";
+	}
+
+	public String getOrderNo() {
+		return orderNo;
+	}
+
+	public String getOrderNoType() {
+		return orderNoType;
+	}
+
+	public String getStyleNo() {
+		return styleNo;
+	}
+
+	public Integer getFromNo() {
+		return fromNo;
+	}
+
+	public Integer getToNo() {
+		return toNo;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public Integer getSizeS() {
+		return sizeS;
+	}
+
+	public Integer getSizeM() {
+		return sizeM;
+	}
+
+	public Integer getSizeL() {
+		return sizeL;
+	}
+
+	public Integer getSizeXl() {
+		return sizeXl;
+	}
+
+	public Integer getSizeXxl() {
+		return sizeXxl;
+	}
+
+	public Integer getSizeP() {
+		return sizeP;
+	}
+
+	public Integer getSize1() {
+		return size1;
+	}
+
+	public Integer getSize2() {
+		return size2;
+	}
+
+	public Integer getSize3() {
+		return size3;
+	}
+
+	public Integer getSize4() {
+		return size4;
+	}
+
+	public Integer getSize6() {
+		return size6;
+	}
+
+	public Integer getSize8() {
+		return size8;
+	}
+
+	public Integer getSize10() {
+		return size10;
+	}
+
+	public Integer getSize12() {
+		return size12;
+	}
+
+	public Integer getSize14() {
+		return size14;
+	}
+
+	public Integer getSize16() {
+		return size16;
+	}
+
+	public Integer getSizeUNI1() {
+		return sizeUNI1;
+	}
+
+	public Integer getSizeUNI2() {
+		return sizeUNI2;
+	}
+
+	public Integer getSizeUNI3() {
+		return sizeUNI3;
+	}
+
+	public Integer getSizeUNI4() {
+		return sizeUNI4;
+	}
+
+	public Integer getSizeUNI5() {
+		return sizeUNI5;
+	}
+
+	public Integer getSizeUNI6() {
+		return sizeUNI6;
+	}
+
+	public Integer getBoxQty() {
+		return boxQty;
+	}
+
+	public Integer getPcsPerBox() {
+		return pcsPerBox;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public Float getGrossWeightPerBox() {
+		return grossWeightPerBox;
+	}
+
+	public Float getNetWeightPerBox() {
+		return netWeightPerBox;
+	}
+
+	public Float getVolumePerBox() {
+		return volumePerBox;
+	}
+
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public Long getExcelId() {
+		return excelId;
+	}
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
+
+	public void setOrderNoType(String orderNoType) {
+		this.orderNoType = orderNoType;
+	}
+
+	public void setStyleNo(String styleNo) {
+		this.styleNo = styleNo;
+	}
+
+	public void setFromNo(Integer fromNo) {
+		this.fromNo = fromNo;
+	}
+
+	public void setToNo(Integer toNo) {
+		this.toNo = toNo;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public void setSizeS(Integer sizeS) {
+		this.sizeS = sizeS;
+	}
+
+	public void setSizeM(Integer sizeM) {
+		this.sizeM = sizeM;
+	}
+
+	public void setSizeL(Integer sizeL) {
+		this.sizeL = sizeL;
+	}
+
+	public void setSizeXl(Integer sizeXl) {
+		this.sizeXl = sizeXl;
+	}
+
+	public void setSizeXxl(Integer sizeXxl) {
+		this.sizeXxl = sizeXxl;
+	}
+
+	public void setSizeP(Integer sizeP) {
+		this.sizeP = sizeP;
+	}
+
+	public void setSize1(Integer size1) {
+		this.size1 = size1;
+	}
+
+	public void setSize2(Integer size2) {
+		this.size2 = size2;
+	}
+
+	public void setSize3(Integer size3) {
+		this.size3 = size3;
+	}
+
+	public void setSize4(Integer size4) {
+		this.size4 = size4;
+	}
+
+	public void setSize6(Integer size6) {
+		this.size6 = size6;
+	}
+
+	public void setSize8(Integer size8) {
+		this.size8 = size8;
+	}
+
+	public void setSize10(Integer size10) {
+		this.size10 = size10;
+	}
+
+	public void setSize12(Integer size12) {
+		this.size12 = size12;
+	}
+
+	public void setSize14(Integer size14) {
+		this.size14 = size14;
+	}
+
+	public void setSize16(Integer size16) {
+		this.size16 = size16;
+	}
+
+	public void setSizeUNI1(Integer sizeUNI1) {
+		this.sizeUNI1 = sizeUNI1;
+	}
+
+	public void setSizeUNI2(Integer sizeUNI2) {
+		this.sizeUNI2 = sizeUNI2;
+	}
+
+	public void setSizeUNI3(Integer sizeUNI3) {
+		this.sizeUNI3 = sizeUNI3;
+	}
+
+	public void setSizeUNI4(Integer sizeUNI4) {
+		this.sizeUNI4 = sizeUNI4;
+	}
+
+	public void setSizeUNI5(Integer sizeUNI5) {
+		this.sizeUNI5 = sizeUNI5;
+	}
+
+	public void setSizeUNI6(Integer sizeUNI6) {
+		this.sizeUNI6 = sizeUNI6;
+	}
+
+	public void setBoxQty(Integer boxQty) {
+		this.boxQty = boxQty;
+	}
+
+	public void setPcsPerBox(Integer pcsPerBox) {
+		this.pcsPerBox = pcsPerBox;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public void setGrossWeightPerBox(Float grossWeightPerBox) {
+		this.grossWeightPerBox = grossWeightPerBox;
+	}
+
+	public void setNetWeightPerBox(Float netWeightPerBox) {
+		this.netWeightPerBox = netWeightPerBox;
+	}
+
+	public void setVolumePerBox(Float volumePerBox) {
+		this.volumePerBox = volumePerBox;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public void setExcelId(Long excelId) {
+		this.excelId = excelId;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
 	
 	

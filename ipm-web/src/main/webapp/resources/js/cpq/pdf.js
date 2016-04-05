@@ -44,7 +44,7 @@ ipm.cpq = {
         					var form = this.up('form').getForm();
             				if(form.isValid()){
                 				form.submit({
-                    				url: ctx + '/cpq/uploadPdf',
+                    				url: '/ipm' + '/cpq/uploadPdf',
                     				waitMsg: 'Uploading...',
                     				timeout: 600000,
                     				success: function(fp, o) {
@@ -81,7 +81,7 @@ ipm.cpq = {
 		        		
 		        		var record = context.record;
 		        		Ext.Ajax.request({
-		        			url : ctx + '/cpq/updatePdfRow',
+		        			url : '/ipm' + '/cpq/updatePdfRow',
 		        			method : 'post', 
 		        			params : {
 		        				order : record.get('order'),
@@ -565,7 +565,7 @@ ipm.cpq = {
 		reloadStore : function(pdfId, clothingType,orderNo){
 			var grid = ipm.cpq.pdf.grid;
 			var store = grid.store;
-			var url = ctx + '/cpq/getPdfStore/' + pdfId;
+			var url = '/ipm' + '/cpq/getPdfStore/' + pdfId;
 			var hasOrder = false;
 			if(orderNo && orderNo.length > 0){
 				url += '?orderNo=' + orderNo;

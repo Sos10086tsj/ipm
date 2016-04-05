@@ -9,12 +9,9 @@ import javax.persistence.Table;
 import com.chinesedreamer.ipm.domain.base.model.IpmEntity;
 import com.chinesedreamer.ipm.domain.biz.cpq.printorder.datadictionary.constant.CpqDictionaryType;
 
-import lombok.Getter;
-import lombok.Setter;
-
 @Entity
 @Table(name = "ipm_biz_cpq_data_dictionary")
-public @Getter @Setter class CpqDictionary extends IpmEntity<Long>{
+public class CpqDictionary extends IpmEntity<Long>{
 
 	/**
 	 * 
@@ -33,4 +30,38 @@ public @Getter @Setter class CpqDictionary extends IpmEntity<Long>{
 	
 	@Column
 	private Integer seq;
+
+	public CpqDictionaryType getType() {
+		return type;
+	}
+
+	public String getProperty() {
+		return property;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public Integer getSeq() {
+		return seq;
+	}
+
+	public void setType(CpqDictionaryType type) {
+		this.type = type;
+	}
+
+	public void setProperty(String property) {
+		this.property = property;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	public void setSeq(Integer seq) {
+		this.seq = seq;
+	}
+	
+	
 }

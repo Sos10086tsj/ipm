@@ -15,9 +15,9 @@ public abstract class IpmException extends RuntimeException{
 	 */
 	private static final long serialVersionUID = 9031666610402286973L;
 	
-	private @Getter String code;
+	private String code;
 	
-	private @Getter String message;
+	private String message;
 	
 	public IpmException(String message, Throwable cause){
 		super(message, cause);
@@ -28,4 +28,22 @@ public abstract class IpmException extends RuntimeException{
 		super(message);
 		this.message = message;
 	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	
+	
 }

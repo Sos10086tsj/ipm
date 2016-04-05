@@ -6,9 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.chinesedreamer.ipm.domain.base.model.IpmEntity;
 
 /**
@@ -19,7 +16,7 @@ import com.chinesedreamer.ipm.domain.base.model.IpmEntity;
  */
 @Entity
 @Table(name = "ipm_sys_supp_attachment")
-public @Getter @Setter class Attachment extends IpmEntity<Long>{
+public class Attachment extends IpmEntity<Long>{
 
 	/**
 	 * 
@@ -40,4 +37,46 @@ public @Getter @Setter class Attachment extends IpmEntity<Long>{
 	
 	@Column(name = "upload_user")
 	private Long uploadUser;
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public Long getFileSize() {
+		return fileSize;
+	}
+
+	public Date getUploadDate() {
+		return uploadDate;
+	}
+
+	public Long getUploadUser() {
+		return uploadUser;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
+
+	public void setFileSize(Long fileSize) {
+		this.fileSize = fileSize;
+	}
+
+	public void setUploadDate(Date uploadDate) {
+		this.uploadDate = uploadDate;
+	}
+
+	public void setUploadUser(Long uploadUser) {
+		this.uploadUser = uploadUser;
+	}
+	
+	
 }

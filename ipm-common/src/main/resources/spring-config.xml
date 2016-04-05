@@ -137,6 +137,8 @@
         	</props>
         </property>
     </bean>
+    <!-- 
+	<task:annotation-driven /> -->
 	
 	<!-- jms -->
 	<import resource = "spring-jms-config.xml"/>
