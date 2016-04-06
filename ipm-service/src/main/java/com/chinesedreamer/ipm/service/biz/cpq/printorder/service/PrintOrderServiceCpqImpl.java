@@ -237,12 +237,32 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 						}else{
 							String sizeParam = this.getSizeParam(sizeDicts, str);
 							if(StringUtils.isNotEmpty(sizeParam)){
-								String[] sizeS = StringUtil.subString(str, sizeParam, true).split(" ");
-								for (int i = 0; i < this.getMinSize(items, sizeS); i++) {
-									String size = sizeS[i];
-									if (StringUtils.isNotEmpty(size)) {
+								
+								//处理	Size 1/2 	Size 3/4 问题
+								if(str.startsWith("Size 1/2")){
+									String subStr = str.substring("Size 1/2".length());
+									String[] sizeS = subStr.trim().split(" ");
+									for (int i = 0; i < this.getMinSize(items, sizeS); i++){
 										Map<String, String> item = items.get(i);
-										item.put(this.formatSizeKey(sizeParam), size);
+										item.put("Size 1", sizeS[0]);
+										item.put("Size 2", sizeS[0]);
+									}
+								}else if (str.startsWith("Size 3/4")) {		
+									String subStr = str.substring("Size 3/4".length());
+									String[] sizeS = subStr.trim().split(" ");
+									for (int i = 0; i < this.getMinSize(items, sizeS); i++){
+										Map<String, String> item = items.get(i);
+										item.put("Size 3", sizeS[0]);
+										item.put("Size 4", sizeS[0]);
+									}
+								}else {
+									String[] sizeS = StringUtil.subString(str, sizeParam, true).split(" ");
+									for (int i = 0; i < this.getMinSize(items, sizeS); i++) {
+										String size = sizeS[i];
+										if (StringUtils.isNotEmpty(size)) {
+											Map<String, String> item = items.get(i);
+											item.put(this.formatSizeKey(sizeParam), size);
+										}
 									}
 								}
 							}
