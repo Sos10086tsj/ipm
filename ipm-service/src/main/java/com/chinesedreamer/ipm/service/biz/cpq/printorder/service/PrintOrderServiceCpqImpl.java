@@ -176,11 +176,13 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 				while ((str = br.readLine()) != null) {
 					if (str.startsWith("ORDERNR")) {//表示一个新订单开始
 						datasource.put("orderNo", StringUtil.subString(str, "ORDERNR", true));
-					}else if (str.startsWith("STYLENR")) {
+					}else if (str.startsWith("STYLE")) {
 						datasource.put("styleNo", StringUtil.subString(str, "STYLENR", true));
-					}else if (str.startsWith("NEW STYLE")) {//NEW STYLE  128601
-						datasource.put("styleNo", StringUtil.subString(str, "NEW STYLE", true));
-					}else if (str.startsWith("MAKER")) {
+					}
+//					else if (str.startsWith("NEW STYLE")) {//NEW STYLE  128601
+//						datasource.put("styleNo", StringUtil.subString(str, "NEW STYLE", true));
+//					}
+					else if (str.startsWith("MAKER")) {
 						continueRead = true;
 					}else if (str.startsWith("CUSTOMER")) {
 						datasource.put("maker", buffer.toString());
