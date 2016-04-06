@@ -173,12 +173,24 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			//获取不同类型的size列表
 			List<CpqDictionary> sizeDicts = this.cpqDictionaryLogic.findByTypeAndProperty(CpqDictionaryType.CLOTHING_CATEGORY_SIZE, cpqFile.getClothingType().toString());
 			try {
+				int startLien = 0;
 				while ((str = br.readLine()) != null) {
-					if (str.startsWith("ORDERNR")) {//表示一个新订单开始
-						datasource.put("orderNo", StringUtil.subString(str, "ORDERNR", true));
-					}else if (str.startsWith("STYLE")) {
-						datasource.put("styleNo", StringUtil.subString(str, "STYLENR", true));
+					if (startLien == 3) {
+						datasource.put("orderNo", StringUtil.subString(str, ": ", true));
 					}
+					if (startLien == 1) {
+						datasource.put("styleNo", StringUtil.subString(str, ": ", true));
+					}
+					if (startLien > 0) {
+						startLien -- ;
+					}
+					if (str.startsWith("ORDERNR")) {//表示一个新订单开始
+						startLien = 5;
+						//datasource.put("orderNo", StringUtil.subString(str, "ORDERNR: ", true));
+					}
+//					else if (str.startsWith("STYLE REFERENCE")) {
+//						datasource.put("styleNo", StringUtil.subString(str, "STYLE REFERENCE: ", true));
+//					}
 //					else if (str.startsWith("NEW STYLE")) {//NEW STYLE  128601
 //						datasource.put("styleNo", StringUtil.subString(str, "NEW STYLE", true));
 //					}
@@ -195,6 +207,8 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 						continueRead = false;
 					}else if (str.startsWith("USD")) {
 						datasource.put("price", StringUtil.subString(str, "USD", true));
+					}else if (str.startsWith("EUR")) {
+						datasource.put("price", StringUtil.subString(str, "EUR", true));
 					}else if (continueRead) {
 						buffer.append(str)
 						.append(" ");
