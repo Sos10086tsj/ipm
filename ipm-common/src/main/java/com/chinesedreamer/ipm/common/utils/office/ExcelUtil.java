@@ -19,8 +19,8 @@ public class ExcelUtil {
 	
 	public static Integer getCellIntegerValue(Cell cell){
 		Integer value = null;
-		if (null == cell) {
-			return null;
+		if (null == cell || cell.getCellType() == Cell.CELL_TYPE_BLANK) {
+			return 0;
 		}
 		switch (cell.getCellType()) {
 		case Cell.CELL_TYPE_NUMERIC:
@@ -46,6 +46,9 @@ public class ExcelUtil {
 	}
 	
 	public static Float getCellFloatValue(Cell cell){
+		if (null == cell || cell.getCellType() == Cell.CELL_TYPE_BLANK) {
+			return 0f;
+		}
 		Double value = null;
 		switch (cell.getCellType()) {
 		case Cell.CELL_TYPE_NUMERIC:
@@ -69,6 +72,9 @@ public class ExcelUtil {
 	}
 	
 	public static String getCellStringValue(Cell cell) {
+		if (null == cell || cell.getCellType() == Cell.CELL_TYPE_BLANK) {
+			return "";
+		}
 		String value = null;
 		switch (cell.getCellType()) {
 		case Cell.CELL_TYPE_NUMERIC:
@@ -87,6 +93,9 @@ public class ExcelUtil {
 	}
 	
 	public static Object getFormulaValue(Cell cell) {
+		if (null == cell || cell.getCellType() == Cell.CELL_TYPE_BLANK) {
+			return "";
+		}
 		Object obj = null;
 		switch (cell.getCachedFormulaResultType()) {
 		case Cell.CELL_TYPE_NUMERIC:
