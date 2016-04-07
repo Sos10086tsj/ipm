@@ -10,6 +10,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
@@ -336,8 +337,13 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 			cell = row.createCell(columnNum, Cell.CELL_TYPE_FORMULA);
 		}
 		cell.setCellStyle(cellStyle);
-		cell.setCellType(Cell.CELL_TYPE_FORMULA);
-		cell.setCellFormula(formula);
+		if (StringUtils.isNotEmpty(formula)) {
+			cell.setCellType(Cell.CELL_TYPE_FORMULA);
+			cell.setCellFormula(formula);
+		}else{
+			cell.setCellType(Cell.CELL_TYPE_STRING);
+			cell.setCellValue("");
+		}
 	}
 
 	@Override
