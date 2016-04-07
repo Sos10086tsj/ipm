@@ -147,6 +147,7 @@ public class CpqExcelReadServiceImpl implements CpqExcelReadService{
 									Method setMethod = CpqManufacotryOrderItem.class.getDeclaredMethod("set"+sizeParam, Integer.class);
 									setMethod.invoke(item, sizeValue);
 								} catch (Exception e) {
+									this.logger.info("Error happened. Order:{}, style:{}, color:{}, size:{}." ,orderNo, styleNo, tmpColor,sizeParam);
 									this.logger.error("{}",e);
 								} 
 							}

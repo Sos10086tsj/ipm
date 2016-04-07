@@ -217,7 +217,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		row16.createCell(1).setCellStyle(commonStyle);
 		sheet.addMergedRegion(new CellRangeAddress(15, 15, 0, 1));
 		this.printNormalCell(row16, 2, "STYLE /r/n REFERENCE", commonStyle);
-		sheet.addMergedRegion(new CellRangeAddress(15, 2, 16, 2));
+		sheet.addMergedRegion(new CellRangeAddress(15, 16, 2, 2));
 		
 		int countryIndex = 0;
 		if (hasCountry) {
@@ -245,7 +245,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		row17.setHeightInPoints(22);
 		this.printNormalCell(row17, 0, "From", commonStyle);
 		this.printNormalCell(row17, 1, "To", commonStyle);
-		this.printNormalCell(row17, 2, "Number", commonStyle);
+		//this.printNormalCell(row17, 2, "Number", commonStyle);
 		if (hasCountry) {
 			this.printNormalCell(row17, 3 , "Country", commonStyle);
 		}
@@ -429,6 +429,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 						poReadedColors.add(item.getColor() + "@" + size);
 					}
 				}catch (Exception e) {
+					this.logger.info("Error happened. Order:{}, sytle:{}, color:{}.", item.getOrderNo(), item.getStyleNo(), item.getColor());
 					this.logger.error("{}",e);
 				}
 			}
@@ -609,6 +610,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 							+ ")";
 					this.printFormulaCell(percentOrderRow, 4  + countryIndex + j, percentFormula, percentCellStyle);
 				}catch (Exception e) {
+					this.logger.info("Error happened. Order:{}, style:{}, color:{}." ,items.get(0).getOrderNo(), items.get(0).getStyleNo(), vo.getColor());
 					this.logger.error("{}",e);
 				}
 				tmpOrderedTotalFormual.add(ExcelUtil.getColumnCharacter(4 + countryIndex + j) + (25 + i * 5 + items.size()));

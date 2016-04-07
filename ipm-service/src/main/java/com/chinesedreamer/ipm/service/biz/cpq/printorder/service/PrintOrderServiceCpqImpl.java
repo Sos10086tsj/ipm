@@ -270,6 +270,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 					}
 				}
 			} catch (IOException e) {
+				this.logger.info("Error happened. Order:{}, style:{}, color:{}." ,datasource.get("orderNo"), datasource.get("styleNo"), datasource.get("color"));
 				this.logger.error("pdf parse exception.", e);
 			}
 		}
@@ -339,6 +340,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 						Method method = CpqOrderItem.class.getDeclaredMethod("set" + sizeParam, Integer.class);
 						method.invoke(orderItem, Integer.parseInt(item.get(sizeParam)));
 					} catch (Exception e) {
+						this.logger.info("Error happened. Order:{}, style:{}, color:{}." ,datasource.get("orderNo"), datasource.get("styleNo"), datasource.get("color"));
 						this.logger.error("{}",e);
 					}
 				}
@@ -953,6 +955,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 									Method setMethod = CpqManufacotryOrderItem.class.getDeclaredMethod("set"+sizeParam, Integer.class);
 									setMethod.invoke(item, sizeValue);
 								} catch (Exception e) {
+									this.logger.info("Error happened. Order:{}, style:{}, color:{}." ,orderNo, styleNo, tmpColor);
 									this.logger.error("{}",e);
 								} 
 							}
