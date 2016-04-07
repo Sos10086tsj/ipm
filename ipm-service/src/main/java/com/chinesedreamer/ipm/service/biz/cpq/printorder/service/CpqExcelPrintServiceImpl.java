@@ -238,7 +238,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 			this.printNormalCell(row16, 7 + countryIndex + sizes.size(), "Remark", commonStyle);
 		}else {
 			this.printNormalCell(row16, 7 + countryIndex + sizes.size(), "REGION /r/n CODE", commonStyle);
-			sheet.addMergedRegion(new CellRangeAddress(15, countryIndex + sizes.size(), 16, countryIndex + sizes.size()));
+			sheet.addMergedRegion(new CellRangeAddress(15,  16, countryIndex + sizes.size(), countryIndex + sizes.size()));
 		}
 		
 		
