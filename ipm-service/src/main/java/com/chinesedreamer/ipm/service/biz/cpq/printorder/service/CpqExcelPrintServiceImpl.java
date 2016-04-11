@@ -217,7 +217,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		this.printNormalCell(row16, 0, "Box Number", commonStyle);
 		row16.createCell(1).setCellStyle(commonStyle);
 		sheet.addMergedRegion(new CellRangeAddress(15, 15, 0, 1));
-		this.printNormalCell(row16, 2, "STYLE /r/n REFERENCE", commonStyle);
+		this.printWrapCell(row16, 2, "STYLE \n REFERENCE", commonStyle);
 		sheet.addMergedRegion(new CellRangeAddress(15, 16, 2, 2));
 		
 		int countryIndex = 0;
@@ -237,8 +237,8 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		if (hasCountry) {
 			this.printNormalCell(row16, 7 + countryIndex + sizes.size(), "Remark", commonStyle);
 		}else {
-			this.printNormalCell(row16, 7 + countryIndex + sizes.size(), "REGION /r/n CODE", commonStyle);
-			sheet.addMergedRegion(new CellRangeAddress(15,  16, countryIndex + sizes.size(), countryIndex + sizes.size()));
+			this.printWrapCell(row16, 7 + countryIndex + sizes.size(), "REGION \n CODE", commonStyle);
+			//sheet.addMergedRegion(new CellRangeAddress(15,  16, countryIndex + sizes.size(), countryIndex + sizes.size()));
 		}
 		
 		
@@ -277,6 +277,19 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 	 */
 	private void printNormalCell(HSSFRow row, int columnNum, Object value, HSSFCellStyle cellStyle){
 		HSSFCell cell = row.createCell(columnNum);
+		cell.setCellStyle(cellStyle);
+		if (value instanceof Integer) {
+			cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+			cell.setCellValue((Integer)value);
+		}else if (value instanceof String) {
+			cell.setCellType(Cell.CELL_TYPE_STRING);
+			cell.setCellValue((String)value);
+		}
+	}
+	
+	private void printWrapCell(HSSFRow row, int columnNum, Object value, HSSFCellStyle cellStyle){
+		HSSFCell cell = row.createCell(columnNum);
+		cellStyle.setWrapText(true);
 		cell.setCellStyle(cellStyle);
 		if (value instanceof Integer) {
 			cell.setCellType(Cell.CELL_TYPE_NUMERIC);

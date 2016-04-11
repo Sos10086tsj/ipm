@@ -20,7 +20,7 @@ public class ExcelUtil {
 	public static Integer getCellIntegerValue(Cell cell){
 		Integer value = null;
 		if (null == cell || cell.getCellType() == Cell.CELL_TYPE_BLANK) {
-			return 0;
+			return null;
 		}
 		switch (cell.getCellType()) {
 		case Cell.CELL_TYPE_NUMERIC:
@@ -47,7 +47,7 @@ public class ExcelUtil {
 	
 	public static Float getCellFloatValue(Cell cell){
 		if (null == cell || cell.getCellType() == Cell.CELL_TYPE_BLANK) {
-			return 0f;
+			return null;
 		}
 		Double value = null;
 		switch (cell.getCellType()) {

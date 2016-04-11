@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.druid.support.json.JSONUtils;
 import com.chinesedreamer.ipm.common.constant.ConfigPropertiesConstant;
 import com.chinesedreamer.ipm.common.utils.format.StringUtil;
 import com.chinesedreamer.ipm.common.utils.io.PropertiesUtils;
@@ -508,9 +507,20 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 				//1605-12.51309/  读取.和/之间的数字
 				int index_1 = orderNo.indexOf(".");
 				int index_2 = orderNo.indexOf("/");
-				if (-1 != index_1 && -1 != index_2) {
-					sheet = wb.getSheet(orderNo.substring(index_1 + 1, index_2));
+//				if (-1 != index_1 && -1 != index_2) {
+//					sheet = wb.getSheet(orderNo.substring(index_1 + 1, index_2));
+//				}
+				String sheetOrderName = "";
+				if (-1 != index_1){
+					sheetOrderName = orderNo.substring(index_1 + 1);
 				}
+				if (-1 != index_2) {
+					sheetOrderName = sheetOrderName.substring(0, index_2);
+				}
+				if (StringUtils.isEmpty(sheetOrderName)) {
+					continue;
+				}
+				sheet = wb.getSheet(sheetOrderName);
 				if (null == sheet) {
 					continue;
 				}
@@ -788,12 +798,12 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 					if (null == row) {
 						continue;
 					}
-					Cell cell = row.getCell(0);
+					Cell cell = row.getCell(1);
 					if (null == cell) {
 						continue;
 					}
 					String cellValue = ExcelUtil.getCellStringValue(cell);
-					if (StringUtils.isNotEmpty(cellValue) && cellValue.equals("ORDER NR")) {
+					if (StringUtils.isNotEmpty(cellValue) && cellValue.startsWith("ORDER NR")) {
 						startRow = i + 1;
 						break;
 					}
@@ -804,8 +814,10 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 					if (null == row) {
 						continue;
 					}
-					Cell orderCell = row.getCell(0);
-					Cell styleCell = row.getCell(1);
+//					Cell orderCell = row.getCell(0);
+//					Cell styleCell = row.getCell(1);
+					Cell orderCell = row.getCell(1);
+					Cell styleCell = row.getCell(0);
 					if (null == orderCell || null == styleCell) {
 						continue;
 					}
