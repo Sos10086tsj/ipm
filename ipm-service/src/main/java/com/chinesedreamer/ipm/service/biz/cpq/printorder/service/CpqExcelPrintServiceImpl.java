@@ -554,7 +554,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 		List<String> colorShippedTotalFormual = new ArrayList<String>();
 		List<String> colorDiscrepancyTotalFormual = new ArrayList<String>();
 		logger.info("items.get(0):{}" , items.get(0));
-		List<ColorSizeVo> vos = this.getColorSizes(colorSizeMap, items.get(0).getOrderNo(), items.get(0).getStyleNo());
+		List<ColorSizeVo> vos = this.getColorSizes(colorSizeMap, items);
 		for (int i = 0; i < vos.size(); i++) {
 			ColorSizeVo vo = vos.get(i);
 			List<String> tmpOrderedTotalFormual = new ArrayList<String>();
@@ -718,15 +718,19 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 	 * @param colorSizeMap
 	 * @return
 	 */
-	private List<ColorSizeVo> getColorSizes(Map<String, ColorSizeVo> colorSizeMap, String orderNo, String styleNo) {
+	private List<ColorSizeVo> getColorSizes(Map<String, ColorSizeVo> colorSizeMap, List<CpqManufacotryOrderItem> items) {
 		List<ColorSizeVo> vos = new ArrayList<ColorSizeVo>();
 		
-		CpqOrder order = this.cpqOrderLogic.findByOrderNoAndStyleNo(orderNo, styleNo);
-		if (null != order) {
-			List<CpqOrderItem> items = this.cpqOrderItemLogic.findByOrderId(order.getId());
-			for (CpqOrderItem item : items) {
-				if (colorSizeMap.keySet().contains(item.getColor())) {
-					vos.add(colorSizeMap.get(item.getColor()));
+		for (CpqManufacotryOrderItem item : items) {
+			String orderNo = item.getOrderNo();
+			String styleNo = item.getStyleNo();
+			CpqOrder order = this.cpqOrderLogic.findByOrderNoAndStyleNo(orderNo, styleNo);
+			if (null != order) {
+				List<CpqOrderItem> poItems = this.cpqOrderItemLogic.findByOrderId(order.getId());
+				for (CpqOrderItem poItem : poItems) {
+					if (colorSizeMap.keySet().contains(poItem.getColor())) {
+						vos.add(colorSizeMap.get(poItem.getColor()));
+					}
 				}
 			}
 		}

@@ -506,7 +506,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 			if (null == sheet) {
 				//1605-12.51309/  读取.和/之间的数字
 				int index_1 = orderNo.indexOf(".");
-				int index_2 = orderNo.indexOf("/");
+				
 //				if (-1 != index_1 && -1 != index_2) {
 //					sheet = wb.getSheet(orderNo.substring(index_1 + 1, index_2));
 //				}
@@ -514,6 +514,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 				if (-1 != index_1){
 					sheetOrderName = orderNo.substring(index_1 + 1);
 				}
+				int index_2 = sheetOrderName.indexOf("/");
 				if (-1 != index_2) {
 					sheetOrderName = sheetOrderName.substring(0, index_2);
 				}
@@ -718,6 +719,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 				if (StringUtils.isNotEmpty(ttlCellValue) && ttlCellValue.equals("TTL")) {//一种color结束
 					colorRowNums.add(i);
 					model = 0;
+					return colorRowNums;
 				}
 			}
 		}
