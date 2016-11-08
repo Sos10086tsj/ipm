@@ -719,7 +719,7 @@ public class PrintOrderServiceCpqImpl implements PrintOrderService{
 				if (StringUtils.isNotEmpty(ttlCellValue) && ttlCellValue.equals("TTL")) {//一种color结束
 					colorRowNums.add(i);
 					model = 0;
-					return colorRowNums;
+//					return colorRowNums;
 				}
 			}
 		}
