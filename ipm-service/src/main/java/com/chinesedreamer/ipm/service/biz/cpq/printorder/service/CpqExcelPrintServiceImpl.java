@@ -720,7 +720,7 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 	 */
 	private List<ColorSizeVo> getColorSizes(Map<String, ColorSizeVo> colorSizeMap, List<CpqManufacotryOrderItem> items) {
 		List<ColorSizeVo> vos = new ArrayList<ColorSizeVo>();
-		
+		Set<String> voKeys = new HashSet<String>();
 		for (CpqManufacotryOrderItem item : items) {
 			String orderNo = item.getOrderNo();
 			String styleNo = item.getStyleNo();
@@ -728,7 +728,10 @@ public class CpqExcelPrintServiceImpl implements CpqExcelPrintService{
 			if (null != order) {
 				List<CpqOrderItem> poItems = this.cpqOrderItemLogic.findByOrderId(order.getId());
 				for (CpqOrderItem poItem : poItems) {
-					if (colorSizeMap.keySet().contains(poItem.getColor())) {
+					if (colorSizeMap.keySet().contains(poItem.getColor())
+							&& !voKeys.contains(poItem.getColor())
+							) {
+						voKeys.add(poItem.getColor());
 						vos.add(colorSizeMap.get(poItem.getColor()));
 					}
 				}
