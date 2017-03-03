@@ -90,3 +90,16 @@ ipm-service/.settings/org.eclipse.jdt.core.prefs
 ipm-tools/.project
 ipm-web/.settings/org.eclipse.wst.common.component
 target/.gitignore
+ipm-common/.classpath
+ipm-common/.classpath
+ipm-common/.project
+ipm-common/.settings/org.eclipse.jdt.core.prefs
+ipm-domain/.project
+ipm-domain/.settings/org.eclipse.jdt.core.prefs
+ipm-message-center/.classpath
+ipm-message-center/.project
+ipm-message-center/.settings/org.eclipse.core.resources.prefs
+ipm-message-center/.settings/org.eclipse.jdt.core.prefs
+ipm-service/.project
+ipm-service/.settings/org.eclipse.jdt.core.prefs
+ipm-common/.classpath
